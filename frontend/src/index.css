@@ -1,0 +1,121 @@
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@400;500;600;700;800&display=swap');
+
+:root {
+  --primary-green: #2e7d32;
+  --primary-light-green: #4caf50;
+  --warm-orange: #f37021;
+  --warm-amber: #e65100;
+  --cream-bg: #fdfbf7;
+  --cream-card: #ffffff;
+  --dark-text: #0f281e;
+}
+
+body {
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background-color: #fdfbf7;
+  color: #0f281e;
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Outfit', sans-serif;
+}
+
+/* Glassmorphism */
+.glass-card {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(46, 125, 50, 0.12);
+  box-shadow: 0 10px 30px -5px rgba(46, 125, 50, 0.08);
+}
+
+.glass-nav {
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 2px solid rgba(243, 112, 33, 0.15);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+}
+
+.glass-dark {
+  background: rgba(15, 40, 30, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(76, 175, 80, 0.2);
+}
+
+/* Custom Logo Matching Gradients */
+.gradient-logo-green {
+  background: linear-gradient(135deg, #2e7d32 0%, #388e3c 50%, #4caf50 100%);
+}
+
+.gradient-logo-orange {
+  background: linear-gradient(135deg, #e65100 0%, #f37021 50%, #ff9800 100%);
+}
+
+.gradient-hero-overlay {
+  background: linear-gradient(135deg, rgba(15, 40, 30, 0.92) 0%, rgba(46, 125, 50, 0.88) 55%, rgba(243, 112, 33, 0.85) 100%);
+}
+
+.gradient-card-amber {
+  background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+}
+
+.gradient-card-emerald {
+  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+}
+
+.gradient-text-green {
+  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gradient-text-orange {
+  background: linear-gradient(135deg, #e65100 0%, #f37021 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Animations */
+@keyframes floatSlow {
+  0%, 100% { transform: translateY(0px) rotate(0deg); }
+  50% { transform: translateY(-8px) rotate(1deg); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { opacity: 0.6; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.05); }
+}
+
+.animate-float {
+  animation: floatSlow 4s ease-in-out infinite;
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 3s ease-in-out infinite;
+}
+
+/* Custom Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #fdfbf7;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #2e7d32;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #f37021;
+}
