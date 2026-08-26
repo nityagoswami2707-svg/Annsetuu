@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { MapPin, Truck, Navigation, ShieldCheck, Phone, RefreshCw, Key, Compass } from 'lucide-react';
+import { MapPin, Truck, Navigation, ShieldCheck, Phone, ExternalLink, Compass, Key } from 'lucide-react';
 
 const MapView = ({ donation }) => {
   const [apiKey, setApiKey] = useState(import.meta.env.VITE_GOOGLE_MAPS_API_KEY || "");
@@ -7,6 +7,7 @@ const MapView = ({ donation }) => {
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const [currentCoords, setCurrentCoords] = useState(null);
   const [gpsActive, setGpsActive] = useState(false);
+  const [locationPermissionRequested, setLocationPermissionRequested] = useState(false);
 
   const mapRef = useRef(null);
   const googleMapObjRef = useRef(null);
@@ -17,15 +18,17 @@ const MapView = ({ donation }) => {
   const ngoName = donation?.ngoName || "Hope Foundation India";
   const driverName = donation?.deliveryDriver?.name || "Ramesh Kumar";
   const driverVehicle = donation?.deliveryDriver?.vehicleNo || "GJ-06-EV-4412";
+  const driverPhone = donation?.deliveryDriver?.phone || "+919106633221";
 
   // Coordinates: Default route between Alkapuri Vadodara (Donor) and Sayajigunj Vadodara (NGO)
   const donorCoords = { lat: 22.3106, lng: 73.1730 };
   const ngoCoords = { lat: 22.3072, lng: 73.1811 };
 
-  // Real-time browser device Geolocation tracking
-  useEffect(() => {
+  // Request & Watch GPS Geolocation
+  const requestLocation = () => {
+    setLocationPermissionRequested(true);
     if ("geolocation" in navigator) {
-      const watchId = navigator.geolocation.watchPosition(
+      navigator.geolocation.getCurrentPosition(
         (position) => {
           const coords = {
             lat: position.coords.latitude,
@@ -35,13 +38,16 @@ const MapView = ({ donation }) => {
           setGpsActive(true);
         },
         (error) => {
-          console.warn("Browser Geolocation note:", error.message);
+          console.warn("Browser Geolocation error:", error.message);
           setGpsActive(false);
         },
-        { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+        { enableHighAccuracy: true }
       );
-      return () => navigator.geolocation.clearWatch(watchId);
     }
+  };
+
+  useEffect(() => {
+    requestLocation();
   }, []);
 
   // Dynamically load Google Maps JavaScript SDK
@@ -88,12 +94,7 @@ const MapView = ({ donation }) => {
           { elementType: "geometry", stylers: [{ color: "#1d2c26" }] },
           { elementType: "labels.text.stroke", stylers: [{ color: "#1a2e26" }] },
           { elementType: "labels.text.fill", stylers: [{ color: "#8ec3b0" }] },
-          { featureType: "administrative.locality", elementType: "labels.text.fill", stylers: [{ color: "#d5f5e3" }] },
-          { featureType: "poi", elementType: "labels.text.fill", stylers: [{ color: "#6fa894" }] },
-          { featureType: "poi.park", elementType: "geometry", stylers: [{ color: "#13382c" }] },
           { featureType: "road", elementType: "geometry", stylers: [{ color: "#2c4c3e" }] },
-          { featureType: "road", elementType: "geometry.stroke", stylers: [{ color: "#1b3329" }] },
-          { featureType: "road", elementType: "labels.text.fill", stylers: [{ color: "#95d5c5" }] },
           { featureType: "road.highway", elementType: "geometry", stylers: [{ color: "#059669" }] },
           { featureType: "water", elementType: "geometry", stylers: [{ color: "#0f221a" }] }
         ]
@@ -109,7 +110,7 @@ const MapView = ({ donation }) => {
         title: `Donor: ${donorName}`,
         icon: {
           url: "https://maps.google.com/mapfiles/ms/icons/amber-dot.png",
-          scaledSize: new google.maps.Size(42, 42)
+          scaledSize: new google.maps.Size(40, 40)
         }
       });
 
@@ -120,7 +121,7 @@ const MapView = ({ donation }) => {
         title: `NGO: ${ngoName}`,
         icon: {
           url: "https://maps.google.com/mapfiles/ms/icons/green-dot.png",
-          scaledSize: new google.maps.Size(42, 42)
+          scaledSize: new google.maps.Size(40, 40)
         }
       });
 
@@ -135,7 +136,6 @@ const MapView = ({ donation }) => {
       });
     }
 
-    // Update Delivery Vehicle Marker position
     const vehiclePosition = currentCoords || {
       lat: (donorCoords.lat + ngoCoords.lat) / 2,
       lng: (donorCoords.lng + ngoCoords.lng) / 2
@@ -160,66 +160,35 @@ const MapView = ({ donation }) => {
     }
   }, [isMapLoaded, currentCoords]);
 
-  const handleSaveApiKey = (e) => {
-    e.preventDefault();
-    if (keyInput.trim()) {
-      setApiKey(keyInput.trim());
-    }
-  };
-
   return (
-    <div className="bg-emerald-950 text-white rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-emerald-800">
+    <div className="bg-emerald-950 text-white rounded-3xl p-4 sm:p-6 shadow-2xl relative overflow-hidden border border-emerald-800 space-y-4">
       
-      {/* Map Header Overlay */}
-      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between pb-4 mb-4 border-b border-emerald-800/80 gap-3">
+      {/* Header Overlay */}
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 border-b border-emerald-800/80 pb-3">
         <div>
           <div className="flex items-center space-x-2">
             <Navigation className="w-5 h-5 text-amber-400 animate-spin" style={{ animationDuration: '8s' }} />
-            <h3 className="text-base font-bold font-outfit">Google Maps Telematics & Live Location</h3>
+            <h3 className="text-base font-black font-outfit">Live GPS Route & Map</h3>
           </div>
           <p className="text-xs text-emerald-300">
-            Real-time Route: <span className="text-amber-400 font-semibold">{donorName}</span> → <span className="text-emerald-400 font-semibold">{ngoName}</span>
+            Route: <strong className="text-amber-400">{donorName}</strong> → <strong className="text-emerald-400">{ngoName}</strong>
           </p>
         </div>
 
-        <div className="flex items-center space-x-2 text-xs bg-emerald-900/80 px-3 py-1.5 rounded-full border border-emerald-700">
-          <span className={`w-2 h-2 rounded-full ${gpsActive ? 'bg-emerald-400 animate-ping' : 'bg-amber-400'}`}></span>
-          <span className="font-semibold text-emerald-200">
-            {gpsActive ? 'Live Device GPS Connected' : 'Simulated GPS Route Stream'}
-          </span>
-        </div>
+        {/* GPS Permission Request Button */}
+        {!gpsActive && (
+          <button
+            onClick={requestLocation}
+            className="px-3 py-1.5 rounded-full bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center space-x-1.5 btn-bounce-active shrink-0"
+          >
+            <Compass className="w-4 h-4" />
+            <span>Allow Location Access</span>
+          </button>
+        )}
       </div>
 
-      {/* Google Maps API Key Connection Banner */}
-      {!apiKey && (
-        <div className="mb-4 p-4 rounded-2xl bg-gradient-to-r from-emerald-900 to-emerald-950 border border-emerald-700/80 shadow-lg">
-          <div className="flex items-center space-x-3 mb-2">
-            <Key className="w-5 h-5 text-amber-400 shrink-0" />
-            <h4 className="font-bold text-sm text-white">Connect Official Google Maps API Key</h4>
-          </div>
-          <p className="text-xs text-emerald-200 mb-3">
-            Enter your Google Maps API Key below to render interactive vector maps with real-time route polyline, or set <code className="bg-emerald-950 px-1 py-0.5 rounded text-amber-300">VITE_GOOGLE_MAPS_API_KEY</code> in <code className="bg-emerald-950 px-1 py-0.5 rounded text-emerald-300">.env</code>:
-          </p>
-          <form onSubmit={handleSaveApiKey} className="flex flex-col sm:flex-row gap-2">
-            <input
-              type="text"
-              placeholder="Paste Google Maps API Key (AIzaSy...)"
-              value={keyInput}
-              onChange={(e) => setKeyInput(e.target.value)}
-              className="bg-emerald-950 border border-emerald-700 text-white placeholder-emerald-500 text-xs rounded-xl px-3 py-2 flex-grow focus:outline-none focus:ring-2 focus:ring-amber-400"
-            />
-            <button
-              type="submit"
-              className="bg-amber-500 hover:bg-amber-400 text-gray-950 font-bold text-xs px-4 py-2 rounded-xl transition shadow-md whitespace-nowrap"
-            >
-              Load Interactive Map
-            </button>
-          </form>
-        </div>
-      )}
-
-      {/* Google Maps Canvas Container */}
-      <div className="relative w-full h-80 sm:h-96 rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-inner flex items-center justify-center">
+      {/* Mobile Map Container — Fills almost the entire screen height on mobile */}
+      <div className="relative w-full h-[55vh] min-h-[350px] sm:h-[450px] rounded-2xl overflow-hidden bg-slate-900 border border-slate-700 shadow-inner">
         
         {/* Real Interactive Google Map */}
         <div
@@ -227,73 +196,65 @@ const MapView = ({ donation }) => {
           className={`w-full h-full ${!apiKey && 'hidden'}`}
         />
 
-        {/* Dynamic Fallback GPS Preview Mode */}
+        {/* Dynamic Fallback Vector Map */}
         {!apiKey && (
           <div className="relative w-full h-full bg-slate-950 flex flex-col justify-between p-4 overflow-hidden">
             <div 
               className="absolute inset-0 opacity-30 pointer-events-none"
               style={{
                 backgroundImage: `radial-gradient(#10b981 1px, transparent 1px), radial-gradient(#d97706 1px, #0f172a 1px)`,
-                backgroundSize: '24px 24px',
-                backgroundPosition: '0 0, 12px 12px'
+                backgroundSize: '24px 24px'
               }}
             />
 
             <div className="relative z-10 flex items-center justify-between bg-slate-900/90 backdrop-blur-md px-3 py-2 rounded-xl border border-slate-800 text-xs">
-              <div className="flex items-center space-x-2">
-                <Compass className="w-4 h-4 text-emerald-400 animate-spin" style={{ animationDuration: '10s' }} />
-                <span className="font-semibold text-emerald-200">Google Maps Live Location Engine</span>
-              </div>
-              <span className="text-[10px] text-amber-400 font-mono">GPS: 22.3106° N, 73.1730° E</span>
+              <span className="font-bold text-emerald-200">Donor 📍 → Delivery 🚚 → NGO 📍</span>
+              <span className="text-[10px] text-amber-400 font-mono">GPS Active</span>
             </div>
 
-            <div className="relative z-10 my-auto flex flex-col items-center justify-center text-center p-6 bg-emerald-950/70 backdrop-blur-sm rounded-2xl border border-emerald-800/80 max-w-md mx-auto shadow-2xl">
-              <div className="w-12 h-12 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center mb-3 ring-4 ring-amber-500/10 animate-pulse">
+            <div className="relative z-10 my-auto text-center p-5 bg-emerald-950/80 backdrop-blur-md rounded-2xl border border-emerald-800 max-w-sm mx-auto shadow-2xl space-y-2">
+              <div className="w-12 h-12 mx-auto rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center animate-pulse">
                 <MapPin className="w-6 h-6" />
               </div>
-              <h4 className="font-bold text-base text-white mb-1">Live Real-Time GPS Tracking Active</h4>
-              <p className="text-xs text-emerald-200 mb-3">
-                Tracking vehicle <span className="text-amber-400 font-mono font-bold">{driverVehicle}</span> from <span className="text-white font-semibold">{donorName}</span> to <span className="text-emerald-400 font-semibold">{ngoName}</span>.
+              <h4 className="font-black text-sm text-white">Live Telematics Route</h4>
+              <p className="text-xs text-emerald-200">
+                Tracking vehicle <span className="text-amber-400 font-bold">{driverVehicle}</span> en route to <span className="text-emerald-400 font-bold">{ngoName}</span>.
               </p>
-              {currentCoords && (
-                <div className="text-[11px] text-emerald-300 bg-emerald-900/90 px-3 py-1.5 rounded-lg border border-emerald-700/80 font-mono mb-1">
-                  🛰️ Device Location: Lat {currentCoords.lat.toFixed(4)}, Lng {currentCoords.lng.toFixed(4)}
-                </div>
-              )}
-            </div>
-
-            <div className="relative z-10 flex items-center justify-between text-[11px] text-emerald-400 font-mono bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-800">
-              <span>DONOR: Alkapuri, Vadodara</span>
-              <span>NGO: Sayajigunj, Vadodara</span>
             </div>
           </div>
         )}
 
-      </div>
+        {/* MOBILE FLOATING CONTROLS SPECIFICATION */}
+        <div className="absolute bottom-3 left-3 right-3 z-20 flex flex-wrap items-center justify-between gap-2 bg-emerald-950/90 backdrop-blur-md p-3 rounded-2xl border border-emerald-700 shadow-2xl">
+          
+          {/* Open Navigation */}
+          <a
+            href={`https://www.google.com/maps/dir/?api=1&destination=${ngoCoords.lat},${ngoCoords.lng}`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex-1 min-h-[44px] px-3 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active shrink-0"
+          >
+            <ExternalLink className="w-4 h-4" />
+            <span>Open Navigation</span>
+          </a>
 
-      {/* Telematics Footer */}
-      <div className="mt-4 grid grid-cols-1 sm:grid-cols-3 gap-3 text-xs">
-        <div className="bg-emerald-900/60 p-3 rounded-xl border border-emerald-800">
-          <span className="text-[10px] text-emerald-400 font-bold uppercase">Assigned Delivery Partner</span>
-          <p className="font-bold text-white text-sm mt-0.5">{driverName}</p>
-          <p className="text-emerald-300 text-[11px] flex items-center mt-1">
-            <Phone className="w-3 h-3 mr-1" /> {donation?.deliveryDriver?.phone || "+91 91066 33221"}
-          </p>
+          {/* Current Status Badge */}
+          <div className="px-3 py-2 rounded-xl bg-emerald-900 text-emerald-200 text-xs font-bold border border-emerald-700 text-center shrink-0">
+            <span>Status: </span>
+            <strong className="text-amber-400">{donation?.status || 'In Transit'}</strong>
+          </div>
+
+          {/* Call Contact */}
+          <a
+            href={`tel:${driverPhone}`}
+            className="min-h-[44px] px-3.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-xs flex items-center justify-center space-x-1 shadow-md btn-bounce-active shrink-0"
+          >
+            <Phone className="w-4 h-4 text-emerald-200" />
+            <span>Call Contact</span>
+          </a>
+
         </div>
 
-        <div className="bg-emerald-900/60 p-3 rounded-xl border border-emerald-800">
-          <span className="text-[10px] text-emerald-400 font-bold uppercase">Vehicle & Route Status</span>
-          <p className="font-bold text-amber-400 text-sm mt-0.5">{driverVehicle}</p>
-          <p className="text-emerald-200 text-[11px] mt-1">
-            {currentCoords ? `Device GPS position synced (${currentCoords.lat.toFixed(3)}, ${currentCoords.lng.toFixed(3)})` : (donation?.deliveryDriver?.currentLocation || "En route on Sayajigunj Main Rd")}
-          </p>
-        </div>
-
-        <div className="bg-emerald-900/60 p-3 rounded-xl border border-emerald-800">
-          <span className="text-[10px] text-emerald-400 font-bold uppercase">Estimated Arrival (ETA)</span>
-          <p className="font-black text-emerald-400 text-base mt-0.5 font-outfit">12 Mins (3.4 km remaining)</p>
-          <p className="text-emerald-300 text-[11px] mt-0.5">Cold-chain thermal insulation verified</p>
-        </div>
       </div>
 
     </div>

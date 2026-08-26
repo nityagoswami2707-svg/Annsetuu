@@ -2,12 +2,25 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MEDIDIAGNOSE AI</title>
+    <link rel="icon" type="image/png" href="/annsetu_logo.png" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes" />
+    <meta name="theme-color" content="#064e3b" />
+    <meta name="description" content="Annsetu - Bridging Surplus to Smiles. Real-time surplus food donation & redistribution platform." />
+    <link rel="manifest" href="/manifest.json" />
+    <link rel="apple-touch-icon" href="/annsetu_logo.png" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <title>ANNSETU — Bridging Surplus to Smiles</title>
   </head>
-  <body class="bg-gray-900 text-white min-h-screen">
+  <body class="bg-[#faf8f5] text-[#062c21] min-h-screen antialiased selection:bg-amber-400 selection:text-gray-950">
     <div id="root"></div>
     <script type="module" src="/src/main.jsx"></script>
+    <script>
+      if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+          navigator.serviceWorker.register('/sw.js').catch(err => console.log('SW registration failed:', err));
+        });
+      }
+    </script>
   </body>
 </html>

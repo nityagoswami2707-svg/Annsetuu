@@ -1,6 +1,6 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
-import { X, Download, ShieldCheck, Heart, Award, Sparkles, FileText } from 'lucide-react';
+import { X, Download, ShieldCheck, Heart, Award, Sparkles, Share2 } from 'lucide-react';
 
 const ImpactReceipt = ({ donation, onClose }) => {
   if (!donation) return null;
@@ -13,12 +13,10 @@ const ImpactReceipt = ({ donation, onClose }) => {
         format: 'a4'
       });
 
-      // Background card
       doc.setFillColor(250, 248, 245);
       doc.rect(0, 0, 210, 297, 'F');
 
-      // Top Banner
-      doc.setFillColor(6, 78, 59); // Deep Green
+      doc.setFillColor(6, 78, 59);
       doc.rect(0, 0, 210, 45, 'F');
 
       doc.setTextColor(255, 255, 255);
@@ -34,17 +32,15 @@ const ImpactReceipt = ({ donation, onClose }) => {
       doc.setFontSize(10);
       doc.text('OFFICIAL DIGITAL IMPACT RECEIPT', 105, 36, { align: 'center' });
 
-      // Receipt Box Container
       doc.setFillColor(255, 255, 255);
       doc.roundedRect(20, 55, 170, 200, 4, 4, 'F');
       doc.setDrawColor(220, 220, 220);
       doc.roundedRect(20, 55, 170, 200, 4, 4, 'S');
 
-      // Details
       doc.setTextColor(6, 44, 33);
       doc.setFontSize(14);
       doc.setFont('helvetica', 'bold');
-      doc.text(`DONATION CERTIFICATE #${donation.id}`, 30, 75);
+      doc.text(`Impact Receipt #${donation.id}`, 30, 75);
 
       doc.setDrawColor(16, 185, 129);
       doc.setLineWidth(0.8);
@@ -52,61 +48,38 @@ const ImpactReceipt = ({ donation, onClose }) => {
 
       doc.setFontSize(11);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Donation Date:`, 30, 95);
+      doc.text(`Food Donated:`, 30, 95);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.createdAt}`, 90, 95);
+      doc.text(`${donation.servingCapacity} Meals (${donation.foodName})`, 90, 95);
 
       doc.setFont('helvetica', 'normal');
-      doc.text(`Donated By:`, 30, 107);
+      doc.text(`People Served:`, 30, 107);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.donorName} (${donation.donorType})`, 90, 107);
+      doc.text(`${donation.servingCapacity}`, 90, 107);
 
       doc.setFont('helvetica', 'normal');
-      doc.text(`Food Item:`, 30, 119);
+      doc.text(`Status:`, 30, 119);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.foodName}`, 90, 119);
-
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Quantity / Volume:`, 30, 131);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.quantity}`, 90, 131);
-
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Total Meals Served:`, 30, 143);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(217, 119, 6);
-      doc.text(`${donation.servingCapacity} Nourishing Meals ❤️`, 90, 143);
+      doc.setTextColor(5, 150, 105);
+      doc.text(`Delivered ✓`, 90, 119);
 
       doc.setTextColor(6, 44, 33);
       doc.setFont('helvetica', 'normal');
-      doc.text(`Beneficiary Partner NGO:`, 30, 155);
+      doc.text(`Donor:`, 30, 131);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.ngoName}`, 90, 155);
+      doc.text(`${donation.donorName}`, 90, 131);
 
       doc.setFont('helvetica', 'normal');
-      doc.text(`Delivery Location:`, 30, 167);
+      doc.text(`NGO:`, 30, 143);
       doc.setFont('helvetica', 'bold');
-      doc.text(`${donation.city}, Gujarat`, 90, 167);
+      doc.text(`${donation.ngoName}`, 90, 143);
 
-      doc.setFont('helvetica', 'normal');
-      doc.text(`Verification Status:`, 30, 179);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(5, 150, 105);
-      doc.text(`VERIFIED DELIVERED ✓`, 90, 179);
-
-      // Watermark Box / Quote
       doc.setFillColor(240, 253, 244);
-      doc.roundedRect(30, 195, 150, 25, 3, 3, 'F');
+      doc.roundedRect(30, 165, 150, 25, 3, 3, 'F');
       doc.setTextColor(4, 120, 87);
-      doc.setFontSize(11);
-      doc.setFont('helvetica', 'oblique');
-      doc.text('"Your surplus became someone\'s warm meal. Thank you for bridging food waste to human smiles!"', 105, 210, { align: 'center', maxWidth: 140 });
-
-      // Footer stamp inside PDF
-      doc.setTextColor(150, 150, 150);
-      doc.setFontSize(9);
-      doc.setFont('helvetica', 'normal');
-      doc.text('Cryptographically Hash Signed by Annsetu Verification Engine - Vadodara Hub', 105, 245, { align: 'center' });
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('"Your surplus became someone\'s meal."', 105, 180, { align: 'center' });
 
       doc.save(`Annsetu_Impact_Receipt_${donation.id}.pdf`);
     } catch (err) {
@@ -115,12 +88,30 @@ const ImpactReceipt = ({ donation, onClose }) => {
     }
   };
 
+  const handleShareImpact = async () => {
+    const shareData = {
+      title: 'Annsetu Impact Receipt',
+      text: `I just donated ${donation.servingCapacity} meals through Annsetu! "Your surplus became someone's meal."`,
+      url: window.location.href,
+    };
+    if (navigator.share) {
+      try {
+        await navigator.share(shareData);
+      } catch (err) {
+        console.log('Share canceled:', err);
+      }
+    } else {
+      navigator.clipboard.writeText(shareData.text);
+      alert('Impact message copied to clipboard! Share it with friends and family.');
+    }
+  };
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-md animate-in fade-in">
-      <div className="w-full max-w-xl bg-white rounded-3xl shadow-2xl overflow-hidden border border-emerald-900/20 relative">
+      <div className="w-full max-w-lg bg-white rounded-3xl shadow-2xl overflow-hidden border border-emerald-900/20 relative">
         
-        {/* Top Header */}
-        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-amber-600 p-6 text-white text-center relative overflow-hidden">
+        {/* Header */}
+        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-amber-600 p-6 text-white text-center relative overflow-hidden">
           <button
             onClick={onClose}
             className="absolute top-4 right-4 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors"
@@ -133,73 +124,71 @@ const ImpactReceipt = ({ donation, onClose }) => {
           </div>
 
           <h2 className="text-2xl font-black font-outfit tracking-wide">ANNSETU</h2>
-          <p className="text-xs text-amber-200 font-medium">Bridging Surplus to Smiles</p>
-          <p className="text-[10px] tracking-widest uppercase text-emerald-200 mt-2 font-bold bg-black/20 inline-block px-3 py-1 rounded-full">
-            Official Digital Impact Receipt
+          <p className="text-xs text-amber-200 font-bold">“Bridging Surplus to Smiles”</p>
+          <p className="text-[11px] tracking-widest uppercase text-emerald-200 mt-2 font-black bg-black/20 inline-block px-3.5 py-1 rounded-full">
+            Impact Receipt
           </p>
         </div>
 
-        {/* Printable Receipt Body */}
-        <div className="p-6 sm:p-8 space-y-6 bg-gradient-to-b from-white to-emerald-50/30">
+        {/* Receipt Body */}
+        <div className="p-6 space-y-5 bg-gradient-to-b from-white to-emerald-50/30">
           
-          <div className="flex items-center justify-between border-b border-dashed border-gray-200 pb-4">
-            <div>
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Donation ID</span>
-              <p className="text-lg font-extrabold font-outfit text-emerald-950">{donation.id}</p>
+          <div className="space-y-2 border-b border-gray-100 pb-4 text-xs">
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">Donation ID:</span>
+              <span className="font-black text-emerald-950 font-mono text-sm">{donation.id}</span>
             </div>
-            <div className="text-right">
-              <span className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">Status</span>
-              <div className="flex items-center text-xs font-bold text-emerald-700 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-                <ShieldCheck className="w-3.5 h-3.5 mr-1" />
-                Successfully Delivered
-              </div>
-            </div>
-          </div>
-
-          {/* Grid of Key Info */}
-          <div className="grid grid-cols-2 gap-4 text-xs">
-            <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-xs">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">Food Donated</span>
-              <p className="text-sm font-bold text-gray-900 mt-0.5">{donation.foodName}</p>
-              <p className="text-[11px] text-emerald-700 font-semibold">{donation.quantity}</p>
+            
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">Food Donated:</span>
+              <span className="font-black text-green-900">{donation.servingCapacity} Meals</span>
             </div>
 
-            <div className="bg-amber-50 p-3.5 rounded-2xl border border-amber-200/60 shadow-xs">
-              <span className="text-[10px] text-amber-700 font-bold uppercase">Impact Capacity</span>
-              <p className="text-lg font-black text-amber-800 font-outfit flex items-center">
-                {donation.servingCapacity} Meals Served <Heart className="w-4 h-4 ml-1.5 fill-red-500 text-red-500" />
-              </p>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">People Served:</span>
+              <span className="font-black text-orange-600">{donation.servingCapacity}</span>
             </div>
 
-            <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-xs">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">Donated By</span>
-              <p className="text-xs font-bold text-gray-900 mt-0.5">{donation.donorName}</p>
-              <p className="text-[11px] text-gray-500">{donation.donorType}</p>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">Status:</span>
+              <span className="font-black text-emerald-700 bg-emerald-100 px-2.5 py-0.5 rounded-full">
+                Delivered ✓
+              </span>
             </div>
 
-            <div className="bg-white p-3.5 rounded-2xl border border-gray-100 shadow-xs">
-              <span className="text-[10px] text-gray-400 font-bold uppercase">Received By NGO</span>
-              <p className="text-xs font-bold text-emerald-900 mt-0.5">{donation.ngoName}</p>
-              <p className="text-[11px] text-gray-500">{donation.city}, Gujarat</p>
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">Donor:</span>
+              <span className="font-bold text-gray-900">{donation.donorName}</span>
+            </div>
+
+            <div className="flex justify-between items-center">
+              <span className="font-bold text-gray-500">NGO:</span>
+              <span className="font-bold text-emerald-900">{donation.ngoName}</span>
             </div>
           </div>
 
-          {/* Emotional Quote */}
-          <div className="p-4 bg-emerald-950 text-emerald-100 rounded-2xl text-center relative overflow-hidden">
-            <Sparkles className="w-12 h-12 text-amber-400/20 absolute -right-2 -bottom-2" />
-            <p className="text-xs italic font-medium">
-              "Your surplus food became someone's warm, nutritious meal today. Thank you for spreading hope!"
-            </p>
+          {/* Emotional Message */}
+          <div className="p-4 bg-emerald-950 text-amber-300 rounded-2xl text-center shadow-inner space-y-1">
+            <Heart className="w-6 h-6 mx-auto text-red-500 fill-red-500 animate-bounce" />
+            <p className="text-sm font-black font-outfit">“Your surplus became someone’s meal.”</p>
           </div>
 
-          {/* Action Button */}
-          <div className="pt-2">
+          {/* Buttons SPECIFICATION */}
+          <div className="grid grid-cols-2 gap-3 pt-2">
             <button
               onClick={handleDownloadPDF}
-              className="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-700 to-amber-600 hover:from-emerald-800 hover:to-amber-700 text-white font-bold text-sm shadow-lg shadow-emerald-900/20 flex items-center justify-center space-x-2 transition-all transform hover:-translate-y-0.5"
+              className="py-3 px-4 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-1.5 btn-bounce-active"
             >
               <Download className="w-4 h-4" />
-              <span>Download Official Impact Receipt (PDF)</span>
+              <span>Download Receipt</span>
+            </button>
+
+            <button
+              onClick={handleShareImpact}
+              className="py-3 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-1.5 btn-bounce-active"
+            >
+              <Share2 className="w-4 h-4" />
+              <span>Share Impact</span>
             </button>
           </div>
 

@@ -29,6 +29,7 @@ const AdminDashboard = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
+  const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
 
   // Filtered Donations
   const filteredDonations = donations.filter(item => {
@@ -104,21 +105,6 @@ const AdminDashboard = () => {
         y += 10;
       });
 
-      doc.line(15, y, 195, y);
-      y += 12;
-
-      doc.setFontSize(13);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Recent Donations Summary:', 15, y);
-      y += 10;
-
-      donations.slice(0, 8).forEach(d => {
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        doc.text(`${d.id} | ${d.donorName} -> ${d.ngoName} | ${d.servingCapacity} Meals | [${d.status}]`, 15, y);
-        y += 7;
-      });
-
       doc.save(`Annsetu_Executive_Report_${new Date().toISOString().split('T')[0]}.pdf`);
     } catch (e) {
       console.error(e);
@@ -127,180 +113,168 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="pt-20 pb-20 sm:pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       
       {/* Header */}
-      <div className="bg-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border border-emerald-800">
+      <div className="bg-emerald-950 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
         <div>
           <div className="flex items-center space-x-2">
             <ShieldCheck className="w-6 h-6 text-purple-400" />
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">{t('adminPortalHeader')}</h1>
+            <h1 className="text-xl sm:text-3xl font-extrabold font-outfit">Annsetu Admin Portal</h1>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">{t('adminPortalSub')}</p>
+          <p className="text-emerald-200 text-xs sm:text-sm mt-1">Monitor users, NGOs, donations and platform impact.</p>
         </div>
 
         {/* Tab Navigation */}
-        <div className="flex flex-wrap gap-2 bg-emerald-900/80 p-1.5 rounded-2xl border border-emerald-800">
+        <div className="flex flex-wrap gap-1.5 bg-emerald-900/80 p-1.5 rounded-2xl border border-emerald-800 text-xs w-full md:w-auto">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+              activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
             }`}
           >
-            {t('adminNavDashboard')}
+            Dashboard
           </button>
 
           <button
             onClick={() => setActiveTab('ngos')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+              activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
             }`}
           >
-            {t('adminNavNgos')}
+            NGOs
           </button>
 
           <button
             onClick={() => setActiveTab('donations')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+              activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
             }`}
           >
-            {t('adminNavDonations')}
+            Donations
           </button>
 
           <button
             onClick={() => setActiveTab('reports')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
+            className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+              activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
             }`}
           >
-            {t('adminNavReports')}
+            Reports
           </button>
         </div>
       </div>
 
-      {/* KPI Cards Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
+      {/* ADMIN SUMMARY CARDS SPECIFICATION */}
+      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4">
         
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('totalUsers')}</span>
+            <span>Total Users</span>
             <Users className="w-4 h-4 text-purple-600" />
           </div>
-          <p className="text-2xl font-extrabold text-emerald-950 font-outfit">1,250</p>
+          <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">1,250</p>
           <span className="text-[10px] text-emerald-600 font-bold">↑ 12% this week</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('activeNgos')}</span>
+            <span>Active NGOs</span>
             <Building2 className="w-4 h-4 text-emerald-600" />
           </div>
-          <p className="text-2xl font-extrabold text-emerald-950 font-outfit">{stats.activeNGOs}</p>
+          <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{stats.activeNGOs}</p>
           <span className="text-[10px] text-emerald-600 font-bold">100% Verified</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('totalDonationsLabel')}</span>
+            <span>Total Donations</span>
             <Utensils className="w-4 h-4 text-amber-600" />
           </div>
-          <p className="text-2xl font-extrabold text-emerald-950 font-outfit">8,430</p>
+          <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">8,430</p>
           <span className="text-[10px] text-amber-600 font-bold">Live Streamed</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('pendingLabel')}</span>
-            <Clock className="w-4 h-4 text-blue-600" />
-          </div>
-          <p className="text-2xl font-extrabold text-emerald-950 font-outfit">{stats.pendingDonations}</p>
-          <span className="text-[10px] text-blue-600 font-bold">Awaiting pickup</span>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
-          <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('deliveriesLabel')}</span>
-            <Truck className="w-4 h-4 text-emerald-600" />
-          </div>
-          <p className="text-2xl font-extrabold text-emerald-950 font-outfit">7,920</p>
-          <span className="text-[10px] text-emerald-600 font-bold">98.2% Success</span>
-        </div>
-
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
-          <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>{t('mealsDonated')}</span>
+            <span>Meals Served</span>
             <Utensils className="w-4 h-4 text-amber-600" />
           </div>
-          <p className="text-2xl font-extrabold text-amber-700 font-outfit">{stats.totalMeals.toLocaleString()}</p>
+          <p className="text-xl sm:text-2xl font-black text-amber-700 font-outfit">{stats.totalMeals.toLocaleString()}</p>
           <span className="text-[10px] text-amber-600 font-bold">Impact High</span>
+        </div>
+
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d col-span-2 md:col-span-1">
+          <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
+            <span>Pending Deliveries</span>
+            <Clock className="w-4 h-4 text-blue-600" />
+          </div>
+          <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{stats.pendingDonations}</p>
+          <span className="text-[10px] text-blue-600 font-bold">Awaiting Pickup</span>
         </div>
 
       </div>
 
-      {/* MAIN TAB CONTENT */}
-      {activeTab === 'dashboard' && (
-        <div className="space-y-8">
-          
-          {/* Visual Analytics Charts Section */}
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-            
-            {/* Chart 1: Donations Over Time */}
-            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-base font-bold font-outfit text-emerald-950">{t('donationsOverTime')}</h3>
-                  <p className="text-xs text-gray-500">Monthly surplus food volume trend</p>
-                </div>
-                <BarChart3 className="w-5 h-5 text-emerald-700" />
-              </div>
+      {/* COMPACT ANALYTICS TRIGGER BUTTON FOR MOBILE SPECIFICATION */}
+      <div className="flex items-center justify-between bg-purple-50 p-4 rounded-2xl border border-purple-200">
+        <div className="flex items-center space-x-2">
+          <BarChart3 className="w-5 h-5 text-purple-700 shrink-0" />
+          <span className="text-xs font-black text-purple-950">Mobile Analytics Engine</span>
+        </div>
+        <button
+          onClick={() => setShowAnalyticsModal(true)}
+          className="px-4 py-2 rounded-xl bg-purple-900 hover:bg-purple-950 text-white font-bold text-xs shadow-md btn-bounce-active"
+        >
+          View Analytics
+        </button>
+      </div>
 
-              {/* Bar Chart Visual Simulation */}
-              <div className="h-48 flex items-end justify-between gap-3 pt-8 px-2 border-b border-gray-100">
+      {/* MOBILE ANALYTICS MODAL WITH AUTO-RESIZING CHARTS */}
+      {showAnalyticsModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
+          <div className="bg-white rounded-3xl p-6 max-w-xl w-full max-h-[85vh] overflow-y-auto space-y-6 shadow-2xl">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <h3 className="text-lg font-black font-outfit text-green-950">Platform Mobile Analytics</h3>
+              <button 
+                onClick={() => setShowAnalyticsModal(false)}
+                className="p-1 rounded-xl bg-gray-100 text-gray-600"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Responsive Chart 1 */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-gray-700">Donation Growth & Monthly Volume</h4>
+              <div className="h-40 flex items-end justify-between gap-2 pt-6 px-1 border-b border-gray-200">
                 {[
-                  { month: 'Jan', val: 60 },
-                  { month: 'Feb', val: 75 },
-                  { month: 'Mar', val: 90 },
-                  { month: 'Apr', val: 82 },
-                  { month: 'May', val: 110 },
-                  { month: 'Jun', val: 130 },
-                  { month: 'Jul', val: 145 },
-                  { month: 'Aug', val: 170 }
+                  { m: 'Jan', v: 60 }, { m: 'Feb', v: 75 }, { m: 'Mar', v: 90 },
+                  { m: 'Apr', v: 82 }, { m: 'May', v: 110 }, { m: 'Jun', v: 130 }
                 ].map((item, idx) => (
-                  <div key={idx} className="flex-1 flex flex-col items-center gap-2 group">
-                    <div 
-                      className="w-full bg-gradient-to-t from-emerald-800 to-emerald-500 rounded-t-lg transition-all group-hover:from-amber-600 group-hover:to-amber-400"
-                      style={{ height: `${item.val}%` }}
-                    ></div>
-                    <span className="text-[10px] text-gray-500 font-semibold">{item.month}</span>
+                  <div key={idx} className="flex-1 flex flex-col items-center gap-1">
+                    <div className="w-full bg-emerald-700 rounded-t-md" style={{ height: `${item.v}%` }}></div>
+                    <span className="text-[9px] text-gray-500 font-bold">{item.m}</span>
                   </div>
                 ))}
               </div>
             </div>
 
-            {/* Chart 2: Food Categories Donated */}
-            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-              <div className="flex items-center justify-between mb-6">
-                <div>
-                  <h3 className="text-base font-bold font-outfit text-emerald-950">{t('donationsByCategory')}</h3>
-                  <p className="text-xs text-gray-500">Distribution of surplus meal types</p>
-                </div>
-                <PieChart className="w-5 h-5 text-amber-600" />
-              </div>
-
-              <div className="space-y-4 pt-2">
+            {/* Responsive Chart 2 */}
+            <div className="space-y-2">
+              <h4 className="text-xs font-bold text-gray-700">Donations By Category</h4>
+              <div className="space-y-2">
                 {[
-                  { label: "Prepared Cooked Food (Restos/Weddings)", pct: 58, color: "bg-emerald-600" },
-                  { label: "Catering Surplus (Events)", pct: 24, color: "bg-amber-500" },
-                  { label: "Bakery / Packaged Foods", pct: 12, color: "bg-blue-600" },
-                  { label: "Fresh Raw Produce (Markets)", pct: 6, color: "bg-purple-600" }
+                  { label: "Prepared Cooked Food", pct: 58, color: "bg-emerald-600" },
+                  { label: "Catering Surplus", pct: 24, color: "bg-amber-500" },
+                  { label: "Bakery / Packaged", pct: 12, color: "bg-blue-600" },
+                  { label: "Fresh Raw Produce", pct: 6, color: "bg-purple-600" }
                 ].map((cat, idx) => (
                   <div key={idx} className="space-y-1">
-                    <div className="flex justify-between text-xs font-semibold text-gray-700">
+                    <div className="flex justify-between text-[11px] font-bold text-gray-700">
                       <span>{cat.label}</span>
                       <span>{cat.pct}%</span>
                     </div>
-                    <div className="w-full h-2.5 bg-gray-100 rounded-full overflow-hidden">
+                    <div className="w-full h-2 bg-gray-100 rounded-full overflow-hidden">
                       <div className={`h-full ${cat.color}`} style={{ width: `${cat.pct}%` }}></div>
                     </div>
                   </div>
@@ -309,256 +283,146 @@ const AdminDashboard = () => {
             </div>
 
           </div>
-
-          {/* Quick Table Preview */}
-          <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold font-outfit text-emerald-950">{t('recentActivity')}</h3>
-              <button 
-                onClick={() => setActiveTab('donations')} 
-                className="text-xs font-bold text-emerald-700 hover:underline btn-bounce-active"
-              >
-                View All Table →
-              </button>
-            </div>
-
-            <div className="overflow-x-auto">
-              <table className="w-full text-left text-xs">
-                <thead>
-                  <tr className="bg-gray-50 text-gray-500 font-bold uppercase border-b border-gray-100">
-                    <th className="p-3">ID</th>
-                    <th className="p-3">Donor</th>
-                    <th className="p-3">Food Item</th>
-                    <th className="p-3">Quantity</th>
-                    <th className="p-3">NGO</th>
-                    <th className="p-3">Status</th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-gray-100">
-                  {donations.slice(0, 5).map(item => (
-                    <tr key={item.id} className="hover:bg-emerald-50/50 transition-colors">
-                      <td className="p-3 font-bold text-emerald-900">{item.id}</td>
-                      <td className="p-3 font-semibold">{item.donorName}</td>
-                      <td className="p-3">{item.foodName}</td>
-                      <td className="p-3 font-medium text-amber-700">{item.quantity}</td>
-                      <td className="p-3 font-semibold text-emerald-800">{item.ngoName}</td>
-                      <td className="p-3">
-                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                          item.status === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
-                          item.status === 'In Transit' ? 'bg-blue-100 text-blue-800' : 'bg-amber-100 text-amber-800'
-                        }`}>
-                          {item.status}
-                        </span>
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          </div>
-
         </div>
       )}
 
-      {/* NGO VERIFICATION TAB */}
-      {activeTab === 'ngos' && (
-        <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-6">
-          <div>
-            <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('ngoPartnerCenter')}</h3>
-            <p className="text-xs text-gray-500">Review registration credentials & issue verified checkmark badges.</p>
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {ngos.map(ngo => (
-              <div key={ngo.id} className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4 relative card-zoom-3d">
-                <div className="flex items-start space-x-3">
-                  <img src={ngo.avatar} alt="NGO" className="w-12 h-12 rounded-xl object-cover border border-gray-200" />
-                  <div>
-                    <h4 className="text-sm font-bold text-gray-900 font-outfit">{ngo.name}</h4>
-                    <p className="text-[11px] text-gray-500">{ngo.type}</p>
-                    <p className="text-[10px] text-emerald-700 font-mono mt-0.5">{ngo.registrationNo}</p>
+      {/* MAIN TAB CONTENT */}
+      {activeTab === 'dashboard' && (
+        <div className="space-y-4">
+          <h3 className="text-base font-black font-outfit text-emerald-950">Recent System Activity</h3>
+          
+          {/* Mobile Cards for Donations List Specification */}
+          <div className="space-y-3">
+            {donations.slice(0, 5).map(item => (
+              <div key={item.id} className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 card-zoom-3d">
+                <div>
+                  <div className="flex items-center space-x-2">
+                    <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
+                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2.5 py-0.5 rounded-full">
+                      {item.status}
+                    </span>
                   </div>
+                  <h4 className="text-xs font-bold text-gray-900 mt-1">{item.foodName}</h4>
+                  <p className="text-[11px] text-gray-500">Donor: {item.donorName} → NGO: {item.ngoName}</p>
                 </div>
-
-                <div className="text-xs space-y-1 text-gray-600 bg-gray-50 p-3 rounded-xl">
-                  <p><strong>Contact:</strong> {ngo.contactPerson} ({ngo.phone})</p>
-                  <p><strong>Capacity:</strong> {ngo.availableCapacity}</p>
-                  <p><strong>Served/Day:</strong> {ngo.peopleServedPerDay} meals</p>
-                </div>
-
-                <div className="flex items-center justify-between pt-2">
-                  <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                    ngo.verificationStatus === 'Verified' ? 'bg-emerald-100 text-emerald-800' : 'bg-amber-100 text-amber-800'
-                  }`}>
-                    {ngo.verificationStatus} Badge
-                  </span>
-
-                  <div className="flex space-x-2">
-                    {ngo.verificationStatus !== 'Verified' ? (
-                      <button
-                        onClick={() => verifyNgo(ngo.id, 'Verified')}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center space-x-1 btn-bounce-active"
-                      >
-                        <Check className="w-3.5 h-3.5" />
-                        <span>{t('verifyNgoBtn')}</span>
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => verifyNgo(ngo.id, 'Pending')}
-                        className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 text-xs font-semibold btn-bounce-active"
-                      >
-                        {t('revokeBtn')}
-                      </button>
-                    )}
-                  </div>
-                </div>
-
+                <span className="text-xs font-black text-amber-700">{item.servingCapacity} Meals</span>
               </div>
             ))}
           </div>
         </div>
       )}
 
-      {/* VIEW ALL DONATIONS TABLE TAB */}
-      {activeTab === 'donations' && (
-        <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-6">
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('masterDonationsTable')}</h3>
-              <p className="text-xs text-gray-500">Filtered real-time register of all surplus food contributions.</p>
-            </div>
+      {/* NGO VERIFICATION TAB */}
+      {activeTab === 'ngos' && (
+        <div className="space-y-4">
+          <h3 className="text-base font-black font-outfit text-emerald-950">NGO Partner Verification Center</h3>
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            {ngos.map(ngo => (
+              <div key={ngo.id} className="bg-white p-4 rounded-2xl border border-gray-200 shadow-xs space-y-3 card-zoom-3d">
+                <div className="flex items-start space-x-3">
+                  <img src={ngo.avatar} alt="NGO" className="w-10 h-10 rounded-xl object-cover border border-gray-200 shrink-0" />
+                  <div>
+                    <h4 className="text-xs font-bold text-gray-900 font-outfit">{ngo.name}</h4>
+                    <p className="text-[10px] text-emerald-700 font-mono">{ngo.registrationNo}</p>
+                  </div>
+                </div>
 
-            {/* Filters */}
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="relative flex-1 min-w-[200px]">
-                <Search className="w-4 h-4 absolute left-3 top-2.5 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search ID, Donor, NGO..."
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  className="w-full pl-9 pr-3 py-2 text-xs rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-emerald-500"
-                />
+                <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-xs">
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    {ngo.verificationStatus} Badge
+                  </span>
+
+                  {ngo.verificationStatus !== 'Verified' ? (
+                    <button
+                      onClick={() => verifyNgo(ngo.id, 'Verified')}
+                      className="px-3 py-1 rounded-lg bg-emerald-700 text-white font-bold text-xs btn-bounce-active"
+                    >
+                      Verify NGO
+                    </button>
+                  ) : (
+                    <button
+                      onClick={() => verifyNgo(ngo.id, 'Pending')}
+                      className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 text-xs font-semibold btn-bounce-active"
+                    >
+                      Revoke
+                    </button>
+                  )}
+                </div>
               </div>
-
-              <select
-                value={statusFilter}
-                onChange={(e) => setStatusFilter(e.target.value)}
-                className="px-3 py-2 text-xs rounded-xl border border-gray-200 font-semibold focus:outline-none"
-              >
-                <option value="All">All Statuses</option>
-                <option value="Pending">Pending</option>
-                <option value="Accepted">Accepted</option>
-                <option value="In Transit">In Transit</option>
-                <option value="Delivered">Delivered</option>
-                <option value="Rejected">Rejected</option>
-              </select>
-
-              <button
-                onClick={handleExportCSV}
-                className="px-3 py-2 rounded-xl bg-emerald-900 text-white font-bold text-xs flex items-center space-x-1.5 hover:bg-emerald-800 btn-bounce-active"
-              >
-                <FileSpreadsheet className="w-4 h-4" />
-                <span>{t('csvExportBtn')}</span>
-              </button>
-            </div>
-          </div>
-
-          <div className="overflow-x-auto rounded-2xl border border-gray-200">
-            <table className="w-full text-left text-xs">
-              <thead className="bg-emerald-950 text-white font-bold uppercase tracking-wider">
-                <tr>
-                  <th className="p-3">Donation ID</th>
-                  <th className="p-3">Donor</th>
-                  <th className="p-3">Food Item</th>
-                  <th className="p-3">Category</th>
-                  <th className="p-3">Quantity</th>
-                  <th className="p-3">Meals</th>
-                  <th className="p-3">NGO</th>
-                  <th className="p-3">Status</th>
-                  <th className="p-3">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-200">
-                {filteredDonations.map(item => (
-                  <tr key={item.id} className="hover:bg-emerald-50/60 transition-colors">
-                    <td className="p-3 font-bold text-emerald-900 font-mono">{item.id}</td>
-                    <td className="p-3 font-semibold text-gray-900">{item.donorName}</td>
-                    <td className="p-3 text-gray-800 max-w-xs truncate">{item.foodName}</td>
-                    <td className="p-3 text-gray-500">{item.foodCategory}</td>
-                    <td className="p-3 font-medium text-amber-700">{item.quantity}</td>
-                    <td className="p-3 font-bold text-emerald-800">{item.servingCapacity}</td>
-                    <td className="p-3 font-semibold text-emerald-900">{item.ngoName}</td>
-                    <td className="p-3">
-                      <span className={`px-2.5 py-1 rounded-full text-[10px] font-bold ${
-                        item.status === 'Delivered' ? 'bg-emerald-100 text-emerald-800' :
-                        item.status === 'In Transit' ? 'bg-blue-100 text-blue-800' :
-                        item.status === 'Accepted' ? 'bg-purple-100 text-purple-800' : 'bg-amber-100 text-amber-800'
-                      }`}>
-                        {item.status}
-                      </span>
-                    </td>
-                    <td className="p-3">
-                      {item.status === 'Delivered' && (
-                        <button
-                          onClick={() => setSelectedReceiptDonation(item)}
-                          className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
-                        >
-                          Receipt
-                        </button>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            ))}
           </div>
         </div>
       )}
 
-      {/* OVERALL REPORTS SECTION */}
-      {activeTab === 'reports' && (
-        <div className="bg-white rounded-3xl p-8 border border-emerald-900/10 shadow-md space-y-8">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-            <div>
-              <h3 className="text-2xl font-bold font-outfit text-emerald-950">{t('overallImpactReport')}</h3>
-              <p className="text-xs text-gray-500">Comprehensive summary of food rescued, beneficiaries fed, and ecosystem health.</p>
-            </div>
-
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleExportPDF}
-                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-800 to-amber-600 hover:from-emerald-900 hover:to-amber-700 text-white font-bold text-xs flex items-center space-x-2 shadow-lg btn-bounce-active"
-              >
-                <Download className="w-4 h-4" />
-                <span>{t('downloadPdfReport')}</span>
-              </button>
-            </div>
+      {/* VIEW ALL DONATIONS MOBILE CARDS TAB */}
+      {activeTab === 'donations' && (
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <h3 className="text-base font-black font-outfit text-emerald-950">Master Donations Register</h3>
+            <button
+              onClick={handleExportCSV}
+              className="px-4 py-2 rounded-xl bg-emerald-900 text-white font-bold text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
+            >
+              <FileSpreadsheet className="w-4 h-4" />
+              <span>Export CSV</span>
+            </button>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 card-zoom-3d">
-              <span className="text-xs font-bold text-emerald-800 uppercase">Total Food Rescued</span>
-              <p className="text-3xl font-black font-outfit text-emerald-950 mt-1">8.5+ Tons</p>
-              <p className="text-[11px] text-emerald-700 mt-1">Prevented from ending up in landfills</p>
+          <div className="space-y-3">
+            {filteredDonations.map(item => (
+              <div key={item.id} className="bg-white p-4 rounded-2xl border border-gray-200 shadow-sm space-y-2 card-zoom-3d">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
+                  <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                    {item.status}
+                  </span>
+                </div>
+                <h4 className="text-xs font-bold text-gray-900">{item.foodName} ({item.quantity})</h4>
+                <p className="text-[11px] text-gray-500">Donor: {item.donorName} | NGO: {item.ngoName}</p>
+                <div className="flex items-center justify-between pt-1 border-t border-gray-100">
+                  <span className="text-xs font-extrabold text-amber-700">{item.servingCapacity} Meals</span>
+                  {item.status === 'Delivered' && (
+                    <button
+                      onClick={() => setSelectedReceiptDonation(item)}
+                      className="px-2.5 py-1 bg-amber-500 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
+                    >
+                      Receipt
+                    </button>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* OVERALL REPORTS TAB */}
+      {activeTab === 'reports' && (
+        <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-6">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+            <div>
+              <h3 className="text-xl font-black font-outfit text-emerald-950">Overall Platform Report</h3>
+              <p className="text-xs text-gray-500">Summary of food rescued and beneficiaries fed.</p>
+            </div>
+            <button
+              onClick={handleExportPDF}
+              className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-amber-600 text-white font-bold text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
+            >
+              <Download className="w-4 h-4" />
+              <span>Download Executive PDF</span>
+            </button>
+          </div>
+
+          <div className="grid grid-cols-2 gap-4 text-center">
+            <div className="bg-emerald-50 p-4 rounded-2xl border border-emerald-200">
+              <span className="text-[10px] font-bold text-emerald-800 uppercase">Food Rescued</span>
+              <p className="text-2xl font-black font-outfit text-emerald-950 mt-1">8.5+ Tons</p>
             </div>
 
-            <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200 card-zoom-3d">
-              <span className="text-xs font-bold text-amber-800 uppercase">Total Meals Generated</span>
-              <p className="text-3xl font-black font-outfit text-amber-800 mt-1">{stats.totalMeals.toLocaleString()}</p>
-              <p className="text-[11px] text-amber-700 mt-1">Nourishing meals served to urban poor</p>
-            </div>
-
-            <div className="bg-purple-50 p-6 rounded-2xl border border-purple-200 card-zoom-3d">
-              <span className="text-xs font-bold text-purple-800 uppercase">Fulfillment Rate</span>
-              <p className="text-3xl font-black font-outfit text-purple-950 mt-1">98.2%</p>
-              <p className="text-[11px] text-purple-700 mt-1">Successful pickup & delivery completion</p>
-            </div>
-
-            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200 card-zoom-3d">
-              <span className="text-xs font-bold text-blue-800 uppercase">Partner Network</span>
-              <p className="text-3xl font-black font-outfit text-blue-950 mt-1">165+ Entities</p>
-              <p className="text-[11px] text-blue-700 mt-1">Donors, NGOs & Delivery Volunteers</p>
+            <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
+              <span className="text-[10px] font-bold text-amber-800 uppercase">Meals Generated</span>
+              <p className="text-2xl font-black font-outfit text-amber-800 mt-1">{stats.totalMeals.toLocaleString()}</p>
             </div>
           </div>
         </div>
