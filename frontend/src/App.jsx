@@ -19,9 +19,10 @@ function AppContent() {
   const { selectedReceiptDonation, setSelectedReceiptDonation } = useApp();
 
   return (
-    <div className="min-h-screen flex flex-col bg-[#faf8f5] text-[#062c21] font-sans antialiased selection:bg-amber-400 selection:text-gray-950">
+    <div className="min-h-screen flex flex-col bg-[#faf8f5] text-[#062c21] font-sans antialiased selection:bg-amber-400 selection:text-gray-950 overflow-x-hidden">
       <Navbar />
       <ToastContainer />
+
       
       <main className="flex-1">
         <Routes>
