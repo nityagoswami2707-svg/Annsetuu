@@ -474,4 +474,6 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-export default useApp = () => useContext(AppContext);
+export const useApp = () => useContext(AppContext);
+export default AppContext;
+
