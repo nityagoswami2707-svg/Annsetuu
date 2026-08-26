@@ -13,12 +13,52 @@ import {
   Recycle, 
   Leaf, 
   CheckCircle2, 
-  ChevronRight
+  ChevronRight,
+  ChevronLeft
 } from 'lucide-react';
+
+const HERO_SLIDES = [
+  {
+    url: 'https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&auto=format&fit=crop&q=80',
+    title: 'Hopeful Children Waiting for Meals',
+    subtitle: 'Connecting Surplus Food with Hungry Smiles'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1600&auto=format&fit=crop&q=80',
+    title: 'Volunteers Distributing Warm Meals',
+    subtitle: '100% Grassroots NGO Network in Action'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1577896851231-70ef18881754?w=1600&auto=format&fit=crop&q=80',
+    title: 'Underprivileged Children Receiving Food',
+    subtitle: 'Zero Food Waste, Maximum Social Impact'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1594708767771-a75921d83724?w=1600&auto=format&fit=crop&q=80',
+    title: 'Hygienic Community Kitchen & Prep',
+    subtitle: 'Certified Quality & Food Safety Protocols'
+  },
+  {
+    url: 'https://images.unsplash.com/photo-1555244162-803834f70033?w=1600&auto=format&fit=crop&q=80',
+    title: 'Restaurant & Banquet Surplus Meal Pickup',
+    subtitle: 'Real-Time Live GPS Telematics Navigation'
+  }
+];
 
 const Home = () => {
   const { t, stats, setRole } = useApp();
   const navigate = useNavigate();
+
+  // 3D Animated Hero Background Slideshow State
+  const [currentSlide, setCurrentSlide] = useState(0);
+
+  // Auto-rotate slideshow slides every 4 seconds
+  useEffect(() => {
+    const slideTimer = setInterval(() => {
+      setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length);
+    }, 4000);
+    return () => clearInterval(slideTimer);
+  }, []);
 
   // Animated counters
   const [mealsCount, setMealsCount] = useState(0);
@@ -40,20 +80,27 @@ const Home = () => {
     <div className="space-y-24 pb-16 pt-24">
       
       {/* ================================================== */}
-      {/* HERO SECTION WITH SMALL KIDS WAITING FOR FOOD IMAGE */}
+      {/* HERO SECTION WITH 3D MOVING BACKGROUND SLIDESHOW */}
       {/* ================================================== */}
       <section className="relative min-h-[90vh] rounded-3xl overflow-hidden shadow-2xl flex items-center justify-center p-6 sm:p-12 text-white border-2 border-green-700/30 mx-4 sm:mx-8">
         
-        {/* Background Image: Small kids waiting for food / hopeful children receiving meals */}
-        <div 
-          className="absolute inset-0 bg-cover bg-center transition-scale duration-1000 transform scale-105"
-          style={{ 
-            backgroundImage: `url('https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&auto=format&fit=crop&q=80')` 
-          }}
-        ></div>
+        {/* 3D Moving Animated Background Slideshow */}
+        {HERO_SLIDES.map((slide, index) => (
+          <div
+            key={index}
+            className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+              index === currentSlide ? 'opacity-100 z-0' : 'opacity-0 -z-10'
+            }`}
+          >
+            <div 
+              className="absolute inset-0 bg-cover bg-center animate-kenburns"
+              style={{ backgroundImage: `url('${slide.url}')` }}
+            />
+          </div>
+        ))}
         
-        {/* Soft Warm Gradient Overlay for text readability */}
-        <div className="absolute inset-0 bg-gradient-to-r from-green-950/95 via-green-900/90 to-orange-950/85 backdrop-blur-xs"></div>
+        {/* Soft Theme Gradient Overlay for text readability */}
+        <div className="absolute inset-0 gradient-hero-overlay backdrop-blur-xs z-1"></div>
 
         {/* Hero Content */}
         <div className="relative z-10 max-w-4xl mx-auto text-center space-y-8 animate-in fade-in zoom-in-95 duration-700">
@@ -72,13 +119,16 @@ const Home = () => {
             <p className="text-xl sm:text-3xl lg:text-4xl font-extrabold text-orange-300 italic font-sans drop-shadow-md">
               "{t('heroSubtitle')}"
             </p>
+            <p className="text-xs sm:text-sm font-bold text-emerald-200 tracking-wider uppercase">
+              ✨ {HERO_SLIDES[currentSlide].subtitle}
+            </p>
           </div>
 
-          {/* Primary Buttons */}
+          {/* Primary Interactive Animated Buttons */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-5 pt-2">
             <a 
               href="#dashboards-section"
-              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black text-base shadow-2xl shadow-orange-600/30 flex items-center justify-center space-x-2 transition-all transform hover:-translate-y-1"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-gradient-to-r from-orange-500 to-orange-600 hover:from-orange-600 hover:to-orange-700 text-white font-black text-base shadow-2xl shadow-orange-600/30 flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>[ {t('exploreAnnsetu')} ]</span>
               <ArrowRight className="w-5 h-5" />
@@ -86,7 +136,7 @@ const Home = () => {
 
             <a 
               href="#how-it-works"
-              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-black text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 transition-all"
+              className="w-full sm:w-auto px-9 py-4 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-black text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>[ {t('howItWorks')} ]</span>
             </a>
@@ -94,9 +144,40 @@ const Home = () => {
 
           {/* Key highlights */}
           <div className="pt-6 flex flex-wrap items-center justify-center gap-6 text-xs sm:text-sm text-green-200 font-extrabold border-t border-green-700/60 max-w-2xl mx-auto">
-            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> 100% Verified NGO Network</span>
-            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> Real-Time Live GPS Tracking</span>
-            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> Certified Food Safety Protocols</span>
+            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> {t('verifiedNgoNetwork')}</span>
+            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> {t('realtimeGpsTracking')}</span>
+            <span className="flex items-center"><CheckCircle2 className="w-4 h-4 text-orange-400 mr-1.5" /> {t('certifiedFoodSafety')}</span>
+          </div>
+
+          {/* Slideshow Controls & Indicators */}
+          <div className="pt-4 flex items-center justify-center space-x-3">
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev === 0 ? HERO_SLIDES.length - 1 : prev - 1))}
+              className="p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-all transform active:scale-90"
+              title="Previous Slide"
+            >
+              <ChevronLeft className="w-4 h-4" />
+            </button>
+
+            <div className="flex space-x-2">
+              {HERO_SLIDES.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setCurrentSlide(idx)}
+                  className={`h-2.5 rounded-full transition-all duration-300 ${
+                    idx === currentSlide ? 'w-8 bg-orange-400' : 'w-2.5 bg-white/40 hover:bg-white/70'
+                  }`}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={() => setCurrentSlide((prev) => (prev + 1) % HERO_SLIDES.length)}
+              className="p-2 rounded-full bg-white/20 hover:bg-white/40 text-white transition-all transform active:scale-90"
+              title="Next Slide"
+            >
+              <ChevronRight className="w-4 h-4" />
+            </button>
           </div>
 
         </div>
@@ -108,13 +189,15 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-white rounded-3xl p-8 sm:p-12 shadow-xl border-2 border-green-600/10 gradient-card-emerald relative overflow-hidden">
           <div className="text-center max-w-xl mx-auto mb-10">
-            <span className="text-xs font-black uppercase tracking-widest text-green-700 bg-green-100 px-3.5 py-1 rounded-full border border-green-200">Real-Time Platform Telematics</span>
-            <h2 className="text-3xl font-black text-green-950 font-outfit mt-2">Our Collective Social Impact</h2>
+            <span className="text-xs font-black uppercase tracking-widest text-green-700 bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
+              {t('realtimePlatformStats')}
+            </span>
+            <h2 className="text-3xl font-black text-green-950 font-outfit mt-2">{t('ourCollectiveImpact')}</h2>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-5 gap-6 text-center">
             
-            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-3">
                 <Utensils className="w-6 h-6" />
               </div>
@@ -124,7 +207,7 @@ const Home = () => {
               <p className="text-xs font-black text-green-800 uppercase tracking-wider mt-1">{t('mealsDonated')}</p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-3">
                 <Users className="w-6 h-6" />
               </div>
@@ -134,7 +217,7 @@ const Home = () => {
               <p className="text-xs font-black text-green-800 uppercase tracking-wider mt-1">{t('peopleServed')}</p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-3">
                 <Heart className="w-6 h-6 fill-purple-600" />
               </div>
@@ -144,7 +227,7 @@ const Home = () => {
               <p className="text-xs font-black text-green-800 uppercase tracking-wider mt-1">{t('activeDonors')}</p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow">
+            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-3">
                 <Building2 className="w-6 h-6" />
               </div>
@@ -154,7 +237,7 @@ const Home = () => {
               <p className="text-xs font-black text-green-800 uppercase tracking-wider mt-1">{t('partnerNGOs')}</p>
             </div>
 
-            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm hover:shadow-md transition-shadow col-span-2 md:col-span-1">
+            <div className="p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d col-span-2 md:col-span-1">
               <div className="w-12 h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-3">
                 <Recycle className="w-6 h-6" />
               </div>
@@ -174,7 +257,7 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-3.5 py-1 rounded-full border border-orange-200">
-            Mission & Purpose
+            {t('missionPurpose')}
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-green-950 font-outfit">
             "{t('whyDonationTitle')}"
@@ -186,7 +269,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md card-zoom-3d group">
             <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:bg-green-700 group-hover:text-white transition-colors">
               <Leaf className="w-7 h-7" />
             </div>
@@ -194,7 +277,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('reduceWasteDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md card-zoom-3d group">
             <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-white transition-colors">
               <Heart className="w-7 h-7" />
             </div>
@@ -202,7 +285,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('fightHungerDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md card-zoom-3d group">
             <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors">
               <Recycle className="w-7 h-7" />
             </div>
@@ -210,7 +293,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('protectEnvDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md hover:shadow-xl transition-all duration-300 group hover:-translate-y-1">
+          <div className="bg-white p-6 rounded-3xl border border-green-900/10 shadow-md card-zoom-3d group">
             <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors">
               <Users className="w-7 h-7" />
             </div>
@@ -229,7 +312,7 @@ const Home = () => {
           
           <div className="max-w-3xl mx-auto text-center space-y-6">
             <span className="text-xs font-bold uppercase tracking-widest text-orange-400 bg-green-900 px-4 py-1 rounded-full border border-green-700">
-              The Reality
+              {t('theReality')}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black font-outfit text-white">
               {t('problemTitle')}
@@ -244,7 +327,7 @@ const Home = () => {
             
             {/* Left Box */}
             <div className="bg-green-900/70 p-6 rounded-2xl border border-green-700 space-y-3">
-              <div className="text-xs font-black text-orange-400 uppercase tracking-widest">Surplus Side</div>
+              <div className="text-xs font-black text-orange-400 uppercase tracking-widest">{t('surplusSide')}</div>
               <div className="text-xl font-extrabold font-outfit text-white">{t('surplusFood')}</div>
               <div className="text-2xl font-bold text-red-400 animate-bounce">↓</div>
               <div className="text-sm font-bold text-red-300 bg-red-950/60 py-1 px-3 rounded-lg border border-red-800">
@@ -264,7 +347,7 @@ const Home = () => {
 
             {/* Right Box */}
             <div className="bg-green-900/70 p-6 rounded-2xl border border-green-700 space-y-3">
-              <div className="text-xs font-black text-green-400 uppercase tracking-widest">Need Side</div>
+              <div className="text-xs font-black text-green-400 uppercase tracking-widest">{t('needSide')}</div>
               <div className="text-xl font-extrabold font-outfit text-white">{t('peopleInNeed')}</div>
               <div className="text-2xl font-bold text-orange-400 animate-bounce">↓</div>
               <div className="text-sm font-bold text-orange-200 bg-orange-950/60 py-1 px-3 rounded-lg border border-orange-800">
@@ -283,7 +366,7 @@ const Home = () => {
       <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <span className="text-xs font-extrabold text-green-700 uppercase tracking-widest bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
-            Real-Time Redistribution Engine
+            {t('redistributionEngine')}
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-green-950 font-outfit">
             {t('solutionTitle')}
@@ -296,46 +379,46 @@ const Home = () => {
         {/* 7-Step Visual Process Pipeline */}
         <div className="grid grid-cols-2 md:grid-cols-7 gap-3 text-center">
           
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-green-800 text-white font-bold text-xs flex items-center justify-center">1</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">DONOR</p>
-            <p className="text-[10px] text-gray-500">Resto/Hotel/Wedding</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step1Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step1Sub')}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-orange-500 text-white font-bold text-xs flex items-center justify-center">2</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">FOOD REGISTRATION</p>
-            <p className="text-[10px] text-gray-500">Details & Images</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step2Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step2Sub')}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-green-700 text-white font-bold text-xs flex items-center justify-center">3</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">NGO VERIFICATION</p>
-            <p className="text-[10px] text-gray-500">Badge Certified</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step3Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step3Sub')}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-blue-600 text-white font-bold text-xs flex items-center justify-center">4</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">ACCEPTANCE</p>
-            <p className="text-[10px] text-gray-500">Capacity Match</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step4Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step4Sub')}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-purple-600 text-white font-bold text-xs flex items-center justify-center">5</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">VOLUNTEER / DELIVERY</p>
-            <p className="text-[10px] text-gray-500">GPS Telematics</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step5Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step5Sub')}</p>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2">
+          <div className="bg-white p-4 rounded-2xl border border-green-100 shadow-sm space-y-2 card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-green-600 text-white font-bold text-xs flex items-center justify-center">6</div>
-            <p className="text-xs font-bold text-green-950 font-outfit">FOOD DELIVERED</p>
-            <p className="text-[10px] text-gray-500">Safe arrival</p>
+            <p className="text-xs font-bold text-green-950 font-outfit">{t('step6Title')}</p>
+            <p className="text-[10px] text-gray-500">{t('step6Sub')}</p>
           </div>
 
-          <div className="bg-orange-500 p-4 rounded-2xl border border-orange-400 shadow-md space-y-2 col-span-2 md:col-span-1 text-white">
+          <div className="bg-orange-500 p-4 rounded-2xl border border-orange-400 shadow-md space-y-2 col-span-2 md:col-span-1 text-white card-zoom-3d">
             <div className="w-8 h-8 mx-auto rounded-full bg-white text-orange-600 font-black text-xs flex items-center justify-center">7</div>
-            <p className="text-xs font-black font-outfit">PEOPLE SERVED ❤️</p>
-            <p className="text-[10px] font-bold">Smiles Delivered!</p>
+            <p className="text-xs font-black font-outfit">{t('step7Title')}</p>
+            <p className="text-[10px] font-bold">{t('step7Sub')}</p>
           </div>
 
         </div>
@@ -347,7 +430,7 @@ const Home = () => {
       <section id="dashboards-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
           <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-3.5 py-1 rounded-full border border-orange-200">
-            Platform Portals
+            {t('platformPortals')}
           </span>
           <h2 className="text-3xl sm:text-5xl font-black text-green-950 font-outfit">
             {t('dashboardsTitle')}
@@ -360,7 +443,7 @@ const Home = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
           {/* Card 1: Admin */}
-          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg card-zoom-3d flex flex-col justify-between group">
             <div>
               <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                 <ShieldCheck className="w-7 h-7" />
@@ -373,7 +456,7 @@ const Home = () => {
                 setRole('admin');
                 navigate('/admin');
               }}
-              className="w-full py-3 px-4 rounded-xl bg-purple-900 hover:bg-purple-950 text-white font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
+              className="w-full py-3 px-4 rounded-xl bg-purple-900 hover:bg-purple-950 text-white font-bold text-xs flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>{t('openDashboard')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -381,7 +464,7 @@ const Home = () => {
           </div>
 
           {/* Card 2: Donor */}
-          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg card-zoom-3d flex flex-col justify-between group">
             <div>
               <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                 <Utensils className="w-7 h-7" />
@@ -394,7 +477,7 @@ const Home = () => {
                 setRole('donor');
                 navigate('/donor');
               }}
-              className="w-full py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-xs flex items-center justify-center space-x-2 transition-colors"
+              className="w-full py-3 px-4 rounded-xl bg-orange-500 hover:bg-orange-600 text-white font-black text-xs flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>{t('openDashboard')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -402,7 +485,7 @@ const Home = () => {
           </div>
 
           {/* Card 3: NGO */}
-          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg card-zoom-3d flex flex-col justify-between group">
             <div>
               <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                 <Building2 className="w-7 h-7" />
@@ -415,7 +498,7 @@ const Home = () => {
                 setRole('ngo');
                 navigate('/ngo');
               }}
-              className="w-full py-3 px-4 rounded-xl bg-green-800 hover:bg-green-900 text-white font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
+              className="w-full py-3 px-4 rounded-xl bg-green-800 hover:bg-green-900 text-white font-bold text-xs flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>{t('openDashboard')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -423,7 +506,7 @@ const Home = () => {
           </div>
 
           {/* Card 4: Tracking */}
-          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col justify-between group">
+          <div className="bg-white rounded-3xl p-6 border border-green-900/10 shadow-lg card-zoom-3d flex flex-col justify-between group">
             <div>
               <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:scale-110 transition-transform">
                 <Truck className="w-7 h-7" />
@@ -435,7 +518,7 @@ const Home = () => {
               onClick={() => {
                 navigate('/track');
               }}
-              className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center space-x-2 transition-colors"
+              className="w-full py-3 px-4 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <span>{t('openDashboard')}</span>
               <ChevronRight className="w-4 h-4" />
@@ -451,25 +534,25 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="bg-gradient-to-r from-green-900 via-green-800 to-orange-600 text-white rounded-3xl p-8 sm:p-14 shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="max-w-2xl mx-auto space-y-4">
-            <h2 className="text-3xl sm:text-5xl font-black font-outfit">Have Extra Food?</h2>
-            <p className="text-xl text-orange-200 italic font-semibold">"Don't let good food go to waste. Turn your surplus into someone's meal."</p>
+            <h2 className="text-3xl sm:text-5xl font-black font-outfit">{t('haveExtraFood')}</h2>
+            <p className="text-xl text-orange-200 italic font-semibold">"{t('ctaSubText')}"</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 pt-4">
             <Link
               to="/donor"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black text-base shadow-xl flex items-center justify-center space-x-2 transition-transform transform hover:-translate-y-1"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-orange-500 hover:bg-orange-600 text-white font-black text-base shadow-xl flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <Utensils className="w-5 h-5" />
-              <span>[ Donate Food Now ]</span>
+              <span>[ {t('donateNow')} ]</span>
             </Link>
 
             <Link
               to="/ngo"
-              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 transition-all"
+              className="w-full sm:w-auto px-8 py-4 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <Building2 className="w-5 h-5" />
-              <span>[ Partner as an NGO ]</span>
+              <span>[ {t('partnerNGO')} ]</span>
             </Link>
           </div>
         </div>

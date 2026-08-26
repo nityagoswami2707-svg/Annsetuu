@@ -5,6 +5,7 @@ import { AppProvider, useApp } from './context/AppContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import ImpactReceipt from './components/ImpactReceipt';
+import ToastContainer from './components/ToastContainer';
 
 import Home from './pages/Home';
 import AdminDashboard from './pages/AdminDashboard';
@@ -20,6 +21,7 @@ function AppContent() {
   return (
     <div className="min-h-screen flex flex-col bg-[#faf8f5] text-[#062c21] font-sans antialiased selection:bg-amber-400 selection:text-gray-950">
       <Navbar />
+      <ToastContainer />
       
       <main className="flex-1">
         <Routes>

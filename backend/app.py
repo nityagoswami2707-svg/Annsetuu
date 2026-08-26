@@ -3,17 +3,18 @@ from flask_cors import CORS
 import pickle
 import os
 from nlp_service import preprocess_text, extract_keywords
-from model_train import train_model
+from model_train import train_model, get_model_path
 
 app = Flask(__name__)
 CORS(app)
 
-model_path = 'model/model.pkl'
+model_path = get_model_path()
 if not os.path.exists(model_path):
-    train_model()
+    model = train_model(model_path)
+else:
+    with open(model_path, 'rb') as f:
+        model = pickle.load(f)
 
-with open(model_path, 'rb') as f:
-    model = pickle.load(f)
 
 @app.route('/api/analyze', methods=['POST'])
 def analyze():

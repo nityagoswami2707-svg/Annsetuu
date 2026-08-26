@@ -40,11 +40,11 @@ const Navbar = () => {
   }, []);
 
   const roles = [
-    { id: 'guest', label: 'Visitor / Public', icon: UserCheck, color: 'text-gray-700' },
-    { id: 'donor', label: 'Donor Portal', icon: Utensils, color: 'text-orange-600' },
-    { id: 'ngo', label: 'NGO Portal', icon: Building2, color: 'text-green-700' },
-    { id: 'admin', label: 'Admin Center', icon: ShieldCheck, color: 'text-purple-600' },
-    { id: 'delivery', label: 'Delivery Driver', icon: Truck, color: 'text-blue-600' }
+    { id: 'guest', labelKey: 'visitorRole', icon: UserCheck, color: 'text-gray-700' },
+    { id: 'donor', labelKey: 'donorPortalRole', icon: Utensils, color: 'text-orange-600' },
+    { id: 'ngo', labelKey: 'ngoPortalRole', icon: Building2, color: 'text-green-700' },
+    { id: 'admin', labelKey: 'adminCenterRole', icon: ShieldCheck, color: 'text-purple-600' },
+    { id: 'delivery', labelKey: 'deliveryDriverRole', icon: Truck, color: 'text-blue-600' }
   ];
 
   return (
@@ -54,10 +54,9 @@ const Navbar = () => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
-          {/* Prominent Large Logo & Brand */}
+          {/* Prominent Large Logo & Brand Badge */}
           <Link to="/" className="flex items-center space-x-3 group">
             <div className="relative bg-white rounded-2xl p-1.5 shadow-md border-2 border-green-600/30 group-hover:scale-105 transition-transform">
-              {/* Displaying the exact user provided logo prominently */}
               <img 
                 src="/annsetu_logo.png" 
                 alt="ANNSETU Logo" 
@@ -71,11 +70,11 @@ const Navbar = () => {
                   Ann<span className="text-orange-600">setu</span>
                 </span>
                 <span className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-orange-300">
-                  Official
+                  {t('officialBadge')}
                 </span>
               </div>
               <p className="text-xs font-bold text-green-700 tracking-wide">
-                Bridging Surplus to Smiles
+                {t('tagline')}
               </p>
             </div>
           </Link>
@@ -84,7 +83,7 @@ const Navbar = () => {
           <div className="hidden lg:flex items-center space-x-7">
             <Link 
               to="/" 
-              className={`text-sm font-extrabold transition-colors hover:text-green-700 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
                 location.pathname === '/' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
               }`}
             >
@@ -93,7 +92,7 @@ const Navbar = () => {
 
             <Link 
               to="/donor" 
-              className={`text-sm font-extrabold transition-colors hover:text-orange-600 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-orange-600 ${
                 location.pathname === '/donor' ? 'text-orange-600 font-black border-b-2 border-orange-600 pb-1' : 'text-gray-700'
               }`}
             >
@@ -102,7 +101,7 @@ const Navbar = () => {
 
             <Link 
               to="/ngo" 
-              className={`text-sm font-extrabold transition-colors hover:text-green-700 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
                 location.pathname === '/ngo' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
               }`}
             >
@@ -111,7 +110,7 @@ const Navbar = () => {
 
             <Link 
               to="/track" 
-              className={`text-sm font-extrabold transition-colors hover:text-green-700 flex items-center space-x-1 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 flex items-center space-x-1 ${
                 location.pathname === '/track' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
               }`}
             >
@@ -121,7 +120,7 @@ const Navbar = () => {
 
             <Link 
               to="/impact" 
-              className={`text-sm font-extrabold transition-colors hover:text-green-700 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
                 location.pathname === '/impact' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
               }`}
             >
@@ -130,11 +129,11 @@ const Navbar = () => {
 
             <Link 
               to="/admin" 
-              className={`text-sm font-extrabold transition-colors hover:text-purple-700 ${
+              className={`text-sm font-extrabold transition-all tab-animated hover:text-purple-700 ${
                 location.pathname === '/admin' ? 'text-purple-800 font-black border-b-2 border-purple-600 pb-1' : 'text-gray-700'
               }`}
             >
-              Admin Portal
+              {t('adminPortal')}
             </Link>
           </div>
 
@@ -146,13 +145,13 @@ const Navbar = () => {
             {/* Notification Bell */}
             <button 
               onClick={() => setShowNotifModal(!showNotifModal)}
-              className="relative p-2.5 text-gray-700 hover:text-green-800 bg-gray-100 hover:bg-green-50 rounded-full transition-colors border border-gray-200"
+              className="relative p-2.5 text-gray-700 hover:text-green-800 bg-gray-100 hover:bg-green-50 rounded-full transition-all border border-gray-200 tab-animated"
               title="Notifications"
               aria-label="View Notifications"
             >
               <Bell className="w-4 h-4 text-green-800" />
               {unreadCount > 0 && (
-                <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-pulse">
+                <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-bounce">
                   {unreadCount}
                 </span>
               )}
@@ -162,16 +161,16 @@ const Navbar = () => {
             <div className="relative">
               <button
                 onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-gradient-to-r from-green-800 to-orange-600 text-white hover:from-green-900 hover:to-orange-700 transition-colors shadow-md"
+                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-gradient-to-r from-green-800 to-orange-600 text-white hover:from-green-900 hover:to-orange-700 transition-all shadow-md btn-bounce-active"
               >
-                <span className="capitalize">{role === 'guest' ? 'Visitor Role' : `${role} Mode`}</span>
+                <span className="capitalize">{role === 'guest' ? t('visitorRole') : t(`${role}PortalRole`)}</span>
                 <ChevronDown className="w-3.5 h-3.5 opacity-80" />
               </button>
 
               {showRoleDropdown && (
                 <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
                   <div className="px-3 py-1.5 border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                    Switch Active Portal Role
+                    {t('switchRole')}
                   </div>
                   {roles.map((r) => {
                     const IconComp = r.icon;
@@ -187,7 +186,7 @@ const Navbar = () => {
                         }`}
                       >
                         <IconComp className={`w-4 h-4 ${r.color}`} />
-                        <span>{r.label}</span>
+                        <span>{t(r.labelKey)}</span>
                       </button>
                     );
                   })}

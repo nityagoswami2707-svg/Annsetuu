@@ -16,7 +16,7 @@ import {
 } from 'lucide-react';
 
 const TrackingDashboard = () => {
-  const { donations, setSelectedReceiptDonation, selectedReceiptDonation } = useApp();
+  const { t, donations, setSelectedReceiptDonation, selectedReceiptDonation } = useApp();
   const [searchId, setSearchId] = useState('ANS-2026-000123');
   const [activeDonation, setActiveDonation] = useState(
     donations.find(d => d.id === 'ANS-2026-000123') || donations[0]
@@ -39,10 +39,10 @@ const TrackingDashboard = () => {
       <div className="bg-emerald-950 text-white rounded-3xl p-8 sm:p-12 shadow-xl border border-emerald-800 text-center space-y-6">
         <div className="max-w-xl mx-auto space-y-2">
           <span className="text-xs font-bold uppercase tracking-widest text-amber-400 bg-emerald-900 px-3.5 py-1 rounded-full border border-emerald-700">
-            Real-Time GPS Telematics
+            {t('realtimeGpsTracking')}
           </span>
-          <h1 className="text-3xl sm:text-5xl font-black font-outfit">Track Your Food Donation</h1>
-          <p className="text-emerald-200 text-sm">Enter your unique Donation ID to view stage progress and live driver location.</p>
+          <h1 className="text-3xl sm:text-5xl font-black font-outfit">{t('trackFoodDonationHeader')}</h1>
+          <p className="text-emerald-200 text-sm">{t('trackHeaderSub')}</p>
         </div>
 
         {/* Input Bar */}
@@ -51,21 +51,21 @@ const TrackingDashboard = () => {
             type="text"
             value={searchId}
             onChange={(e) => setSearchId(e.target.value)}
-            placeholder="Enter Donation ID (e.g. ANS-2026-000123)"
+            placeholder={t('enterDonationIdPlaceholder')}
             className="flex-1 px-5 py-3.5 rounded-2xl bg-white text-gray-900 text-sm font-bold placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-amber-500 shadow-md"
           />
           <button
             type="submit"
-            className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-lg flex items-center space-x-1.5 shrink-0"
+            className="px-6 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-lg flex items-center space-x-1.5 shrink-0 btn-bounce-active"
           >
             <Search className="w-4 h-4" />
-            <span>Track</span>
+            <span>{t('trackBtn')}</span>
           </button>
         </form>
 
         {/* Quick Sample Selector */}
         <div className="flex flex-wrap items-center justify-center gap-2 text-xs text-emerald-300">
-          <span>Quick Demo IDs:</span>
+          <span>{t('quickDemoIds')}</span>
           {donations.slice(0, 3).map(d => (
             <button
               key={d.id}
@@ -73,7 +73,7 @@ const TrackingDashboard = () => {
                 setSearchId(d.id);
                 setActiveDonation(d);
               }}
-              className="px-3 py-1 bg-emerald-900 hover:bg-emerald-800 rounded-full border border-emerald-700 font-mono text-amber-300 font-bold"
+              className="px-3 py-1 bg-emerald-900 hover:bg-emerald-800 rounded-full border border-emerald-700 font-mono text-amber-300 font-bold btn-bounce-active"
             >
               {d.id} ({d.status})
             </button>
@@ -128,12 +128,12 @@ const TrackingDashboard = () => {
                     <CheckCircle className="w-6 h-6 text-amber-600 shrink-0" />
                     <div>
                       <h4 className="text-xs font-bold text-amber-950">Impact Verified & Delivered</h4>
-                      <p className="text-[11px] text-amber-800">Your food reached 50 people!</p>
+                      <p className="text-[11px] text-amber-800">Your food reached {activeDonation.servingCapacity} people!</p>
                     </div>
                   </div>
                   <button
                     onClick={() => setSelectedReceiptDonation(activeDonation)}
-                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold text-xs shadow-md"
+                    className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold text-xs shadow-md btn-bounce-active"
                   >
                     View Digital Receipt
                   </button>
@@ -147,7 +147,7 @@ const TrackingDashboard = () => {
           {/* Right Col: Animated Stage Progress Timeline */}
           <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border border-emerald-900/10 space-y-6">
             <h3 className="text-xl font-bold font-outfit text-emerald-950 border-b border-gray-100 pb-3">
-              Journey Timeline
+              {t('journeyTimeline')}
             </h3>
 
             <div className="space-y-6 relative pl-6">

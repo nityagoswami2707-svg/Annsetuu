@@ -18,7 +18,7 @@ const INITIAL_NGOS = [
     areasServed: "Alkapuri, Fatehgunj, Sayajigunj",
     peopleServedPerDay: 450,
     availableCapacity: "500 meals/day",
-    verificationStatus: "Verified", // Verified, Pending, Rejected
+    verificationStatus: "Verified",
     badge: "Verified NGO Badge",
     avatar: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=150&auto=format&fit=crop&q=80"
   },
@@ -72,7 +72,7 @@ const INITIAL_DONATIONS = [
     prepDate: "2026-08-06",
     prepTime: "20:30",
     foodCondition: "Freshly prepared evening surplus, kept under thermal insulation",
-    foodQuality: "Fresh", // Fresh, Good, Needs Urgent Pickup
+    foodQuality: "Fresh",
     pickupAddress: "1st Floor, Crystal Plaza, Jetaipur Main Rd, Vadodara",
     city: "Vadodara",
     pincode: "390007",
@@ -81,7 +81,7 @@ const INITIAL_DONATIONS = [
     specialInstructions: "Use back entry elevator for fast loading.",
     safetyConfirmed: true,
     imageUrl: "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
-    status: "In Transit", // Pending, Accepted, Rejected, Picked Up, In Transit, Delivered
+    status: "In Transit",
     ngoId: "NGO-101",
     ngoName: "Hope Foundation India",
     deliveryDriver: {
@@ -215,18 +215,40 @@ const INITIAL_NOTIFICATIONS = [
 
 export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
-  const [role, setRole] = useState('guest'); // guest, donor, ngo, admin, delivery
+  const [role, setRole] = useState('guest');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [selectedReceiptDonation, setSelectedReceiptDonation] = useState(null);
+  const [activeToast, setActiveToast] = useState(null);
 
   // Translation helper
   const t = (key) => {
     return translations[language]?.[key] || translations['en']?.[key] || key;
   };
 
-  // Add Notification
+  const changeLanguage = (langCode) => {
+    setLanguage(langCode);
+    const langNames = { en: "English", hi: "हिन्दी", gu: "ગુજરાતી" };
+    showToast("Language Preference Updated", `Website language set to ${langNames[langCode] || langCode}.`, "info");
+  };
+
+  // Trigger floating Toast Notification Popup
+  const showToast = (title, message, type = 'info') => {
+    const toast = { id: Date.now(), title, message, type };
+    setActiveToast(toast);
+
+    // Auto dismiss toast popup after 4.5 seconds
+    setTimeout(() => {
+      setActiveToast((prev) => (prev?.id === toast.id ? null : prev));
+    }, 4500);
+  };
+
+  const dismissToast = () => {
+    setActiveToast(null);
+  };
+
+  // Add Notification to drawer & trigger popup toast
   const addNotification = (title, message, type = 'info') => {
     const newNotif = {
       id: Date.now(),
@@ -237,6 +259,7 @@ export const AppProvider = ({ children }) => {
       read: false
     };
     setNotifications(prev => [newNotif, ...prev]);
+    showToast(title, message, type);
   };
 
   // Mark notifications as read
@@ -422,10 +445,13 @@ export const AppProvider = ({ children }) => {
     <AppContext.Provider
       value={{
         language,
-        setLanguage,
+        setLanguage: changeLanguage,
         t,
         role,
-        setRole,
+        setRole: (r) => {
+          setRole(r);
+          showToast("Active Role Switched", `Switched portal role to ${r.toUpperCase()}.`, "info");
+        },
         donations,
         ngos,
         notifications,
@@ -437,7 +463,10 @@ export const AppProvider = ({ children }) => {
         registerNgo,
         stats,
         selectedReceiptDonation,
-        setSelectedReceiptDonation
+        setSelectedReceiptDonation,
+        activeToast,
+        showToast,
+        dismissToast
       }}
     >
       {children}
@@ -445,4 +474,4 @@ export const AppProvider = ({ children }) => {
   );
 };
 
-export const useApp = () => useContext(AppContext);
+export default useApp = () => useContext(AppContext);

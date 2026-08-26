@@ -22,7 +22,20 @@ def create_dummy_data():
     ]
     return pd.DataFrame(data)
 
-def train_model():
+def get_model_path():
+    base_dir = os.path.dirname(os.path.abspath(__file__))
+    target_dir = os.path.join(base_dir, 'model')
+    try:
+        os.makedirs(target_dir, exist_ok=True)
+        return os.path.join(target_dir, 'model.pkl')
+    except Exception:
+        tmp_dir = os.path.join('/tmp', 'model')
+        os.makedirs(tmp_dir, exist_ok=True)
+        return os.path.join(tmp_dir, 'model.pkl')
+
+def train_model(save_path=None):
+    if save_path is None:
+        save_path = get_model_path()
     df = create_dummy_data()
     pipeline = Pipeline([
         ('tfidf', TfidfVectorizer(ngram_range=(1, 2))),
@@ -30,10 +43,12 @@ def train_model():
     ])
     pipeline.fit(df['text'], df['label'])
     
-    os.makedirs('model', exist_ok=True)
-    with open('model/model.pkl', 'wb') as f:
+    os.makedirs(os.path.dirname(save_path), exist_ok=True)
+    with open(save_path, 'wb') as f:
         pickle.dump(pipeline, f)
-    print("Model trained and saved to model/model.pkl")
+    print(f"Model trained and saved to {save_path}")
+    return pipeline
 
 if __name__ == '__main__':
     train_model()
+

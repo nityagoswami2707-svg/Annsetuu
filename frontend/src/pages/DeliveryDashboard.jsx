@@ -13,7 +13,7 @@ import {
 } from 'lucide-react';
 
 const DeliveryDashboard = () => {
-  const { donations, updateDeliveryStatus, setSelectedReceiptDonation } = useApp();
+  const { t, donations, updateDeliveryStatus, setSelectedReceiptDonation } = useApp();
   const [confirmModalDonation, setConfirmModalDonation] = useState(null);
 
   // Active driver deliveries
@@ -43,25 +43,25 @@ const DeliveryDashboard = () => {
       <div className="bg-emerald-950 text-white rounded-3xl p-6 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-6 border border-emerald-800">
         <div>
           <div className="flex items-center space-x-2">
-            <Truck className="w-6 h-6 text-amber-400" />
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">Delivery Volunteer Portal</h1>
+            <Truck className="w-6 h-6 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">{t('deliveryVolunteerHeader')}</h1>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">Active logistics task queue & status manager for meal transportation.</p>
+          <p className="text-emerald-200 text-sm mt-1">{t('deliveryHeaderSub')}</p>
         </div>
 
         <div className="bg-emerald-900 px-4 py-2 rounded-2xl border border-emerald-700 text-xs">
-          <span className="text-emerald-300 font-bold block">Assigned Logistics Vehicle</span>
+          <span className="text-emerald-300 font-bold block">{t('assignedVehicleLabel')}</span>
           <span className="font-extrabold text-amber-400 text-sm">Ramesh Kumar (GJ-06-EV-4412)</span>
         </div>
       </div>
 
       {/* Deliveries Queue */}
       <div className="space-y-6">
-        <h3 className="text-xl font-bold font-outfit text-emerald-950">Assigned Food Pickup & Delivery Orders</h3>
+        <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('assignedOrdersHeader')}</h3>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {driverDeliveries.map(item => (
-            <div key={item.id} className="bg-white rounded-3xl border border-emerald-900/10 shadow-lg overflow-hidden flex flex-col justify-between">
+            <div key={item.id} className="bg-white rounded-3xl border border-emerald-900/10 shadow-lg overflow-hidden flex flex-col justify-between card-zoom-3d">
               
               <div className="p-6 space-y-4">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
@@ -101,37 +101,37 @@ const DeliveryDashboard = () => {
                 <button
                   onClick={() => handleUpdate(item.id, 'Picked Up')}
                   disabled={item.status === 'Picked Up' || item.status === 'In Transit' || item.status === 'Delivered'}
-                  className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs transition-colors ${
+                  className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs transition-all tab-animated ${
                     item.status === 'Picked Up' || item.status === 'In Transit' || item.status === 'Delivered'
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-emerald-800 hover:bg-emerald-900 text-white shadow-md'
+                      : 'bg-emerald-800 hover:bg-emerald-900 text-white shadow-md btn-bounce-active'
                   }`}
                 >
-                  1. Picked Up
+                  {t('step1PickedUp')}
                 </button>
 
                 <button
                   onClick={() => handleUpdate(item.id, 'In Transit')}
                   disabled={item.status === 'In Transit' || item.status === 'Delivered'}
-                  className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs transition-colors ${
+                  className={`flex-1 py-2.5 px-3 rounded-xl font-bold text-xs transition-all tab-animated ${
                     item.status === 'In Transit' || item.status === 'Delivered'
                       ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                      : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md'
+                      : 'bg-blue-600 hover:bg-blue-700 text-white shadow-md btn-bounce-active'
                   }`}
                 >
-                  2. In Transit
+                  {t('step2InTransit')}
                 </button>
 
                 <button
                   onClick={() => handleUpdate(item.id, 'Delivered')}
                   disabled={item.status === 'Delivered'}
-                  className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs transition-colors ${
+                  className={`flex-1 py-2.5 px-3 rounded-xl font-black text-xs transition-all tab-animated ${
                     item.status === 'Delivered'
                       ? 'bg-emerald-100 text-emerald-800 border border-emerald-300'
-                      : 'bg-amber-500 hover:bg-amber-600 text-gray-950 shadow-md'
+                      : 'bg-amber-500 hover:bg-amber-600 text-gray-950 shadow-md btn-bounce-active'
                   }`}
                 >
-                  {item.status === 'Delivered' ? 'Delivered ✓' : '3. Mark Delivered'}
+                  {item.status === 'Delivered' ? t('deliveredCheck') : t('step3MarkDelivered')}
                 </button>
               </div>
 
@@ -145,11 +145,11 @@ const DeliveryDashboard = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
           <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-6 text-center">
             <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-emerald-600" />
+              <CheckCircle className="w-8 h-8 text-emerald-600 animate-bounce" />
             </div>
 
             <div className="space-y-2">
-              <h3 className="text-xl font-black font-outfit text-emerald-950">Confirm Delivery Completion</h3>
+              <h3 className="text-xl font-black font-outfit text-emerald-950">{t('confirmDeliveryTitle')}</h3>
               <p className="text-xs text-gray-600">
                 Confirm that donation <strong className="text-emerald-900 font-mono">{confirmModalDonation.id}</strong> has been safely handed over to <strong className="text-emerald-900">{confirmModalDonation.ngoName}</strong>?
               </p>
@@ -158,15 +158,15 @@ const DeliveryDashboard = () => {
             <div className="flex gap-3 pt-2">
               <button
                 onClick={() => setConfirmModalDonation(null)}
-                className="flex-1 py-3 rounded-xl bg-gray-100 text-xs font-bold text-gray-700"
+                className="flex-1 py-3 rounded-xl bg-gray-100 text-xs font-bold text-gray-700 btn-bounce-active"
               >
-                Cancel
+                {t('cancelBtn')}
               </button>
               <button
                 onClick={handleConfirmDelivered}
-                className="flex-1 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-extrabold shadow-lg"
+                className="flex-1 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-extrabold shadow-lg btn-bounce-active"
               >
-                Yes, Delivered ✓
+                {t('yesDelivered')}
               </button>
             </div>
           </div>

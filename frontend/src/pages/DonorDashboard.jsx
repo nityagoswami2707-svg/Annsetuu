@@ -21,16 +21,16 @@ import {
 } from 'lucide-react';
 
 const DonorDashboard = () => {
-  const { ngos, registerDonation, donations } = useApp();
+  const { t, ngos, registerDonation, donations } = useApp();
   const navigate = useNavigate();
 
   const [step, setStep] = useState('form'); // 'form' | 'success'
   const [createdId, setCreatedId] = useState(null);
 
-  // Form State with comprehensive default & user inputs
+  // Form State with default inputs
   const [formData, setFormData] = useState({
     donorName: "Green Leaf Restaurant",
-    donorType: "Restaurant", // Restaurant, Cafe, Home, Hotel, Wedding, Catering, Event, etc.
+    donorType: "Restaurant",
     email: "manager@greenleaf.com",
     phone: "+91 94280 99887",
     pickupAddress: "1st Floor, Crystal Plaza, Jetaipur Main Rd",
@@ -38,7 +38,7 @@ const DonorDashboard = () => {
     pincode: "390007",
     foodName: "Paneer Butter Masala & Steamed Rice",
     foodCategory: "Prepared Cooked Food",
-    foodQuality: "Fresh", // Fresh, Good, Needs Urgent Pickup
+    foodQuality: "Fresh",
     prepDate: new Date().toISOString().split('T')[0],
     prepTime: "20:00",
     quantity: "15 kg (4 Large Insulated Vessels)",
@@ -89,44 +89,40 @@ const DonorDashboard = () => {
         <div className="space-y-3 max-w-2xl">
           <div className="inline-flex items-center space-x-2 bg-white/20 px-3.5 py-1 rounded-full text-xs font-bold backdrop-blur-md">
             <Sparkles className="w-4 h-4 text-orange-300 animate-spin" style={{ animationDuration: '6s' }} />
-            <span className="uppercase tracking-widest text-orange-200">Donor Registration Portal</span>
+            <span className="uppercase tracking-widest text-orange-200">{t('donorPortalHeader')}</span>
           </div>
-          <h1 className="text-3xl sm:text-5xl font-black font-outfit text-white">"Share Food. Share Hope."</h1>
+          <h1 className="text-3xl sm:text-5xl font-black font-outfit text-white">"{t('shareFoodShareHope')}"</h1>
           <p className="text-green-100 text-sm leading-relaxed">
-            Register surplus meals from your restaurant, cafe, hotel, home, wedding, or catering service to reach people in need.
+            {t('donorHeaderSub')}
           </p>
         </div>
 
         <div className="bg-white/95 backdrop-blur-md p-4 sm:p-5 rounded-2xl border-2 border-white text-center shadow-xl shrink-0 text-green-950">
-          <Utensils className="w-10 h-10 mx-auto text-orange-500 mb-1" />
-          <p className="text-xs font-black">Fast 2-Min Registration</p>
-          <p className="text-[10px] font-bold text-gray-500">Real-Time NGO Matching</p>
+          <Utensils className="w-10 h-10 mx-auto text-orange-500 mb-1 animate-bounce" style={{ animationDuration: '3s' }} />
+          <p className="text-xs font-black">{t('fast2MinReg')}</p>
+          <p className="text-[10px] font-bold text-gray-500">{t('realtimeNgoMatching')}</p>
         </div>
       </div>
 
       {step === 'form' ? (
         <form onSubmit={handleSubmit} className="bg-white rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-green-600/10 space-y-9">
           
-          {/* ================================================== */}
           {/* STEP 1: DONOR SOURCE & ADDRESS DETAILS */}
-          {/* ================================================== */}
           <div className="space-y-4">
             <div className="border-b-2 border-green-100 pb-3 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black font-outfit text-green-950 flex items-center">
                   <Building2 className="w-6 h-6 mr-2 text-orange-500" />
-                  1. Donor Establishment & Pickup Address
+                  {t('step1Heading')}
                 </h3>
-                <p className="text-xs font-semibold text-gray-500">Specify where the food is being donated from (Restaurant, Cafe, Home, Hotel, etc.).</p>
+                <p className="text-xs font-semibold text-gray-500">{t('step1Subhead')}</p>
               </div>
               <span className="text-xs font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-full border border-orange-200">Step 1 of 4</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
-              
-              {/* Where is food donated from dropdown */}
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Where is the food being donated from? *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('whereDonatedFrom')}</label>
                 <select
                   name="donorType"
                   value={formData.donorType}
@@ -146,20 +142,20 @@ const DonorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Donor Establishment / Name *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('donorEstName')}</label>
                 <input
                   type="text"
                   name="donorName"
                   required
                   value={formData.donorName}
                   onChange={handleChange}
-                  placeholder="e.g. Green Leaf Fine Dining / Sharma Family Home"
+                  placeholder="e.g. Green Leaf Fine Dining"
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 text-xs font-bold focus:border-green-600 focus:outline-none"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Contact Person Name *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('contactPersonName')}</label>
                 <input
                   type="text"
                   name="contactPerson"
@@ -172,7 +168,7 @@ const DonorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Phone Number *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('phoneNumber')}</label>
                 <input
                   type="tel"
                   name="phone"
@@ -184,7 +180,7 @@ const DonorDashboard = () => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Full Pickup Address *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('fullPickupAddress')}</label>
                 <input
                   type="text"
                   name="pickupAddress"
@@ -197,7 +193,7 @@ const DonorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">City *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('cityLabel')}</label>
                 <input
                   type="text"
                   name="city"
@@ -209,7 +205,7 @@ const DonorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Pincode *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('pincodeLabel')}</label>
                 <input
                   type="text"
                   name="pincode"
@@ -223,29 +219,27 @@ const DonorDashboard = () => {
             </div>
           </div>
 
-          {/* ================================================== */}
           {/* STEP 2: SURPLUS FOOD SPECIFICATIONS */}
-          {/* ================================================== */}
           <div className="space-y-4">
             <div className="border-b-2 border-green-100 pb-3 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black font-outfit text-green-950 flex items-center">
                   <Utensils className="w-6 h-6 mr-2 text-green-700" />
-                  2. Food Specifications & Quality Details
+                  {t('step2Heading')}
                 </h3>
-                <p className="text-xs font-semibold text-gray-500">Provide accurate food preparation time, quality, quantity, and serving count.</p>
+                <p className="text-xs font-semibold text-gray-500">{t('step2Subhead')}</p>
               </div>
               <span className="text-xs font-black text-green-700 bg-green-100 px-3 py-1 rounded-full border border-green-200">Step 2 of 4</span>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Food Item Name / Description *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('foodNameLabel')}</label>
                 <input
                   type="text"
                   name="foodName"
                   required
-                  placeholder="e.g. Paneer Butter Masala & Rice / Sandwiches"
+                  placeholder="e.g. Paneer Butter Masala & Rice"
                   value={formData.foodName}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-gray-200 text-xs font-bold focus:border-green-600 focus:outline-none"
@@ -253,7 +247,7 @@ const DonorDashboard = () => {
               </div>
 
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Food Category *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('foodCategoryLabel')}</label>
                 <select
                   name="foodCategory"
                   value={formData.foodCategory}
@@ -267,24 +261,22 @@ const DonorDashboard = () => {
                 </select>
               </div>
 
-              {/* Quality of Food Dropdown */}
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Quality of Food *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('qualityOfFood')}</label>
                 <select
                   name="foodQuality"
                   value={formData.foodQuality}
                   onChange={handleChange}
                   className="w-full px-4 py-3 rounded-2xl border-2 border-green-300 bg-green-50/50 text-xs font-extrabold text-green-950 focus:border-green-600 focus:outline-none"
                 >
-                  <option value="Fresh">🟢 Fresh (Cooked within 2 hours)</option>
-                  <option value="Good">🟡 Good (Packed & hygienically stored)</option>
-                  <option value="Needs Urgent Pickup">🔴 Needs Urgent Pickup (&lt; 2 hrs before expiry)</option>
+                  <option value="Fresh">{t('freshOption')}</option>
+                  <option value="Good">{t('goodOption')}</option>
+                  <option value="Needs Urgent Pickup">{t('urgentOption')}</option>
                 </select>
               </div>
 
-              {/* Quantity of Food */}
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Quantity of Food *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('quantityLabel')}</label>
                 <input
                   type="text"
                   name="quantity"
@@ -296,9 +288,8 @@ const DonorDashboard = () => {
                 />
               </div>
 
-              {/* Number of People it Can be Served */}
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Number of People It Can Be Served *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('peopleServedLabel')}</label>
                 <input
                   type="number"
                   name="servingCapacity"
@@ -310,9 +301,8 @@ const DonorDashboard = () => {
                 />
               </div>
 
-              {/* Food Preparation Date & Time */}
               <div>
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Food Preparation Date & Time *</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('prepDateTimeLabel')}</label>
                 <div className="flex gap-2">
                   <input
                     type="date"
@@ -334,7 +324,7 @@ const DonorDashboard = () => {
               </div>
 
               <div className="sm:col-span-2">
-                <label className="block text-xs font-black text-gray-800 mb-1.5">Special Instructions / Pickup Availability (Optional)</label>
+                <label className="block text-xs font-black text-gray-800 mb-1.5">{t('specialInstructionsLabel')}</label>
                 <input
                   type="text"
                   name="specialInstructions"
@@ -348,17 +338,15 @@ const DonorDashboard = () => {
             </div>
           </div>
 
-          {/* ================================================== */}
           {/* STEP 3: UPLOAD FOOD IMAGE */}
-          {/* ================================================== */}
           <div className="space-y-4">
             <div className="border-b-2 border-green-100 pb-3 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black font-outfit text-green-950 flex items-center">
                   <ImageIcon className="w-6 h-6 mr-2 text-orange-500" />
-                  3. Upload Food Image
+                  {t('step3Heading')}
                 </h3>
-                <p className="text-xs font-semibold text-gray-500">Provide a clear photo of the surplus meal containers for NGO verification.</p>
+                <p className="text-xs font-semibold text-gray-500">{t('step3Subhead')}</p>
               </div>
               <span className="text-xs font-black text-orange-600 bg-orange-100 px-3 py-1 rounded-full border border-orange-200">Step 3 of 4</span>
             </div>
@@ -368,35 +356,33 @@ const DonorDashboard = () => {
                 <img src={imagePreview} alt="Food Preview" className="w-full h-full object-cover" />
               </div>
               <div className="flex-1 space-y-3 text-center sm:text-left">
-                <p className="text-xs text-gray-700 font-bold">Select or drag & drop a photo of the prepared meal</p>
+                <p className="text-xs text-gray-700 font-bold">{t('uploadPhotoPrompt')}</p>
                 <input
                   type="file"
                   accept="image/*"
                   onChange={handleImageChange}
                   className="text-xs text-gray-600 file:mr-4 file:py-2.5 file:px-5 file:rounded-xl file:border-0 file:text-xs file:font-black file:bg-green-800 file:text-white hover:file:bg-green-900 cursor-pointer"
                 />
-                <p className="text-[10px] text-gray-400">Supports PNG, JPG, JPEG formats</p>
+                <p className="text-[10px] text-gray-400">{t('supportsFormats')}</p>
               </div>
             </div>
           </div>
 
-          {/* ================================================== */}
           {/* STEP 4: TARGET NGO & SAFETY DECLARATION */}
-          {/* ================================================== */}
           <div className="space-y-4">
             <div className="border-b-2 border-green-100 pb-3 flex items-center justify-between">
               <div>
                 <h3 className="text-xl font-black font-outfit text-green-950 flex items-center">
                   <ShieldAlert className="w-6 h-6 mr-2 text-green-700" />
-                  4. Target NGO Selection & Food Safety Declaration
+                  {t('step4Heading')}
                 </h3>
-                <p className="text-xs font-semibold text-gray-500">Send your donation request directly to a verified NGO.</p>
+                <p className="text-xs font-semibold text-gray-500">{t('step4Subhead')}</p>
               </div>
               <span className="text-xs font-black text-green-700 bg-green-100 px-3 py-1 rounded-full border border-green-200">Step 4 of 4</span>
             </div>
 
             <div>
-              <label className="block text-xs font-black text-gray-800 mb-1.5">Select Verified NGO for Request Dispatch *</label>
+              <label className="block text-xs font-black text-gray-800 mb-1.5">{t('selectVerifiedNgo')}</label>
               <select
                 name="ngoId"
                 value={formData.ngoId}
@@ -421,7 +407,7 @@ const DonorDashboard = () => {
                   className="mt-1 w-5 h-5 text-orange-600 rounded focus:ring-orange-500 cursor-pointer"
                 />
                 <span className="text-xs text-orange-950 font-black leading-relaxed">
-                  I confirm that the food is safe, hygienic, and suitable for human consumption in accordance with FSSAI hygiene guidelines.
+                  {t('confirmSafety')}
                 </span>
               </label>
             </div>
@@ -430,10 +416,10 @@ const DonorDashboard = () => {
           {/* Submit Primary Button */}
           <button
             type="submit"
-            className="w-full py-4.5 px-6 rounded-2xl bg-gradient-to-r from-green-800 via-green-700 to-orange-600 hover:from-green-900 hover:to-orange-700 text-white font-black text-base shadow-2xl flex items-center justify-center space-x-2 transition-transform transform hover:-translate-y-0.5"
+            className="w-full py-4.5 px-6 rounded-2xl bg-gradient-to-r from-green-800 via-green-700 to-orange-600 hover:from-green-900 hover:to-orange-700 text-white font-black text-base shadow-2xl flex items-center justify-center space-x-2 btn-bounce-active"
           >
             <Send className="w-5 h-5" />
-            <span>[ Register Food Donation & Send Request ]</span>
+            <span>[ {t('submitDonation')} ]</span>
           </button>
 
         </form>
@@ -446,14 +432,14 @@ const DonorDashboard = () => {
             </div>
             
             <h2 className="text-3xl font-black font-outfit text-green-950">
-              Your donation has been registered! ❤️
+              {t('donationRegisteredSuccess')}
             </h2>
             <p className="text-sm font-semibold text-gray-600">
-              Annsetu has dispatched your donation request to the NGO.
+              {t('registeredSuccessSub')}
             </p>
 
             <div className="p-4 bg-green-950 text-white rounded-2xl inline-block shadow-xl">
-              <span className="text-[10px] text-orange-400 font-black uppercase tracking-widest block">Generated Donation ID</span>
+              <span className="text-[10px] text-orange-400 font-black uppercase tracking-widest block">{t('generatedDonationId')}</span>
               <span className="text-3xl font-black font-outfit text-orange-400 tracking-wider">{createdId}</span>
             </div>
           </div>
@@ -461,17 +447,17 @@ const DonorDashboard = () => {
           {/* Nearby NGOs Grid */}
           <div className="border-t-2 border-gray-100 pt-8 space-y-6">
             <div className="text-center">
-              <h3 className="text-2xl font-black font-outfit text-green-950">Target NGO Dispatch Status</h3>
-              <p className="text-xs text-gray-500">Your donation request is awaiting response from the verified NGO partner.</p>
+              <h3 className="text-2xl font-black font-outfit text-green-950">{t('targetNgoDispatchStatus')}</h3>
+              <p className="text-xs text-gray-500">{t('awaitingNgoResponse')}</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
               {ngos.map(ngo => (
-                <div key={ngo.id} className="bg-green-50/70 p-5 rounded-3xl border-2 border-green-200 space-y-4 flex flex-col justify-between shadow-sm">
+                <div key={ngo.id} className="bg-green-50/70 p-5 rounded-3xl border-2 border-green-200 space-y-4 flex flex-col justify-between shadow-sm card-zoom-3d">
                   <div>
                     <div className="flex items-center justify-between mb-2">
                       <span className="text-[10px] font-black bg-green-800 text-white px-2.5 py-0.5 rounded-full">
-                        Verified Badge ✓
+                        {t('verifiedBadgeCheck')}
                       </span>
                       <span className="text-xs font-bold text-gray-500">1.8 km away</span>
                     </div>
@@ -482,12 +468,12 @@ const DonorDashboard = () => {
                   </div>
 
                   <div className="pt-3 border-t border-green-200 flex items-center justify-between">
-                    <span className="text-[11px] font-black text-orange-600">Awaiting NGO Response</span>
+                    <span className="text-[11px] font-black text-orange-600">{t('awaitingNgoResponse')}</span>
                     <button
                       onClick={() => navigate('/track')}
-                      className="px-3.5 py-2 rounded-xl bg-green-900 text-white font-bold text-xs hover:bg-green-950 transition-colors flex items-center space-x-1 shadow-md"
+                      className="px-3.5 py-2 rounded-xl bg-green-900 text-white font-bold text-xs hover:bg-green-950 transition-colors flex items-center space-x-1 shadow-md btn-bounce-active"
                     >
-                      <span>Track Live</span>
+                      <span>{t('trackLive')}</span>
                       <ArrowRight className="w-3.5 h-3.5" />
                     </button>
                   </div>
@@ -498,9 +484,9 @@ const DonorDashboard = () => {
             <div className="text-center pt-4">
               <button
                 onClick={() => setStep('form')}
-                className="px-6 py-3 rounded-2xl bg-gray-100 text-gray-800 text-xs font-black hover:bg-gray-200 border border-gray-200"
+                className="px-6 py-3 rounded-2xl bg-gray-100 text-gray-800 text-xs font-black hover:bg-gray-200 border border-gray-200 btn-bounce-active"
               >
-                + Register Another Surplus Meal
+                {t('registerAnotherMeal')}
               </button>
             </div>
           </div>
@@ -510,7 +496,7 @@ const DonorDashboard = () => {
 
       {/* MY DONATIONS HISTORY */}
       <div className="bg-white rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-green-600/10 space-y-4">
-        <h3 className="text-xl font-black font-outfit text-green-950">My Registered Donations History</h3>
+        <h3 className="text-xl font-black font-outfit text-green-950">{t('myRegisteredHistory')}</h3>
         
         <div className="overflow-x-auto rounded-2xl border border-gray-200">
           <table className="w-full text-left text-xs">
@@ -543,9 +529,9 @@ const DonorDashboard = () => {
                   <td className="p-3">
                     <button
                       onClick={() => navigate('/track')}
-                      className="text-xs text-green-700 font-black underline hover:text-green-900"
+                      className="text-xs text-green-700 font-black underline hover:text-green-900 btn-bounce-active"
                     >
-                      Track Live
+                      {t('trackLive')}
                     </button>
                   </td>
                 </tr>

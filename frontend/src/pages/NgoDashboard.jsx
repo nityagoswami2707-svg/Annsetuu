@@ -17,7 +17,7 @@ import {
 } from 'lucide-react';
 
 const NgoDashboard = () => {
-  const { donations, ngos, evaluateDonation, registerNgo } = useApp();
+  const { t, donations, ngos, evaluateDonation, registerNgo } = useApp();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('requests'); // requests, accepted, schedule, register
@@ -56,7 +56,6 @@ const NgoDashboard = () => {
   const handleNgoSubmit = (e) => {
     e.preventDefault();
     registerNgo(ngoRegData);
-    alert("NGO Registration submitted successfully! Pending Admin verification.");
     setActiveTab('requests');
   };
 
@@ -68,18 +67,18 @@ const NgoDashboard = () => {
         <div>
           <div className="flex items-center space-x-2">
             <Building2 className="w-6 h-6 text-amber-400" />
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">Annsetu NGO Portal</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">{t('ngoPortalHeader')}</h1>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">Manage incoming food donation requests and coordinate shelter pickups.</p>
+          <p className="text-emerald-200 text-sm mt-1">{t('ngoPortalSub')}</p>
         </div>
 
         {/* Verification Status Badge */}
         <div className="flex items-center space-x-3 bg-emerald-900/90 px-4 py-2 rounded-2xl border border-emerald-700">
           <ShieldCheck className="w-5 h-5 text-emerald-400" />
           <div>
-            <span className="text-[10px] text-emerald-300 font-bold uppercase block">Verification Status</span>
+            <span className="text-[10px] text-emerald-300 font-bold uppercase block">{t('verificationStatusLabel')}</span>
             <span className="text-xs font-black text-emerald-100 flex items-center">
-              {activeNgo.name} — <span className="text-amber-400 ml-1">Verified Badge ✓</span>
+              {activeNgo.name} — <span className="text-amber-400 ml-1">{t('verifiedBadgeCheck')}</span>
             </span>
           </div>
         </div>
@@ -89,57 +88,57 @@ const NgoDashboard = () => {
       <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-3">
         <button
           onClick={() => setActiveTab('requests')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
             activeTab === 'requests' ? 'bg-emerald-900 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Donation Requests ({pendingRequests.length})
+          {t('donationRequestsTab')} ({pendingRequests.length})
         </button>
 
         <button
           onClick={() => setActiveTab('accepted')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
             activeTab === 'accepted' ? 'bg-emerald-900 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Accepted & Active Pickups ({acceptedDonations.length})
+          {t('acceptedPickupsTab')} ({acceptedDonations.length})
         </button>
 
         <button
           onClick={() => setActiveTab('schedule')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
             activeTab === 'schedule' ? 'bg-emerald-900 text-white shadow-md' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          Delivered History ({deliveredDonations.length})
+          {t('deliveredHistoryTab')} ({deliveredDonations.length})
         </button>
 
         <button
           onClick={() => setActiveTab('register')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
             activeTab === 'register' ? 'bg-amber-500 text-gray-950 font-black shadow-md' : 'text-gray-600 hover:bg-gray-100'
           }`}
         >
-          + Register New NGO Partner
+          {t('registerNewNgoTab')}
         </button>
       </div>
 
       {/* STATS ROW */}
       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs">
-          <span className="text-xs font-bold text-gray-500">New Requests</span>
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
+          <span className="text-xs font-bold text-gray-500">{t('newRequestsCount')}</span>
           <p className="text-2xl font-black text-amber-600 font-outfit mt-1">{pendingRequests.length}</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs">
-          <span className="text-xs font-bold text-gray-500">Accepted Active</span>
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
+          <span className="text-xs font-bold text-gray-500">{t('acceptedActiveCount')}</span>
           <p className="text-2xl font-black text-emerald-800 font-outfit mt-1">{acceptedDonations.length}</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs">
-          <span className="text-xs font-bold text-gray-500">Delivered Meals</span>
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
+          <span className="text-xs font-bold text-gray-500">{t('deliveredMealsCount')}</span>
           <p className="text-2xl font-black text-blue-700 font-outfit mt-1">{deliveredDonations.length * 50 + 2500}</p>
         </div>
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs">
-          <span className="text-xs font-bold text-gray-500">Shelter Capacity</span>
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-xs card-zoom-3d">
+          <span className="text-xs font-bold text-gray-500">{t('shelterCapacityLabel')}</span>
           <p className="text-2xl font-black text-emerald-950 font-outfit mt-1">{activeNgo.availableCapacity}</p>
         </div>
       </div>
@@ -147,17 +146,17 @@ const NgoDashboard = () => {
       {/* TAB 1: DONATION EVALUATION QUEUE */}
       {activeTab === 'requests' && (
         <div className="space-y-6">
-          <h3 className="text-xl font-bold font-outfit text-emerald-950">Incoming Food Donation Evaluation Queue</h3>
+          <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('incomingEvaluationQueue')}</h3>
           
           {pendingRequests.length === 0 ? (
             <div className="bg-white p-8 rounded-3xl text-center text-gray-500 border border-gray-100">
               <Utensils className="w-10 h-10 mx-auto text-emerald-300 mb-2" />
-              <p className="text-sm font-bold">No pending donation requests right now.</p>
+              <p className="text-sm font-bold">{t('noPendingRequests')}</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {pendingRequests.map(item => (
-                <div key={item.id} className="bg-white rounded-3xl border border-emerald-900/10 shadow-lg overflow-hidden flex flex-col justify-between">
+                <div key={item.id} className="bg-white rounded-3xl border border-emerald-900/10 shadow-lg overflow-hidden flex flex-col justify-between card-zoom-3d">
                   <div className="p-6 space-y-4">
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold bg-amber-100 text-amber-800 px-3 py-1 rounded-full">
@@ -188,18 +187,18 @@ const NgoDashboard = () => {
                   <div className="p-4 bg-gray-50 border-t border-gray-100 grid grid-cols-2 gap-3">
                     <button
                       onClick={() => handleAccept(item.id)}
-                      className="py-3 px-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs flex items-center justify-center space-x-1.5 shadow-md"
+                      className="py-3 px-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
                     >
                       <CheckCircle className="w-4 h-4 text-emerald-300" />
-                      <span>[ Accept Donation ]</span>
+                      <span>[ {t('acceptDonationBtn')} ]</span>
                     </button>
 
                     <button
                       onClick={() => setRejectingDonationId(item.id)}
-                      className="py-3 px-4 rounded-2xl bg-red-100 hover:bg-red-200 text-red-800 font-bold text-xs flex items-center justify-center space-x-1.5"
+                      className="py-3 px-4 rounded-2xl bg-red-100 hover:bg-red-200 text-red-800 font-bold text-xs flex items-center justify-center space-x-1.5 btn-bounce-active"
                     >
                       <XCircle className="w-4 h-4 text-red-600" />
-                      <span>[ Reject Donation ]</span>
+                      <span>[ {t('rejectDonationBtn')} ]</span>
                     </button>
                   </div>
                 </div>
@@ -213,8 +212,8 @@ const NgoDashboard = () => {
       {rejectingDonationId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs">
           <div className="bg-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
-            <h3 className="text-lg font-bold font-outfit text-emerald-950">Rejection Reason Required</h3>
-            <p className="text-xs text-gray-600">Please specify why this donation cannot be accepted by your NGO.</p>
+            <h3 className="text-lg font-bold font-outfit text-emerald-950">{t('rejectionReasonRequired')}</h3>
+            <p className="text-xs text-gray-600">{t('specifyRejectionReason')}</p>
 
             <select
               value={rejectReason}
@@ -232,15 +231,15 @@ const NgoDashboard = () => {
             <div className="flex justify-end space-x-3 pt-2">
               <button
                 onClick={() => setRejectingDonationId(null)}
-                className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-bold text-gray-700"
+                className="px-4 py-2 rounded-xl bg-gray-100 text-xs font-bold text-gray-700 btn-bounce-active"
               >
-                Cancel
+                {t('cancelBtn')}
               </button>
               <button
                 onClick={handleConfirmReject}
-                className="px-4 py-2 rounded-xl bg-red-600 text-xs font-bold text-white shadow-md"
+                className="px-4 py-2 rounded-xl bg-red-600 text-xs font-bold text-white shadow-md btn-bounce-active"
               >
-                Confirm Rejection
+                {t('confirmRejectionBtn')}
               </button>
             </div>
           </div>
@@ -250,7 +249,7 @@ const NgoDashboard = () => {
       {/* TAB 2: ACCEPTED & ACTIVE PICKUPS */}
       {activeTab === 'accepted' && (
         <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-4">
-          <h3 className="text-xl font-bold font-outfit text-emerald-950">Active Accepted Pickups</h3>
+          <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('activeAcceptedPickups')}</h3>
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs">
               <thead>
@@ -287,11 +286,11 @@ const NgoDashboard = () => {
       {/* TAB 3: REGISTER NEW NGO */}
       {activeTab === 'register' && (
         <form onSubmit={handleNgoSubmit} className="bg-white rounded-3xl p-8 border border-emerald-900/10 shadow-md space-y-6 max-w-2xl mx-auto">
-          <h3 className="text-xl font-bold font-outfit text-emerald-950">Register New NGO Organization</h3>
+          <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('registerNewNgoHeader')}</h3>
           
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">NGO Name *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">{t('ngoNameLabel')}</label>
               <input
                 type="text"
                 required
@@ -302,7 +301,7 @@ const NgoDashboard = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Registration Number *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">{t('regNoLabel')}</label>
               <input
                 type="text"
                 required
@@ -313,7 +312,7 @@ const NgoDashboard = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Contact Person *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">{t('contactPersonName')}</label>
               <input
                 type="text"
                 required
@@ -324,7 +323,7 @@ const NgoDashboard = () => {
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-gray-700 mb-1">Phone Number *</label>
+              <label className="block text-xs font-bold text-gray-700 mb-1">{t('phoneNumber')}</label>
               <input
                 type="tel"
                 required
@@ -337,9 +336,9 @@ const NgoDashboard = () => {
 
           <button
             type="submit"
-            className="w-full py-3.5 rounded-2xl bg-emerald-900 text-white font-bold text-xs shadow-lg hover:bg-emerald-950"
+            className="w-full py-3.5 rounded-2xl bg-emerald-900 text-white font-bold text-xs shadow-lg hover:bg-emerald-950 btn-bounce-active"
           >
-            Submit NGO for Admin Verification
+            {t('submitNgoVerification')}
           </button>
         </form>
       )}

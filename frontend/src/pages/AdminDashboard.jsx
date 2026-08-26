@@ -24,7 +24,7 @@ import {
 } from 'lucide-react';
 
 const AdminDashboard = () => {
-  const { donations, ngos, stats, verifyNgo, setSelectedReceiptDonation } = useApp();
+  const { t, donations, ngos, stats, verifyNgo, setSelectedReceiptDonation } = useApp();
   const [activeTab, setActiveTab] = useState('dashboard'); // dashboard, ngos, donations, reports
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -134,47 +134,47 @@ const AdminDashboard = () => {
         <div>
           <div className="flex items-center space-x-2">
             <ShieldCheck className="w-6 h-6 text-purple-400" />
-            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">Annsetu Admin Portal</h1>
+            <h1 className="text-2xl sm:text-3xl font-extrabold font-outfit">{t('adminPortalHeader')}</h1>
           </div>
-          <p className="text-emerald-200 text-sm mt-1">Monitor the entire food donation ecosystem in real time.</p>
+          <p className="text-emerald-200 text-sm mt-1">{t('adminPortalSub')}</p>
         </div>
 
         {/* Tab Navigation */}
         <div className="flex flex-wrap gap-2 bg-emerald-900/80 p-1.5 rounded-2xl border border-emerald-800">
           <button
             onClick={() => setActiveTab('dashboard')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
               activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
             }`}
           >
-            Dashboard
+            {t('adminNavDashboard')}
           </button>
 
           <button
             onClick={() => setActiveTab('ngos')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
               activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
             }`}
           >
-            NGO Verifications
+            {t('adminNavNgos')}
           </button>
 
           <button
             onClick={() => setActiveTab('donations')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
               activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
             }`}
           >
-            All Donations
+            {t('adminNavDonations')}
           </button>
 
           <button
             onClick={() => setActiveTab('reports')}
-            className={`px-4 py-2 rounded-xl text-xs font-bold transition-colors ${
+            className={`px-4 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
               activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200 hover:text-white'
             }`}
           >
-            Overall Reports
+            {t('adminNavReports')}
           </button>
         </div>
       </div>
@@ -182,54 +182,54 @@ const AdminDashboard = () => {
       {/* KPI Cards Grid */}
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
         
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Total Users</span>
+            <span>{t('totalUsers')}</span>
             <Users className="w-4 h-4 text-purple-600" />
           </div>
           <p className="text-2xl font-extrabold text-emerald-950 font-outfit">1,250</p>
           <span className="text-[10px] text-emerald-600 font-bold">↑ 12% this week</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Active NGOs</span>
+            <span>{t('activeNgos')}</span>
             <Building2 className="w-4 h-4 text-emerald-600" />
           </div>
           <p className="text-2xl font-extrabold text-emerald-950 font-outfit">{stats.activeNGOs}</p>
           <span className="text-[10px] text-emerald-600 font-bold">100% Verified</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Total Donations</span>
+            <span>{t('totalDonationsLabel')}</span>
             <Utensils className="w-4 h-4 text-amber-600" />
           </div>
           <p className="text-2xl font-extrabold text-emerald-950 font-outfit">8,430</p>
           <span className="text-[10px] text-amber-600 font-bold">Live Streamed</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Pending</span>
+            <span>{t('pendingLabel')}</span>
             <Clock className="w-4 h-4 text-blue-600" />
           </div>
           <p className="text-2xl font-extrabold text-emerald-950 font-outfit">{stats.pendingDonations}</p>
           <span className="text-[10px] text-blue-600 font-bold">Awaiting pickup</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Deliveries</span>
+            <span>{t('deliveriesLabel')}</span>
             <Truck className="w-4 h-4 text-emerald-600" />
           </div>
           <p className="text-2xl font-extrabold text-emerald-950 font-outfit">7,920</p>
           <span className="text-[10px] text-emerald-600 font-bold">98.2% Success</span>
         </div>
 
-        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm">
+        <div className="bg-white p-4 rounded-2xl border border-emerald-900/10 shadow-sm card-zoom-3d">
           <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-            <span>Meals Served</span>
+            <span>{t('mealsDonated')}</span>
             <Utensils className="w-4 h-4 text-amber-600" />
           </div>
           <p className="text-2xl font-extrabold text-amber-700 font-outfit">{stats.totalMeals.toLocaleString()}</p>
@@ -246,10 +246,10 @@ const AdminDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
             
             {/* Chart 1: Donations Over Time */}
-            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md">
+            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-base font-bold font-outfit text-emerald-950">Donations Over Time</h3>
+                  <h3 className="text-base font-bold font-outfit text-emerald-950">{t('donationsOverTime')}</h3>
                   <p className="text-xs text-gray-500">Monthly surplus food volume trend</p>
                 </div>
                 <BarChart3 className="w-5 h-5 text-emerald-700" />
@@ -279,10 +279,10 @@ const AdminDashboard = () => {
             </div>
 
             {/* Chart 2: Food Categories Donated */}
-            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md">
+            <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
               <div className="flex items-center justify-between mb-6">
                 <div>
-                  <h3 className="text-base font-bold font-outfit text-emerald-950">Donations by Category</h3>
+                  <h3 className="text-base font-bold font-outfit text-emerald-950">{t('donationsByCategory')}</h3>
                   <p className="text-xs text-gray-500">Distribution of surplus meal types</p>
                 </div>
                 <PieChart className="w-5 h-5 text-amber-600" />
@@ -313,10 +313,10 @@ const AdminDashboard = () => {
           {/* Quick Table Preview */}
           <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-bold font-outfit text-emerald-950">Recent System Activity</h3>
+              <h3 className="text-lg font-bold font-outfit text-emerald-950">{t('recentActivity')}</h3>
               <button 
                 onClick={() => setActiveTab('donations')} 
-                className="text-xs font-bold text-emerald-700 hover:underline"
+                className="text-xs font-bold text-emerald-700 hover:underline btn-bounce-active"
               >
                 View All Table →
               </button>
@@ -364,13 +364,13 @@ const AdminDashboard = () => {
       {activeTab === 'ngos' && (
         <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-6">
           <div>
-            <h3 className="text-xl font-bold font-outfit text-emerald-950">NGO Partner Verification Center</h3>
+            <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('ngoPartnerCenter')}</h3>
             <p className="text-xs text-gray-500">Review registration credentials & issue verified checkmark badges.</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {ngos.map(ngo => (
-              <div key={ngo.id} className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4 relative">
+              <div key={ngo.id} className="bg-white p-5 rounded-2xl border border-gray-200 shadow-xs space-y-4 relative card-zoom-3d">
                 <div className="flex items-start space-x-3">
                   <img src={ngo.avatar} alt="NGO" className="w-12 h-12 rounded-xl object-cover border border-gray-200" />
                   <div>
@@ -397,17 +397,17 @@ const AdminDashboard = () => {
                     {ngo.verificationStatus !== 'Verified' ? (
                       <button
                         onClick={() => verifyNgo(ngo.id, 'Verified')}
-                        className="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center space-x-1"
+                        className="px-3 py-1.5 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs flex items-center space-x-1 btn-bounce-active"
                       >
                         <Check className="w-3.5 h-3.5" />
-                        <span>Verify NGO</span>
+                        <span>{t('verifyNgoBtn')}</span>
                       </button>
                     ) : (
                       <button
                         onClick={() => verifyNgo(ngo.id, 'Pending')}
-                        className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 text-xs font-semibold"
+                        className="px-3 py-1.5 rounded-lg bg-gray-200 text-gray-700 text-xs font-semibold btn-bounce-active"
                       >
-                        Revoke
+                        {t('revokeBtn')}
                       </button>
                     )}
                   </div>
@@ -424,7 +424,7 @@ const AdminDashboard = () => {
         <div className="bg-white rounded-3xl p-6 border border-emerald-900/10 shadow-md space-y-6">
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
             <div>
-              <h3 className="text-xl font-bold font-outfit text-emerald-950">Master Donations Table</h3>
+              <h3 className="text-xl font-bold font-outfit text-emerald-950">{t('masterDonationsTable')}</h3>
               <p className="text-xs text-gray-500">Filtered real-time register of all surplus food contributions.</p>
             </div>
 
@@ -456,10 +456,10 @@ const AdminDashboard = () => {
 
               <button
                 onClick={handleExportCSV}
-                className="px-3 py-2 rounded-xl bg-emerald-900 text-white font-bold text-xs flex items-center space-x-1.5 hover:bg-emerald-800"
+                className="px-3 py-2 rounded-xl bg-emerald-900 text-white font-bold text-xs flex items-center space-x-1.5 hover:bg-emerald-800 btn-bounce-active"
               >
                 <FileSpreadsheet className="w-4 h-4" />
-                <span>CSV Export</span>
+                <span>{t('csvExportBtn')}</span>
               </button>
             </div>
           </div>
@@ -502,7 +502,7 @@ const AdminDashboard = () => {
                       {item.status === 'Delivered' && (
                         <button
                           onClick={() => setSelectedReceiptDonation(item)}
-                          className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs"
+                          className="px-2.5 py-1 bg-amber-500 hover:bg-amber-600 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
                         >
                           Receipt
                         </button>
@@ -521,41 +521,41 @@ const AdminDashboard = () => {
         <div className="bg-white rounded-3xl p-8 border border-emerald-900/10 shadow-md space-y-8">
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
             <div>
-              <h3 className="text-2xl font-bold font-outfit text-emerald-950">Overall Platform Impact Report</h3>
+              <h3 className="text-2xl font-bold font-outfit text-emerald-950">{t('overallImpactReport')}</h3>
               <p className="text-xs text-gray-500">Comprehensive summary of food rescued, beneficiaries fed, and ecosystem health.</p>
             </div>
 
             <div className="flex items-center space-x-3">
               <button
                 onClick={handleExportPDF}
-                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-800 to-amber-600 hover:from-emerald-900 hover:to-amber-700 text-white font-bold text-xs flex items-center space-x-2 shadow-lg"
+                className="px-5 py-3 rounded-2xl bg-gradient-to-r from-emerald-800 to-amber-600 hover:from-emerald-900 hover:to-amber-700 text-white font-bold text-xs flex items-center space-x-2 shadow-lg btn-bounce-active"
               >
                 <Download className="w-4 h-4" />
-                <span>Download Executive PDF Report</span>
+                <span>{t('downloadPdfReport')}</span>
               </button>
             </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200">
+            <div className="bg-emerald-50 p-6 rounded-2xl border border-emerald-200 card-zoom-3d">
               <span className="text-xs font-bold text-emerald-800 uppercase">Total Food Rescued</span>
               <p className="text-3xl font-black font-outfit text-emerald-950 mt-1">8.5+ Tons</p>
               <p className="text-[11px] text-emerald-700 mt-1">Prevented from ending up in landfills</p>
             </div>
 
-            <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200">
+            <div className="bg-amber-50 p-6 rounded-2xl border border-amber-200 card-zoom-3d">
               <span className="text-xs font-bold text-amber-800 uppercase">Total Meals Generated</span>
               <p className="text-3xl font-black font-outfit text-amber-800 mt-1">{stats.totalMeals.toLocaleString()}</p>
               <p className="text-[11px] text-amber-700 mt-1">Nourishing meals served to urban poor</p>
             </div>
 
-            <div className="bg-purple-50 p-6 rounded-2xl border border-purple-200">
+            <div className="bg-purple-50 p-6 rounded-2xl border border-purple-200 card-zoom-3d">
               <span className="text-xs font-bold text-purple-800 uppercase">Fulfillment Rate</span>
               <p className="text-3xl font-black font-outfit text-purple-950 mt-1">98.2%</p>
               <p className="text-[11px] text-purple-700 mt-1">Successful pickup & delivery completion</p>
             </div>
 
-            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200">
+            <div className="bg-blue-50 p-6 rounded-2xl border border-blue-200 card-zoom-3d">
               <span className="text-xs font-bold text-blue-800 uppercase">Partner Network</span>
               <p className="text-3xl font-black font-outfit text-blue-950 mt-1">165+ Entities</p>
               <p className="text-[11px] text-blue-700 mt-1">Donors, NGOs & Delivery Volunteers</p>

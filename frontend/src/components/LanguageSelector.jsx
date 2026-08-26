@@ -12,12 +12,12 @@ const LanguageSelector = () => {
   ];
 
   return (
-    <div className="relative flex items-center bg-emerald-950/10 border border-emerald-800/20 rounded-full px-2.5 py-1">
+    <div className="relative flex items-center bg-emerald-950/10 border border-emerald-800/20 rounded-full px-2.5 py-1 tab-animated hover:bg-emerald-100/50">
       <Globe className="w-4 h-4 text-emerald-700 mr-1.5" />
       <select
         value={language}
         onChange={(e) => setLanguage(e.target.value)}
-        className="bg-transparent text-xs font-semibold text-emerald-950 focus:outline-none cursor-pointer pr-1"
+        className="bg-transparent text-xs font-bold text-emerald-950 focus:outline-none cursor-pointer pr-1"
         aria-label="Language Preference Selector"
       >
         {languages.map((lang) => (
