@@ -13,12 +13,11 @@ import {
   ShieldCheck, 
   Truck, 
   Building2,
-  ChevronDown,
-  Activity
+  ChevronDown
 } from 'lucide-react';
 
 const Navbar = () => {
-  const { t, role, setRole, notifications, isRealtimeActive } = useApp();
+  const { t, role, setRole, notifications } = useApp();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
@@ -73,13 +72,8 @@ const Navbar = () => {
                   {t('officialBadge')}
                 </span>
               </div>
-              <p className="text-xs font-bold text-green-700 tracking-wide flex items-center">
-                <span>{t('tagline')}</span>
-                {isRealtimeActive && (
-                  <span className="ml-2 inline-flex items-center text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-black border border-emerald-300">
-                    <Activity className="w-2.5 h-2.5 mr-1 text-emerald-600 animate-pulse" /> Supabase Live
-                  </span>
-                )}
+              <p className="text-xs font-bold text-green-700 tracking-wide">
+                {t('tagline')}
               </p>
             </div>
           </Link>
@@ -162,7 +156,7 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Role Selector Dropdown (Visitor Removed) */}
+            {/* Role Selector Dropdown */}
             <div className="relative">
               <button
                 onClick={() => setShowRoleDropdown(!showRoleDropdown)}
