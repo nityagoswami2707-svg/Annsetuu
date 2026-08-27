@@ -58,6 +58,27 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
+  // Scroll Triggered Reveal Animation Hook
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('revealed');
+          }
+        });
+      },
+      { threshold: 0.15 }
+    );
+
+    const revealElements = document.querySelectorAll('.scroll-reveal');
+    revealElements.forEach((el) => observer.observe(el));
+
+    return () => {
+      revealElements.forEach((el) => observer.unobserve(el));
+    };
+  }, []);
+
   const prevSlide = () => {
     setCurrentSlide((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
   };
@@ -67,12 +88,30 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-12 sm:space-y-20">
+    <div className="space-y-12 sm:space-y-20 relative overflow-hidden animated-white-bg">
       
       {/* ================================================== */}
-      {/* HERO SECTION — MOBILE FIRST OPTIMIZED */}
+      {/* WHITE MOTION BACKGROUND DECORATIVE FLOATING PARTICLES */}
       {/* ================================================== */}
-      <section className="relative min-h-[90vh] sm:min-h-[85vh] flex items-center justify-center pt-24 pb-12 overflow-hidden">
+      <div className="absolute top-1/4 left-5 w-72 h-72 bg-emerald-300/20 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
+      <div className="absolute top-2/3 right-5 w-80 h-80 bg-orange-400/20 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
+      <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-amber-300/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
+
+      {/* Floating Animated Background Icons */}
+      <div className="absolute top-72 right-12 text-emerald-600/10 pointer-events-none motion-bg-particle-1 hidden md:block">
+        <Utensils className="w-24 h-24" />
+      </div>
+      <div className="absolute top-3/4 left-10 text-orange-500/10 pointer-events-none motion-bg-particle-2 hidden md:block">
+        <Heart className="w-28 h-28" />
+      </div>
+      <div className="absolute bottom-40 right-20 text-emerald-500/10 pointer-events-none motion-bg-particle-1 hidden md:block">
+        <Leaf className="w-20 h-20" />
+      </div>
+
+      {/* ================================================== */}
+      {/* HERO SECTION — 3D SLIDESHOW & RESPONSIVE CTAs */}
+      {/* ================================================== */}
+      <section className="relative min-h-[90vh] sm:min-h-[85vh] flex items-center justify-center pt-24 pb-12 overflow-hidden shadow-2xl">
         
         {/* 3D Moving Background Slideshow */}
         {slides.map((slide, idx) => (
@@ -129,29 +168,29 @@ const Home = () => {
           {/* Badge */}
           <div className="inline-flex items-center space-x-2 bg-emerald-900/90 text-orange-300 border border-orange-500/40 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase backdrop-blur-md shadow-lg">
             <Sparkles className="w-4 h-4 text-orange-400 animate-spin" style={{ animationDuration: '6s' }} />
-            <span>ANNSETU — Bridging Surplus to Smiles</span>
+            <span>{t('brandName')} — {t('tagline')}</span>
           </div>
 
           {/* Title */}
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-outfit text-white leading-tight tracking-tight drop-shadow-md">
-            “Turn Surplus Food Into Someone’s Meal.”
+            “{t('ctaSubText')}”
           </h1>
 
           {/* Subtitle */}
           <p className="text-sm sm:text-lg text-emerald-100/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-sm px-2">
-            Annsetu connects surplus food from restaurants, hotels, events and households with NGOs and volunteers who can deliver it to people who need it.
+            {t('heroSubtitle')}
           </p>
 
-          {/* Primary Call to Actions — Touch Friendly Full Width on Mobile */}
+          {/* Primary Call to Actions */}
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 pt-2 max-w-md mx-auto sm:max-w-none">
             <button
               onClick={() => {
-                const target = document.getElementById('dashboards-section');
+                const target = document.getElementById('how-it-works');
                 if (target) target.scrollIntoView({ behavior: 'smooth' });
               }}
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-base shadow-2xl flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
             >
-              <span>Explore Annsetu</span>
+              <span>{t('exploreAnnsetu')}</span>
               <ArrowRight className="w-5 h-5" />
             </button>
 
@@ -160,7 +199,7 @@ const Home = () => {
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-base shadow-2xl border-2 border-emerald-400/40 flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
             >
               <Utensils className="w-5 h-5 text-orange-400" />
-              <span>Donate Food</span>
+              <span>{t('donateFood')}</span>
             </Link>
           </div>
 
@@ -174,10 +213,11 @@ const Home = () => {
       </section>
 
       {/* ================================================== */}
-      {/* REAL-TIME IMPACT COUNTERS */}
+      {/* REAL-TIME IMPACT COUNTERS — WITH SCROLL REVEAL */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-emerald-900/10 gradient-card-emerald">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
+        <div className="bg-white/95 rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-900/10 backdrop-blur-md relative overflow-hidden">
+          
           <div className="text-center max-w-xl mx-auto mb-8">
             <span className="text-xs font-black uppercase tracking-widest text-green-800 bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
               {t('realtimePlatformStats')}
@@ -187,7 +227,7 @@ const Home = () => {
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 text-center">
             
-            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
+            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-2">
                 <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
@@ -195,7 +235,7 @@ const Home = () => {
               <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('mealsDonated')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
+            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-2">
                 <Users className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
@@ -203,7 +243,7 @@ const Home = () => {
               <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('peopleServed')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
+            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2">
                 <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-purple-600" />
               </div>
@@ -211,7 +251,7 @@ const Home = () => {
               <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('activeDonors')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
+            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-2">
                 <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
@@ -219,7 +259,7 @@ const Home = () => {
               <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('partnerNGOs')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white rounded-2xl border border-green-100 shadow-sm card-zoom-3d col-span-2 lg:col-span-1">
+            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d col-span-2 lg:col-span-1">
               <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-2">
                 <Recycle className="w-5 h-5 sm:w-6 sm:h-6" />
               </div>
@@ -232,37 +272,90 @@ const Home = () => {
       </section>
 
       {/* ================================================== */}
-      {/* PROBLEM STATEMENT — MOBILE CARD SPECIFICATION */}
+      {/* WHY FOOD DONATION MATTERS — WITH SCROLL REVEAL */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-orange-500/20 card-zoom-3d space-y-4">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
+        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
+          <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-3.5 py-1 rounded-full border border-orange-200">
+            {t('missionPurpose')}
+          </span>
+          <h2 className="text-3xl sm:text-5xl font-black text-green-950 font-outfit">
+            "{t('whyDonationTitle')}"
+          </h2>
+          <p className="text-base text-gray-700 leading-relaxed font-normal">
+            {t('whyDonationSub')}
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+          
+          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
+            <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:bg-green-700 group-hover:text-white transition-colors">
+              <Leaf className="w-7 h-7" />
+            </div>
+            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('reduceWasteTitle')}</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">{t('reduceWasteDesc')}</p>
+          </div>
+
+          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
+            <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+              <Heart className="w-7 h-7" />
+            </div>
+            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('fightHungerTitle')}</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">{t('fightHungerDesc')}</p>
+          </div>
+
+          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
+            <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+              <Recycle className="w-7 h-7" />
+            </div>
+            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('protectEnvTitle')}</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">{t('protectEnvDesc')}</p>
+          </div>
+
+          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
+            <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+              <Users className="w-7 h-7" />
+            </div>
+            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('buildCommunityTitle')}</h3>
+            <p className="text-xs text-gray-600 leading-relaxed">{t('buildCommunityDesc')}</p>
+          </div>
+
+        </div>
+      </section>
+
+      {/* ================================================== */}
+      {/* PROBLEM STATEMENT — WITH SCROLL REVEAL */}
+      {/* ================================================== */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
+        <div className="bg-white/95 rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-orange-500/20 card-zoom-3d space-y-4">
           <div className="flex items-center space-x-3 border-b border-gray-100 pb-3">
             <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
               <Utensils className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">Core Challenge</span>
-              <h2 className="text-xl sm:text-3xl font-black font-outfit text-green-950">THE PROBLEM</h2>
+              <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">{t('theReality')}</span>
+              <h2 className="text-xl sm:text-3xl font-black font-outfit text-green-950">{t('problemTitle')}</h2>
             </div>
           </div>
 
           <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-semibold">
-            “Large quantities of safe, edible food from restaurants, hotels, weddings, and households are wasted every day, while many people go hungry. There is no efficient platform to connect food donors with NGOs and volunteers in real time.”
+            “{t('problemText')}”
           </p>
         </div>
       </section>
 
       {/* ================================================== */}
-      {/* SOLUTION — MOBILE VERTICAL FLOW SPECIFICATION */}
+      {/* SOLUTION — WITH SCROLL REVEAL */}
       {/* ================================================== */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-reveal">
         <div className="text-center max-w-3xl mx-auto space-y-3">
           <span className="text-xs font-black text-green-800 uppercase tracking-widest bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
-            Platform Workflow
+            {t('redistributionEngine')}
           </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">THE ANNSETU SOLUTION</h2>
+          <h2 className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">{t('solutionTitle')}</h2>
           <p className="text-sm text-gray-600 leading-relaxed font-medium">
-            “Annsetu creates a real-time bridge between food donors, verified NGOs and delivery volunteers. The platform allows surplus food to be registered, evaluated, accepted, collected, tracked and successfully delivered.”
+            “{t('solutionSub')}”
           </p>
         </div>
 
@@ -272,8 +365,8 @@ const Home = () => {
           {/* Step 1: Donor */}
           <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🍱</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">Donor</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">Registers surplus food & pickup info</p>
+            <h4 className="text-sm font-black font-outfit text-green-950">{t('step1Title')}</h4>
+            <p className="text-[10px] text-gray-500 font-semibold">{t('step1Sub')}</p>
           </div>
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
@@ -281,8 +374,8 @@ const Home = () => {
           {/* Step 2: AI Smart Matching */}
           <div className="w-full md:w-1/5 bg-amber-500 text-gray-950 p-5 rounded-2xl border-2 border-amber-600 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤖</span>
-            <h4 className="text-sm font-black font-outfit">AI Smart Matching</h4>
-            <p className="text-[10px] font-bold">Matches nearby verified NGO by distance & capacity</p>
+            <h4 className="text-sm font-black font-outfit">{t('step2Title')}</h4>
+            <p className="text-[10px] font-bold">{t('step2Sub')}</p>
           </div>
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
@@ -290,8 +383,8 @@ const Home = () => {
           {/* Step 3: NGO */}
           <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤝</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">NGO</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">Evaluates food quality & accepts request</p>
+            <h4 className="text-sm font-black font-outfit text-green-950">{t('step3Title')}</h4>
+            <p className="text-[10px] text-gray-500 font-semibold">{t('step3Sub')}</p>
           </div>
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
@@ -299,8 +392,8 @@ const Home = () => {
           {/* Step 4: Delivery */}
           <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🚚</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">Delivery</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">EV volunteer completes GPS tracked route</p>
+            <h4 className="text-sm font-black font-outfit text-green-950">{t('step5Title')}</h4>
+            <p className="text-[10px] text-gray-500 font-semibold">{t('step5Sub')}</p>
           </div>
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
@@ -308,126 +401,21 @@ const Home = () => {
           {/* Step 5: People Served */}
           <div className="w-full md:w-1/5 bg-emerald-950 text-white p-5 rounded-2xl border-2 border-emerald-800 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">❤️</span>
-            <h4 className="text-sm font-black font-outfit">People Served</h4>
-            <p className="text-[10px] text-emerald-200 font-semibold">Nourishing meals shared with dignity</p>
+            <h4 className="text-sm font-black font-outfit">{t('step7Title')}</h4>
+            <p className="text-[10px] text-emerald-200 font-semibold">{t('step7Sub')}</p>
           </div>
 
         </div>
       </section>
 
       {/* ================================================== */}
-      {/* MOBILE DASHBOARD SELECTION CARDS */}
+      {/* FINAL CALL TO ACTION — WITH SCROLL REVEAL */}
       {/* ================================================== */}
-      <section id="dashboards-section" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
-        <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-3.5 py-1 rounded-full border border-orange-200">
-            {t('platformPortals')}
-          </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">
-            Explore Annsetu Portals
-          </h2>
-          <p className="text-xs sm:text-sm text-gray-600 font-medium">
-            Select your role to access role-specific tools, live tracking, and distribution management.
-          </p>
-        </div>
-
-        {/* Stacked Vertically on Mobile / 4-Col Grid on Desktop */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          
-          {/* Card 1: Admin */}
-          <div className="bg-white rounded-3xl p-6 border-2 border-purple-200 shadow-xl card-zoom-3d flex flex-col justify-between space-y-4">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-4">
-                <ShieldCheck className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-black font-outfit text-green-950 mb-1">Admin</h3>
-              <p className="text-xs text-gray-600 leading-relaxed">Monitor users, NGOs, donations and overall platform impact in real time.</p>
-            </div>
-            <button
-              onClick={() => {
-                setRole('admin');
-                navigate('/admin');
-              }}
-              className="w-full min-h-[48px] px-4 rounded-2xl bg-purple-900 hover:bg-purple-950 text-white font-black text-xs flex items-center justify-center space-x-2 btn-bounce-active shadow-md"
-            >
-              <span>Access Admin Dashboard</span>
-              <ChevronRight className="w-4 h-4 text-amber-400" />
-            </button>
-          </div>
-
-          {/* Card 2: Donor */}
-          <div className="bg-white rounded-3xl p-6 border-2 border-orange-200 shadow-xl card-zoom-3d flex flex-col justify-between space-y-4">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-4">
-                <Utensils className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-black font-outfit text-green-950 mb-1">Donor</h3>
-              <p className="text-xs text-gray-600 leading-relaxed">Register surplus food, capture photos, and track real-time NGO acceptance.</p>
-            </div>
-            <button
-              onClick={() => {
-                setRole('donor');
-                navigate('/donor');
-              }}
-              className="w-full min-h-[48px] px-4 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs flex items-center justify-center space-x-2 btn-bounce-active shadow-md"
-            >
-              <span>Access Donor Dashboard</span>
-              <ChevronRight className="w-4 h-4 text-gray-950" />
-            </button>
-          </div>
-
-          {/* Card 3: NGO */}
-          <div className="bg-white rounded-3xl p-6 border-2 border-green-200 shadow-xl card-zoom-3d flex flex-col justify-between space-y-4">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-4">
-                <Building2 className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-black font-outfit text-green-950 mb-1">NGO</h3>
-              <p className="text-xs text-gray-600 leading-relaxed">Review incoming food requests, evaluate quality, and accept pickups.</p>
-            </div>
-            <button
-              onClick={() => {
-                setRole('ngo');
-                navigate('/ngo');
-              }}
-              className="w-full min-h-[48px] px-4 rounded-2xl bg-green-800 hover:bg-green-900 text-white font-black text-xs flex items-center justify-center space-x-2 btn-bounce-active shadow-md"
-            >
-              <span>Access NGO Dashboard</span>
-              <ChevronRight className="w-4 h-4 text-amber-400" />
-            </button>
-          </div>
-
-          {/* Card 4: Tracking */}
-          <div className="bg-white rounded-3xl p-6 border-2 border-blue-200 shadow-xl card-zoom-3d flex flex-col justify-between space-y-4">
-            <div>
-              <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-4">
-                <Truck className="w-7 h-7" />
-              </div>
-              <h3 className="text-xl font-black font-outfit text-green-950 mb-1">Tracking</h3>
-              <p className="text-xs text-gray-600 leading-relaxed">Track the complete food journey live on GPS telematics map from pickup to delivery.</p>
-            </div>
-            <button
-              onClick={() => {
-                navigate('/track');
-              }}
-              className="w-full min-h-[48px] px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs flex items-center justify-center space-x-2 btn-bounce-active shadow-md"
-            >
-              <span>Access Tracking Dashboard</span>
-              <ChevronRight className="w-4 h-4 text-white" />
-            </button>
-          </div>
-
-        </div>
-      </section>
-
-      {/* ================================================== */}
-      {/* FINAL CALL TO ACTION */}
-      {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
         <div className="bg-gradient-to-r from-green-950 via-green-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
           <div className="max-w-2xl mx-auto space-y-3">
             <h2 className="text-2xl sm:text-4xl font-black font-outfit">{t('haveExtraFood')}</h2>
-            <p className="text-base text-orange-200 italic font-bold">"Bridging Surplus to Smiles — Anytime, Anywhere, From Any Device."</p>
+            <p className="text-base text-orange-200 italic font-bold">"{t('tagline')} — Anytime, Anywhere, From Any Device."</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
@@ -436,7 +424,15 @@ const Home = () => {
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-base shadow-xl flex items-center justify-center space-x-2 btn-bounce-active"
             >
               <Utensils className="w-5 h-5" />
-              <span>Donate Surplus Meals</span>
+              <span>{t('donateNow')}</span>
+            </Link>
+
+            <Link
+              to="/ngo"
+              className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 btn-bounce-active"
+            >
+              <Building2 className="w-5 h-5" />
+              <span>{t('partnerNGO')}</span>
             </Link>
           </div>
         </div>
