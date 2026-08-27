@@ -18,7 +18,6 @@ const DeliveryDashboard = () => {
   const { t, donations, updateDeliveryStatus, setSelectedReceiptDonation } = useApp();
   const [confirmModalDonation, setConfirmModalDonation] = useState(null);
 
-  // Active driver deliveries
   const driverDeliveries = donations.filter(d => d.status !== 'Rejected');
   const activeAssignment = driverDeliveries[0] || donations[0];
 
@@ -40,167 +39,166 @@ const DeliveryDashboard = () => {
   };
 
   return (
-    <div className="pt-20 pb-20 sm:pb-16 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-gradient-to-b from-green-950 via-emerald-950 to-green-900 text-white relative overflow-hidden">
       
-      {/* Smartphone Optimized Driver Header */}
-      <div className="bg-emerald-950 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-emerald-800">
-        <div>
-          <div className="flex items-center space-x-2">
-            <Truck className="w-6 h-6 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
-            <h1 className="text-xl sm:text-3xl font-extrabold font-outfit">Delivery Volunteer Portal</h1>
+      {/* Motion Background Glow Orbs */}
+      <div className="absolute top-10 left-10 w-96 h-96 bg-blue-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+        
+        {/* Smartphone Driver Header Banner */}
+        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-blue-950 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-500/30">
+          <div>
+            <div className="flex items-center space-x-2">
+              <Truck className="w-6 h-6 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
+              <h1 className="text-xl sm:text-3xl font-extrabold font-outfit">Delivery Volunteer Portal</h1>
+            </div>
+            <p className="text-emerald-200 text-xs sm:text-sm mt-1">Smart Logistics Task Manager for Smartphone Users.</p>
           </div>
-          <p className="text-emerald-200 text-xs sm:text-sm mt-1">Smart Logistics Task Manager for Smartphone Users.</p>
+
+          <div className="bg-emerald-900/80 px-3.5 py-2 rounded-2xl border border-emerald-700 text-xs w-full sm:w-auto backdrop-blur-md">
+            <span className="text-emerald-300 font-bold block text-[10px]">Driver Profile & Vehicle</span>
+            <span className="font-extrabold text-amber-400 text-xs sm:text-sm">Ramesh Kumar (GJ-06-EV-4412)</span>
+          </div>
         </div>
 
-        <div className="bg-emerald-900 px-3.5 py-2 rounded-2xl border border-emerald-700 text-xs w-full sm:w-auto">
-          <span className="text-emerald-300 font-bold block text-[10px]">Driver Profile & Vehicle</span>
-          <span className="font-extrabold text-amber-400 text-xs sm:text-sm">Ramesh Kumar (GJ-06-EV-4412)</span>
-        </div>
-      </div>
-
-      {/* CURRENT ASSIGNMENT SPECIFICATION CARD */}
-      {activeAssignment && (
-        <div className="bg-white rounded-3xl border-2 border-orange-500/30 p-5 sm:p-7 shadow-xl space-y-5">
-          <div className="flex items-center justify-between border-b border-gray-100 pb-3">
-            <div>
-              <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">Active Assignment</span>
-              <h3 className="text-xl font-black font-outfit text-green-950">{activeAssignment.id}</h3>
-            </div>
-            <span className="px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800">
-              {activeAssignment.status}
-            </span>
-          </div>
-
-          {/* Key Assignment Details */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase">Food Quantity & Meals</span>
-              <p className="font-extrabold text-gray-900 text-sm">{activeAssignment.foodName}</p>
-              <p className="text-amber-700 font-extrabold">{activeAssignment.servingCapacity} Meals ({activeAssignment.quantity})</p>
+        {/* CURRENT ASSIGNMENT CARD */}
+        {activeAssignment && (
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border-2 border-orange-500/40 p-5 sm:p-7 shadow-2xl space-y-5">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div>
+                <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">Active Assignment</span>
+                <h3 className="text-xl font-black font-outfit text-green-950">{activeAssignment.id}</h3>
+              </div>
+              <span className="px-3 py-1 rounded-full text-xs font-black bg-blue-100 text-blue-800">
+                {activeAssignment.status}
+              </span>
             </div>
 
-            <div className="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-200 space-y-1">
-              <span className="text-[10px] font-bold text-amber-800 uppercase">Pickup Address (Donor)</span>
-              <p className="font-bold text-gray-900">{activeAssignment.donorName}</p>
-              <p className="text-gray-600 text-[11px]">{activeAssignment.pickupAddress}, {activeAssignment.city}</p>
-              <p className="text-amber-900 font-bold"><Phone className="w-3 h-3 inline mr-1" /> {activeAssignment.phone}</p>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+              <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 space-y-1">
+                <span className="text-[10px] font-bold text-gray-400 uppercase">Food Quantity & Meals</span>
+                <p className="font-extrabold text-gray-900 text-sm">{activeAssignment.foodName}</p>
+                <p className="text-amber-700 font-extrabold">{activeAssignment.servingCapacity} Meals ({activeAssignment.quantity})</p>
+              </div>
+
+              <div className="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-200 space-y-1">
+                <span className="text-[10px] font-bold text-amber-800 uppercase">Pickup Address (Donor)</span>
+                <p className="font-bold text-gray-900">{activeAssignment.donorName}</p>
+                <p className="text-gray-600 text-[11px]">{activeAssignment.pickupAddress}, {activeAssignment.city}</p>
+                <p className="text-amber-900 font-bold"><Phone className="w-3 h-3 inline mr-1" /> {activeAssignment.phone}</p>
+              </div>
+
+              <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-1 sm:col-span-2">
+                <span className="text-[10px] font-bold text-emerald-800 uppercase">Destination (NGO Shelter)</span>
+                <p className="font-extrabold text-emerald-950 text-sm">{activeAssignment.ngoName}</p>
+                <p className="text-emerald-800 text-[11px]">Pickup Time: <strong>{activeAssignment.prepTime}</strong> ({activeAssignment.city}, Gujarat)</p>
+              </div>
             </div>
 
-            <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-1 sm:col-span-2">
-              <span className="text-[10px] font-bold text-emerald-800 uppercase">Destination (NGO Shelter)</span>
-              <p className="font-extrabold text-emerald-950 text-sm">{activeAssignment.ngoName}</p>
-              <p className="text-emerald-800 text-[11px]">Pickup Time: <strong>{activeAssignment.prepTime}</strong> ({activeAssignment.city}, Gujarat)</p>
-            </div>
-          </div>
-
-          {/* LARGE TOUCH-FRIENDLY ACTION BUTTONS SPECIFICATION */}
-          <div className="space-y-2.5 pt-2">
-            <p className="text-[11px] font-black text-gray-400 uppercase tracking-wider text-center">Driver Task Controls (Tap while on route)</p>
-            
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+            <div className="space-y-2.5 pt-2">
+              <p className="text-[11px] font-black text-gray-400 uppercase tracking-wider text-center">Driver Task Controls (Tap while on route)</p>
               
-              {/* Start Pickup */}
-              <button
-                onClick={() => handleUpdate(activeAssignment.id, 'NGO Request Sent')}
-                className="min-h-[48px] px-4 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
-              >
-                <Play className="w-4 h-4 text-amber-400" />
-                <span>Start Pickup</span>
-              </button>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                
+                <button
+                  onClick={() => handleUpdate(activeAssignment.id, 'NGO Request Sent')}
+                  className="min-h-[48px] px-4 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
+                >
+                  <Play className="w-4 h-4 text-amber-400" />
+                  <span>Start Pickup</span>
+                </button>
 
-              {/* Picked Up */}
+                <button
+                  onClick={() => handleUpdate(activeAssignment.id, 'Picked Up')}
+                  disabled={activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'}
+                  className={`min-h-[48px] px-4 rounded-2xl font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-all ${
+                    activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-emerald-700 hover:bg-emerald-800 text-white btn-bounce-active'
+                  }`}
+                >
+                  <CheckCircle className="w-4 h-4 text-emerald-300" />
+                  <span>Picked Up</span>
+                </button>
+
+                <a
+                  href={`https://www.google.com/maps/dir/?api=1&destination=22.3072,73.1811`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="min-h-[48px] px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
+                >
+                  <Navigation className="w-4 h-4 text-gray-950" />
+                  <span>Start Navigation</span>
+                </a>
+
+                <button
+                  onClick={() => handleUpdate(activeAssignment.id, 'In Transit')}
+                  disabled={activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'}
+                  className={`min-h-[48px] px-4 rounded-2xl font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-all ${
+                    activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'
+                      ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
+                      : 'bg-blue-600 hover:bg-blue-700 text-white btn-bounce-active'
+                  }`}
+                >
+                  <Truck className="w-4 h-4 text-white" />
+                  <span>In Transit</span>
+                </button>
+
+              </div>
+
               <button
-                onClick={() => handleUpdate(activeAssignment.id, 'Picked Up')}
-                disabled={activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'}
-                className={`min-h-[48px] px-4 rounded-2xl font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-all ${
-                  activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-emerald-700 hover:bg-emerald-800 text-white btn-bounce-active'
+                onClick={() => handleUpdate(activeAssignment.id, 'Delivered')}
+                disabled={activeAssignment.status === 'Delivered'}
+                className={`w-full min-h-[52px] px-6 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center space-x-2 transition-all ${
+                  activeAssignment.status === 'Delivered'
+                    ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-300'
+                    : 'bg-gradient-to-r from-green-900 to-orange-600 hover:from-green-950 hover:to-orange-700 text-white btn-bounce-active'
                 }`}
               >
-                <CheckCircle className="w-4 h-4 text-emerald-300" />
-                <span>Picked Up</span>
-              </button>
-
-              {/* Start Navigation */}
-              <a
-                href={`https://www.google.com/maps/dir/?api=1&destination=22.3072,73.1811`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="min-h-[48px] px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
-              >
-                <Navigation className="w-4 h-4 text-gray-950" />
-                <span>Start Navigation</span>
-              </a>
-
-              {/* In Transit */}
-              <button
-                onClick={() => handleUpdate(activeAssignment.id, 'In Transit')}
-                disabled={activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'}
-                className={`min-h-[48px] px-4 rounded-2xl font-black text-xs shadow-md flex items-center justify-center space-x-2 transition-all ${
-                  activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'
-                    ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-                    : 'bg-blue-600 hover:bg-blue-700 text-white btn-bounce-active'
-                }`}
-              >
-                <Truck className="w-4 h-4 text-white" />
-                <span>In Transit</span>
+                <CheckCircle className="w-5 h-5" />
+                <span>{activeAssignment.status === 'Delivered' ? 'Marked Delivered ✓' : 'Mark Delivered'}</span>
               </button>
 
             </div>
-
-            {/* Mark Delivered — Full Width Primary Button */}
-            <button
-              onClick={() => handleUpdate(activeAssignment.id, 'Delivered')}
-              disabled={activeAssignment.status === 'Delivered'}
-              className={`w-full min-h-[52px] px-6 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center space-x-2 transition-all ${
-                activeAssignment.status === 'Delivered'
-                  ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-300'
-                  : 'bg-gradient-to-r from-green-900 to-orange-600 hover:from-green-950 hover:to-orange-700 text-white btn-bounce-active'
-              }`}
-            >
-              <CheckCircle className="w-5 h-5" />
-              <span>{activeAssignment.status === 'Delivered' ? 'Marked Delivered ✓' : 'Mark Delivered'}</span>
-            </button>
 
           </div>
+        )}
 
-        </div>
-      )}
+        {confirmModalDonation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs text-gray-900">
+            <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
+              <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                <CheckCircle className="w-8 h-8 text-emerald-600 animate-bounce" />
+              </div>
 
-      {/* Confirmation Modal */}
-      {confirmModalDonation && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl space-y-5 text-center">
-            <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-emerald-600 animate-bounce" />
-            </div>
+              <div className="space-y-2">
+                <h3 className="text-lg font-black font-outfit text-green-950">Confirm Delivery Completion</h3>
+                <p className="text-xs text-gray-600">
+                  Handed over donation <strong className="text-emerald-900 font-mono">{confirmModalDonation.id}</strong> to <strong className="text-emerald-900">{confirmModalDonation.ngoName}</strong>?
+                </p>
+              </div>
 
-            <div className="space-y-2">
-              <h3 className="text-lg font-black font-outfit text-green-950">Confirm Delivery Completion</h3>
-              <p className="text-xs text-gray-600">
-                Handed over donation <strong className="text-emerald-900 font-mono">{confirmModalDonation.id}</strong> to <strong className="text-emerald-900">{confirmModalDonation.ngoName}</strong>?
-              </p>
-            </div>
-
-            <div className="flex gap-3 pt-2">
-              <button
-                onClick={() => setConfirmModalDonation(null)}
-                className="flex-1 py-3 rounded-xl bg-gray-100 text-xs font-bold text-gray-700 btn-bounce-active"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleConfirmDelivered}
-                className="flex-1 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-extrabold shadow-lg btn-bounce-active"
-              >
-                Yes, Delivered ✓
-              </button>
+              <div className="flex gap-3 pt-2">
+                <button
+                  onClick={() => setConfirmModalDonation(null)}
+                  className="flex-1 py-3 rounded-xl bg-gray-100 text-xs font-bold text-gray-700 btn-bounce-active"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleConfirmDelivered}
+                  className="flex-1 py-3 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white text-xs font-extrabold shadow-lg btn-bounce-active"
+                >
+                  Yes, Delivered ✓
+                </button>
+              </div>
             </div>
           </div>
-        </div>
-      )}
+        )}
 
+      </div>
     </div>
   );
 };

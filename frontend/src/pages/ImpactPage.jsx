@@ -41,113 +41,120 @@ const ImpactPage = () => {
   ];
 
   return (
-    <div className="pt-24 pb-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="pt-24 pb-16 min-h-screen bg-gradient-to-b from-green-950 via-emerald-950 to-green-900 text-white relative overflow-hidden">
       
-      {/* Header */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
-        <span className="text-xs font-bold uppercase tracking-widest text-amber-600 bg-amber-100 px-3.5 py-1 rounded-full border border-amber-200">
-          {t('quantifiableResults')}
-        </span>
-        <h1 className="text-4xl sm:text-6xl font-black font-outfit text-emerald-950">
-          {t('ourCollectiveImpactTitle')}
-        </h1>
-        <p className="text-base text-gray-700 leading-relaxed">
-          {t('impactSubtext')}
-        </p>
-      </div>
+      {/* Dynamic Background Glow Orbs */}
+      <div className="absolute top-10 right-10 w-96 h-96 bg-amber-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
+      <div className="absolute bottom-10 left-10 w-96 h-96 bg-emerald-400/20 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
 
-      {/* Impact Multiplier Visual Flow */}
-      <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-amber-700 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
-        <span className="text-xs font-bold text-amber-300 uppercase tracking-widest bg-black/20 px-3 py-1 rounded-full">
-          {t('equationTitle')}
-        </span>
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
         
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-xl sm:text-3xl font-black font-outfit pt-2">
-          <div className="p-4 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-md card-zoom-3d">
-            {t('eqnStep1')}
+        {/* Header */}
+        <div className="text-center max-w-3xl mx-auto space-y-4">
+          <span className="text-xs font-bold uppercase tracking-widest text-amber-400 bg-emerald-900 px-3.5 py-1 rounded-full border border-emerald-700">
+            {t('quantifiableResults')}
+          </span>
+          <h1 className="text-4xl sm:text-6xl font-black font-outfit text-white">
+            {t('ourCollectiveImpactTitle')}
+          </h1>
+          <p className="text-base text-emerald-100/90 leading-relaxed">
+            {t('impactSubtext')}
+          </p>
+        </div>
+
+        {/* Impact Multiplier Visual Flow */}
+        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-amber-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6 border border-emerald-700">
+          <span className="text-xs font-bold text-amber-300 uppercase tracking-widest bg-black/20 px-3 py-1 rounded-full">
+            {t('equationTitle')}
+          </span>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-6 sm:gap-10 text-xl sm:text-3xl font-black font-outfit pt-2">
+            <div className="p-4 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-md card-zoom-3d">
+              {t('eqnStep1')}
+            </div>
+            <span className="text-amber-400 text-2xl">→</span>
+            <div className="p-4 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-md card-zoom-3d">
+              {t('eqnStep2')}
+            </div>
+            <span className="text-amber-400 text-2xl">→</span>
+            <div className="p-4 bg-amber-400 text-gray-950 rounded-2xl shadow-lg card-zoom-3d">
+              {t('eqnStep3')}
+            </div>
           </div>
-          <span className="text-amber-400 text-2xl">→</span>
-          <div className="p-4 bg-white/10 rounded-2xl border border-white/20 backdrop-blur-md card-zoom-3d">
-            {t('eqnStep2')}
+        </div>
+
+        {/* Large Visual Stats Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center text-gray-900">
+          
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <Utensils className="w-8 h-8 mx-auto text-amber-600 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">10,000+</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('mealsSavedLabel')}</p>
           </div>
-          <span className="text-amber-400 text-2xl">→</span>
-          <div className="p-4 bg-amber-400 text-gray-950 rounded-2xl shadow-lg card-zoom-3d">
-            {t('eqnStep3')}
+
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <Heart className="w-8 h-8 mx-auto text-red-500 fill-red-500 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">2,500+</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('peopleServed')}</p>
           </div>
-        </div>
-      </div>
 
-      {/* Large Visual Stats Grid */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center">
-        
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <Utensils className="w-8 h-8 mx-auto text-amber-600 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">10,000+</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('mealsSavedLabel')}</p>
-        </div>
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <Building2 className="w-8 h-8 mx-auto text-emerald-700 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">45+</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('partnerNGOs')}</p>
+          </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <Heart className="w-8 h-8 mx-auto text-red-500 fill-red-500 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">2,500+</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('peopleServed')}</p>
-        </div>
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <Users className="w-8 h-8 mx-auto text-purple-600 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">120+</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('activeDonors')}</p>
+          </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <Building2 className="w-8 h-8 mx-auto text-emerald-700 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">45+</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('partnerNGOs')}</p>
-        </div>
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <MapPin className="w-8 h-8 mx-auto text-blue-600 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">5 Cities</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('citiesCoveredLabel')}</p>
+          </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <Users className="w-8 h-8 mx-auto text-purple-600 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">120+</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('activeDonors')}</p>
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-md card-zoom-3d">
+            <Award className="w-8 h-8 mx-auto text-amber-500 mb-2" />
+            <p className="text-3xl font-black text-emerald-950 font-outfit">85+</p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('volunteersEngagedLabel')}</p>
+          </div>
+
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <MapPin className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">5 Cities</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('citiesCoveredLabel')}</p>
-        </div>
+        {/* Testimonials */}
+        <div className="space-y-8">
+          <div className="text-center">
+            <h2 className="text-3xl font-black font-outfit text-white">{t('storiesOfHope')}</h2>
+            <p className="text-xs text-emerald-200">{t('storiesSubtext')}</p>
+          </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-md card-zoom-3d">
-          <Award className="w-8 h-8 mx-auto text-amber-500 mb-2" />
-          <p className="text-3xl font-black text-emerald-950 font-outfit">85+</p>
-          <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('volunteersEngagedLabel')}</p>
-        </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-900">
+            {testimonials.map((tItem, idx) => (
+              <div key={idx} className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-emerald-500/30 shadow-2xl flex flex-col justify-between space-y-4 card-zoom-3d">
+                <div className="space-y-3">
+                  <Quote className="w-8 h-8 text-amber-500" />
+                  <p className="text-xs text-gray-700 italic leading-relaxed">"{tItem.quote}"</p>
+                </div>
 
-      </div>
-
-      {/* Testimonials */}
-      <div className="space-y-8">
-        <div className="text-center">
-          <h2 className="text-3xl font-black font-outfit text-emerald-950">{t('storiesOfHope')}</h2>
-          <p className="text-xs text-gray-500">{t('storiesSubtext')}</p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-          {testimonials.map((tItem, idx) => (
-            <div key={idx} className="bg-white p-6 rounded-3xl border border-emerald-900/10 shadow-lg flex flex-col justify-between space-y-4 card-zoom-3d">
-              <div className="space-y-3">
-                <Quote className="w-8 h-8 text-amber-400" />
-                <p className="text-xs text-gray-700 italic leading-relaxed">"{tItem.quote}"</p>
-              </div>
-
-              <div className="flex items-center space-x-3 pt-4 border-t border-gray-100">
-                <img src={tItem.avatar} alt={tItem.name} className="w-11 h-11 rounded-full object-cover border border-gray-200" />
-                <div>
-                  <h4 className="text-xs font-bold text-emerald-950 font-outfit">{tItem.name}</h4>
-                  <p className="text-[10px] text-gray-500">{tItem.role}</p>
-                  <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full inline-block mt-0.5">
-                    {tItem.type}
-                  </span>
+                <div className="flex items-center space-x-3 pt-4 border-t border-gray-100">
+                  <img src={tItem.avatar} alt={tItem.name} className="w-11 h-11 rounded-full object-cover border border-gray-200" />
+                  <div>
+                    <h4 className="text-xs font-bold text-emerald-950 font-outfit">{tItem.name}</h4>
+                    <p className="text-[10px] text-gray-500">{tItem.role}</p>
+                    <span className="text-[9px] font-bold text-emerald-700 bg-emerald-100 px-2 py-0.5 rounded-full inline-block mt-0.5">
+                      {tItem.type}
+                    </span>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      </div>
 
+      </div>
     </div>
   );
 };

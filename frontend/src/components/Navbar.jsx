@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSelector from './LanguageSelector';
@@ -18,7 +18,6 @@ import {
 
 const Navbar = () => {
   const { t, role, setRole, notifications } = useApp();
-  const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
@@ -26,19 +25,6 @@ const Navbar = () => {
   const location = useLocation();
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  useEffect(() => {
-    const handleScroll = () => {
-      if (window.scrollY > 20) {
-        setScrolled(true);
-      } else {
-        setScrolled(false);
-      }
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
-
-  // Visitor role removed! Valid roles: Donor, NGO, Admin, Delivery
   const roles = [
     { id: 'donor', labelKey: 'donorPortalRole', icon: Utensils, color: 'text-orange-600' },
     { id: 'ngo', labelKey: 'ngoPortalRole', icon: Building2, color: 'text-green-700' },
@@ -47,9 +33,7 @@ const Navbar = () => {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-      scrolled ? 'glass-nav shadow-xl py-2.5' : 'bg-white/95 backdrop-blur-md py-3.5 border-b-2 border-orange-500/20 shadow-sm'
-    }`}>
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md py-3.5 border-b-2 border-orange-500/20 shadow-md transition-none">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between">
           
