@@ -10,8 +10,7 @@ import {
   User, 
   Building2, 
   Truck, 
-  ShieldCheck,
-  FileSpreadsheet,
+  ShieldCheck, 
   BarChart3,
   CheckSquare
 } from 'lucide-react';
@@ -26,17 +25,9 @@ const MobileBottomNav = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Define bottom tabs per role
+  // Define bottom tabs per role (Visitor Role removed!)
   const getTabs = () => {
     switch (role) {
-      case 'donor':
-        return [
-          { id: 'home', label: t('home'), path: '/', icon: HomeIcon },
-          { id: 'donate', label: t('donateFood'), path: '/donor', icon: Utensils },
-          { id: 'track', label: t('trackDonation'), path: '/track', icon: MapPin },
-          { id: 'notif', label: 'Alerts', action: () => setShowNotifModal(true), icon: Bell, badge: unreadCount },
-          { id: 'profile', label: 'Profile', action: () => setShowProfileSheet(true), icon: User }
-        ];
       case 'ngo':
         return [
           { id: 'home', label: t('home'), path: '/', icon: HomeIcon },
@@ -61,6 +52,7 @@ const MobileBottomNav = () => {
           { id: 'reports', label: 'Reports', path: '/impact', icon: BarChart3 },
           { id: 'profile', label: 'Profile', action: () => setShowProfileSheet(true), icon: User }
         ];
+      case 'donor':
       default:
         return [
           { id: 'home', label: t('home'), path: '/', icon: HomeIcon },
@@ -117,7 +109,7 @@ const MobileBottomNav = () => {
         <NotificationModal onClose={() => setShowNotifModal(false)} />
       )}
 
-      {/* Profile Bottom Sheet Modal for Mobile */}
+      {/* Profile Bottom Sheet Modal for Mobile (Visitor Role Removed) */}
       {showProfileSheet && (
         <div 
           className="fixed inset-0 z-50 flex items-end justify-center bg-black/60 backdrop-blur-xs animate-in fade-in"
@@ -135,17 +127,16 @@ const MobileBottomNav = () => {
               </div>
               <div>
                 <h3 className="text-lg font-black font-outfit text-green-950 capitalize">
-                  {role === 'guest' ? 'Visitor User' : `${role} Profile`}
+                  {role} Profile
                 </h3>
-                <p className="text-xs text-gray-500">Annsetu Platform Member</p>
+                <p className="text-xs text-gray-500">Annsetu Platform Active Role</p>
               </div>
             </div>
 
             <div className="space-y-2 pt-2 border-t border-gray-100">
-              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Switch Portal Role</p>
+              <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">Switch Active Role</p>
               <div className="grid grid-cols-2 gap-2">
                 {[
-                  { id: 'guest', label: 'Visitor' },
                   { id: 'donor', label: 'Donor' },
                   { id: 'ngo', label: 'NGO Partner' },
                   { id: 'admin', label: 'Admin' },

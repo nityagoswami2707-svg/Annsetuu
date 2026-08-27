@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from './translations';
+import { supabase } from '../lib/supabase';
 
 const AppContext = createContext();
 
@@ -215,12 +216,44 @@ const INITIAL_NOTIFICATIONS = [
 
 export const AppProvider = ({ children }) => {
   const [language, setLanguage] = useState('en');
-  const [role, setRole] = useState('guest');
+  // Visitor role removed! Default role is 'donor'
+  const [role, setRole] = useState('donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [selectedReceiptDonation, setSelectedReceiptDonation] = useState(null);
   const [activeToast, setActiveToast] = useState(null);
+  const [isRealtimeActive, setIsRealtimeActive] = useState(true);
+
+  // SUPABASE REAL-TIME DATABASE SUBSCRIPTION
+  useEffect(() => {
+    let channel;
+    try {
+      channel = supabase
+        .channel('public:donations')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'donations' }, (payload) => {
+          console.log('⚡ Supabase Realtime Event Received:', payload);
+          if (payload.eventType === 'INSERT') {
+            setDonations(prev => [payload.new, ...prev]);
+            addNotification("Real-Time Donation Added! 🍱", `New donation ${payload.new.id} received via Supabase Real-Time.`, "success");
+          } else if (payload.eventType === 'UPDATE') {
+            setDonations(prev => prev.map(item => item.id === payload.new.id ? { ...item, ...payload.new } : item));
+            addNotification("Real-Time Status Update ⚡", `Donation ${payload.new.id} updated in database to ${payload.new.status}.`, "info");
+          }
+        })
+        .subscribe((status) => {
+          if (status === 'SUBSCRIBED') {
+            setIsRealtimeActive(true);
+          }
+        });
+    } catch (err) {
+      console.warn("Supabase Real-Time Note:", err.message);
+    }
+
+    return () => {
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, []);
 
   // Translation helper
   const t = (key) => {
@@ -238,7 +271,6 @@ export const AppProvider = ({ children }) => {
     const toast = { id: Date.now(), title, message, type };
     setActiveToast(toast);
 
-    // Auto dismiss toast popup after 4.5 seconds
     setTimeout(() => {
       setActiveToast((prev) => (prev?.id === toast.id ? null : prev));
     }, 4500);
@@ -248,7 +280,6 @@ export const AppProvider = ({ children }) => {
     setActiveToast(null);
   };
 
-  // Add Notification to drawer & trigger popup toast
   const addNotification = (title, message, type = 'info') => {
     const newNotif = {
       id: Date.now(),
@@ -262,7 +293,6 @@ export const AppProvider = ({ children }) => {
     showToast(title, message, type);
   };
 
-  // Mark notifications as read
   const markNotificationsRead = () => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
@@ -317,12 +347,20 @@ export const AppProvider = ({ children }) => {
       rejectionReason: ""
     };
 
+    // Async push to Supabase Database (if configured)
+    try {
+      supabase.from('donations').insert([newDonation]).then(({ error }) => {
+        if (error) console.log('Supabase sync info:', error.message);
+      });
+    } catch (e) {
+      console.log('Supabase local sync');
+    }
+
     setDonations([newDonation, ...donations]);
     addNotification("Donation Registered! ❤️", `Donation ${newId} (${formData.foodName}) registered successfully! Sent to ${targetNgo.name}.`, "success");
     return newId;
   };
 
-  // NGO evaluate donation (Accept / Reject)
   const evaluateDonation = (donationId, action, reason = "") => {
     const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
     setDonations(prev => prev.map(item => {
@@ -362,7 +400,6 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // Delivery status step advancement
   const updateDeliveryStatus = (donationId, newStatus) => {
     const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
 
@@ -399,13 +436,11 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  // NGO Verification (Admin)
   const verifyNgo = (ngoId, status) => {
     setNgos(prev => prev.map(n => n.id === ngoId ? { ...n, verificationStatus: status, badge: status === 'Verified' ? 'Verified NGO Badge' : 'Not Verified' } : n));
     addNotification("NGO Verification Updated", `NGO ${ngoId} verification status set to ${status}.`, "info");
   };
 
-  // Admin NGO registration
   const registerNgo = (ngoData) => {
     const newId = `NGO-${ngos.length + 104}`;
     const newNgo = {
@@ -430,7 +465,6 @@ export const AppProvider = ({ children }) => {
     addNotification("NGO Registration Received", `NGO ${ngoData.name} registered and pending Admin verification.`, "success");
   };
 
-  // Calculate live dynamic platform totals
   const stats = {
     totalDonations: donations.length,
     totalMeals: donations.reduce((acc, curr) => acc + (curr.status === 'Delivered' || curr.status === 'In Transit' || curr.status === 'Accepted' ? curr.servingCapacity : 0), 10430),
@@ -466,7 +500,8 @@ export const AppProvider = ({ children }) => {
         setSelectedReceiptDonation,
         activeToast,
         showToast,
-        dismissToast
+        dismissToast,
+        isRealtimeActive
       }}
     >
       {children}
@@ -476,4 +511,3 @@ export const AppProvider = ({ children }) => {
 
 export const useApp = () => useContext(AppContext);
 export default AppContext;
-

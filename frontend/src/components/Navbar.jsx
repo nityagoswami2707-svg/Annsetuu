@@ -11,14 +11,14 @@ import {
   Menu, 
   X, 
   ShieldCheck, 
-  UserCheck, 
   Truck, 
   Building2,
-  ChevronDown
+  ChevronDown,
+  Activity
 } from 'lucide-react';
 
 const Navbar = () => {
-  const { t, role, setRole, notifications } = useApp();
+  const { t, role, setRole, notifications, isRealtimeActive } = useApp();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
@@ -39,8 +39,8 @@ const Navbar = () => {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
+  // Visitor role removed! Valid roles: Donor, NGO, Admin, Delivery
   const roles = [
-    { id: 'guest', labelKey: 'visitorRole', icon: UserCheck, color: 'text-gray-700' },
     { id: 'donor', labelKey: 'donorPortalRole', icon: Utensils, color: 'text-orange-600' },
     { id: 'ngo', labelKey: 'ngoPortalRole', icon: Building2, color: 'text-green-700' },
     { id: 'admin', labelKey: 'adminCenterRole', icon: ShieldCheck, color: 'text-purple-600' },
@@ -73,8 +73,13 @@ const Navbar = () => {
                   {t('officialBadge')}
                 </span>
               </div>
-              <p className="text-xs font-bold text-green-700 tracking-wide">
-                {t('tagline')}
+              <p className="text-xs font-bold text-green-700 tracking-wide flex items-center">
+                <span>{t('tagline')}</span>
+                {isRealtimeActive && (
+                  <span className="ml-2 inline-flex items-center text-[9px] bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full font-black border border-emerald-300">
+                    <Activity className="w-2.5 h-2.5 mr-1 text-emerald-600 animate-pulse" /> Supabase Live
+                  </span>
+                )}
               </p>
             </div>
           </Link>
@@ -157,13 +162,13 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Role Selector Dropdown */}
+            {/* Role Selector Dropdown (Visitor Removed) */}
             <div className="relative">
               <button
                 onClick={() => setShowRoleDropdown(!showRoleDropdown)}
                 className="flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-gradient-to-r from-green-800 to-orange-600 text-white hover:from-green-900 hover:to-orange-700 transition-all shadow-md btn-bounce-active"
               >
-                <span className="capitalize">{role === 'guest' ? t('visitorRole') : t(`${role}PortalRole`)}</span>
+                <span className="capitalize">{t(`${role}PortalRole`)}</span>
                 <ChevronDown className="w-3.5 h-3.5 opacity-80" />
               </button>
 

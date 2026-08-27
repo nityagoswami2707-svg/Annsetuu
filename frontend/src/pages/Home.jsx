@@ -18,14 +18,17 @@ import {
   Leaf,
   Recycle,
   Award,
-  Smile
+  Smile,
+  Activity,
+  Globe,
+  Star
 } from 'lucide-react';
 
 const Home = () => {
-  const { t, setRole, stats } = useApp();
+  const { t, setRole, stats, isRealtimeActive } = useApp();
   const navigate = useNavigate();
 
-  // 3D Ken-Burns Slideshow Images
+  // 3D Ken-Burns Hero Slideshow Images
   const slides = [
     {
       url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&auto=format&fit=crop&q=80",
@@ -58,7 +61,7 @@ const Home = () => {
     return () => clearInterval(timer);
   }, [slides.length]);
 
-  // Scroll Triggered Reveal Animation Hook
+  // Aesthetic Multi-Stage Scroll Reveal Observer
   useEffect(() => {
     const observer = new IntersectionObserver(
       (entries) => {
@@ -68,10 +71,10 @@ const Home = () => {
           }
         });
       },
-      { threshold: 0.15 }
+      { threshold: 0.12 }
     );
 
-    const revealElements = document.querySelectorAll('.scroll-reveal');
+    const revealElements = document.querySelectorAll('.scroll-reveal, .scroll-reveal-left, .scroll-reveal-right, .scroll-reveal-scale');
     revealElements.forEach((el) => observer.observe(el));
 
     return () => {
@@ -88,30 +91,37 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-12 sm:space-y-20 relative overflow-hidden animated-white-bg">
+    <div className="space-y-16 sm:space-y-24 relative overflow-hidden bg-gradient-to-b from-green-950 via-emerald-950 to-emerald-900 text-white min-h-screen">
       
       {/* ================================================== */}
-      {/* WHITE MOTION BACKGROUND DECORATIVE FLOATING PARTICLES */}
+      {/* THEMED DYNAMIC MOTION BACKGROUND MESH & FLOATING ORBS */}
       {/* ================================================== */}
-      <div className="absolute top-1/4 left-5 w-72 h-72 bg-emerald-300/20 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
-      <div className="absolute top-2/3 right-5 w-80 h-80 bg-orange-400/20 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
-      <div className="absolute bottom-10 left-1/3 w-96 h-96 bg-amber-300/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
+      <div className="absolute top-0 left-0 right-0 h-full overflow-hidden pointer-events-none z-0">
+        {/* Animated Theme Glow Orbs */}
+        <div className="absolute top-10 left-10 w-96 h-96 bg-emerald-500/20 rounded-full filter blur-3xl motion-bg-particle-1"></div>
+        <div className="absolute top-1/3 right-10 w-[30rem] h-[30rem] bg-orange-500/25 rounded-full filter blur-3xl motion-bg-particle-2"></div>
+        <div className="absolute top-2/3 left-1/4 w-[28rem] h-[28rem] bg-amber-500/20 rounded-full filter blur-3xl motion-bg-particle-1"></div>
+        <div className="absolute bottom-20 right-1/3 w-96 h-96 bg-green-400/20 rounded-full filter blur-3xl motion-bg-particle-2"></div>
 
-      {/* Floating Animated Background Icons */}
-      <div className="absolute top-72 right-12 text-emerald-600/10 pointer-events-none motion-bg-particle-1 hidden md:block">
-        <Utensils className="w-24 h-24" />
-      </div>
-      <div className="absolute top-3/4 left-10 text-orange-500/10 pointer-events-none motion-bg-particle-2 hidden md:block">
-        <Heart className="w-28 h-28" />
-      </div>
-      <div className="absolute bottom-40 right-20 text-emerald-500/10 pointer-events-none motion-bg-particle-1 hidden md:block">
-        <Leaf className="w-20 h-20" />
+        {/* Floating Glowing Brand Icons */}
+        <div className="absolute top-96 left-8 text-emerald-400/15 motion-bg-particle-1 hidden lg:block">
+          <Utensils className="w-28 h-28 animate-pulse" />
+        </div>
+        <div className="absolute top-[40%] right-12 text-orange-400/20 motion-bg-particle-2 hidden lg:block">
+          <Heart className="w-32 h-32 fill-orange-400/20 animate-bounce" style={{ animationDuration: '7s' }} />
+        </div>
+        <div className="absolute top-[65%] left-16 text-amber-300/15 motion-bg-particle-1 hidden lg:block">
+          <Leaf className="w-24 h-24" />
+        </div>
+        <div className="absolute bottom-40 right-20 text-emerald-300/15 motion-bg-particle-2 hidden lg:block">
+          <Recycle className="w-28 h-28" />
+        </div>
       </div>
 
       {/* ================================================== */}
       {/* HERO SECTION — 3D SLIDESHOW & RESPONSIVE CTAs */}
       {/* ================================================== */}
-      <section className="relative min-h-[90vh] sm:min-h-[85vh] flex items-center justify-center pt-24 pb-12 overflow-hidden shadow-2xl">
+      <section className="relative min-h-[92vh] sm:min-h-[88vh] flex items-center justify-center pt-24 pb-12 overflow-hidden shadow-2xl z-10">
         
         {/* 3D Moving Background Slideshow */}
         {slides.map((slide, idx) => (
@@ -126,8 +136,8 @@ const Home = () => {
               alt={`Annsetu Project ${idx + 1}`}
               className="w-full h-full object-cover animate-kenburns transform scale-105"
             />
-            {/* Theme Gradient Overlay for High Text Readability */}
-            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/80 to-black/50 backdrop-blur-[1px]"></div>
+            {/* Gradient Overlay for Readable Text */}
+            <div className="absolute inset-0 bg-gradient-to-t from-emerald-950 via-emerald-950/85 to-black/60 backdrop-blur-[1px]"></div>
           </div>
         ))}
 
@@ -162,17 +172,22 @@ const Home = () => {
           ))}
         </div>
 
-        {/* Hero Text & Actions */}
-        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8">
+        {/* Hero Content with Entrance Transition */}
+        <div className="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center space-y-6 sm:space-y-8 animate-in fade-in zoom-in-95 duration-700">
           
-          {/* Badge */}
-          <div className="inline-flex items-center space-x-2 bg-emerald-900/90 text-orange-300 border border-orange-500/40 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase backdrop-blur-md shadow-lg">
+          {/* Badge with Supabase Real-Time Indicator */}
+          <div className="inline-flex flex-wrap items-center justify-center gap-2 bg-emerald-900/90 text-orange-300 border border-orange-500/40 px-4 py-1.5 rounded-full text-xs font-black tracking-widest uppercase backdrop-blur-md shadow-xl">
             <Sparkles className="w-4 h-4 text-orange-400 animate-spin" style={{ animationDuration: '6s' }} />
             <span>{t('brandName')} — {t('tagline')}</span>
+            {isRealtimeActive && (
+              <span className="inline-flex items-center text-[9px] bg-amber-500 text-gray-950 px-2 py-0.5 rounded-full font-black ml-1">
+                <Activity className="w-2.5 h-2.5 mr-1 animate-ping text-gray-950" /> Live Database Sync
+              </span>
+            )}
           </div>
 
           {/* Title */}
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-outfit text-white leading-tight tracking-tight drop-shadow-md">
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-outfit text-white leading-tight tracking-tight drop-shadow-lg">
             “{t('ctaSubText')}”
           </h1>
 
@@ -213,58 +228,58 @@ const Home = () => {
       </section>
 
       {/* ================================================== */}
-      {/* REAL-TIME IMPACT COUNTERS — WITH SCROLL REVEAL */}
+      {/* REAL-TIME IMPACT COUNTERS — GLASSMORPHISM SCROLL REVEAL */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
-        <div className="bg-white/95 rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-900/10 backdrop-blur-md relative overflow-hidden">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
+        <div className="bg-emerald-900/60 backdrop-blur-xl rounded-3xl p-6 sm:p-10 shadow-2xl border border-emerald-700/60 text-white">
           
-          <div className="text-center max-w-xl mx-auto mb-8">
-            <span className="text-xs font-black uppercase tracking-widest text-green-800 bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
+          <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
+            <span className="text-xs font-black uppercase tracking-widest text-amber-400 bg-emerald-950/80 px-4 py-1.5 rounded-full border border-emerald-700">
               {t('realtimePlatformStats')}
             </span>
-            <h2 className="text-2xl sm:text-4xl font-black text-green-950 font-outfit mt-2">{t('ourCollectiveImpact')}</h2>
+            <h2 className="text-2xl sm:text-4xl font-black font-outfit text-white">{t('ourCollectiveImpact')}</h2>
           </div>
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 text-center">
             
-            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-2">
-                <Utensils className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="p-5 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 shadow-md card-zoom-3d space-y-1">
+              <div className="w-11 h-11 mx-auto rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-2">
+                <Utensils className="w-6 h-6" />
               </div>
-              <p className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">10,480+</p>
-              <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('mealsDonated')}</p>
+              <p className="text-2xl sm:text-4xl font-black text-amber-400 font-outfit">10,480+</p>
+              <p className="text-[11px] font-extrabold text-emerald-200 uppercase tracking-wider">{t('mealsDonated')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-2">
-                <Users className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="p-5 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 shadow-md card-zoom-3d space-y-1">
+              <div className="w-11 h-11 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
+                <Users className="w-6 h-6" />
               </div>
-              <p className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">2,500+</p>
-              <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('peopleServed')}</p>
+              <p className="text-2xl sm:text-4xl font-black text-white font-outfit">2,500+</p>
+              <p className="text-[11px] font-extrabold text-emerald-200 uppercase tracking-wider">{t('peopleServed')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-2">
-                <Heart className="w-5 h-5 sm:w-6 sm:h-6 fill-purple-600" />
+            <div className="p-5 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 shadow-md card-zoom-3d space-y-1">
+              <div className="w-11 h-11 mx-auto rounded-2xl bg-purple-500/20 text-purple-400 flex items-center justify-center mb-2">
+                <Heart className="w-6 h-6 fill-purple-400" />
               </div>
-              <p className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">120+</p>
-              <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('activeDonors')}</p>
+              <p className="text-2xl sm:text-4xl font-black text-white font-outfit">120+</p>
+              <p className="text-[11px] font-extrabold text-emerald-200 uppercase tracking-wider">{t('activeDonors')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-2">
-                <Building2 className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="p-5 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 shadow-md card-zoom-3d space-y-1">
+              <div className="w-11 h-11 mx-auto rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-2">
+                <Building2 className="w-6 h-6" />
               </div>
-              <p className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">45+</p>
-              <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('partnerNGOs')}</p>
+              <p className="text-2xl sm:text-4xl font-black text-white font-outfit">45+</p>
+              <p className="text-[11px] font-extrabold text-emerald-200 uppercase tracking-wider">{t('partnerNGOs')}</p>
             </div>
 
-            <div className="p-4 sm:p-5 bg-white/90 rounded-2xl border border-green-100 shadow-sm card-zoom-3d col-span-2 lg:col-span-1">
-              <div className="w-10 h-10 sm:w-12 sm:h-12 mx-auto rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-2">
-                <Recycle className="w-5 h-5 sm:w-6 sm:h-6" />
+            <div className="p-5 bg-emerald-950/80 rounded-2xl border border-emerald-700/80 shadow-md card-zoom-3d col-span-2 lg:col-span-1 space-y-1">
+              <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-500/20 text-amber-400 flex items-center justify-center mb-2">
+                <Recycle className="w-6 h-6" />
               </div>
-              <p className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">8.5+ Tons</p>
-              <p className="text-[11px] font-black text-green-800 uppercase tracking-wider mt-1">{t('foodSaved')}</p>
+              <p className="text-2xl sm:text-4xl font-black text-amber-400 font-outfit">8.5+ Tons</p>
+              <p className="text-[11px] font-extrabold text-emerald-200 uppercase tracking-wider">{t('foodSaved')}</p>
             </div>
 
           </div>
@@ -272,147 +287,148 @@ const Home = () => {
       </section>
 
       {/* ================================================== */}
-      {/* WHY FOOD DONATION MATTERS — WITH SCROLL REVEAL */}
+      {/* MISSION & PURPOSE — STAGGERED SCROLL TRANSITIONS */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
-        <div className="text-center max-w-3xl mx-auto space-y-4 mb-12">
-          <span className="text-xs font-black text-orange-600 uppercase tracking-widest bg-orange-100 px-3.5 py-1 rounded-full border border-orange-200">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-12">
+        
+        <div className="text-center max-w-3xl mx-auto space-y-4 scroll-reveal">
+          <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-emerald-900/90 px-4 py-1.5 rounded-full border border-emerald-700">
             {t('missionPurpose')}
           </span>
-          <h2 className="text-3xl sm:text-5xl font-black text-green-950 font-outfit">
+          <h2 className="text-3xl sm:text-5xl font-black text-white font-outfit">
             "{t('whyDonationTitle')}"
           </h2>
-          <p className="text-base text-gray-700 leading-relaxed font-normal">
+          <p className="text-base text-emerald-100/90 leading-relaxed font-medium">
             {t('whyDonationSub')}
           </p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
-            <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:bg-green-700 group-hover:text-white transition-colors">
+          <div className="bg-emerald-900/70 backdrop-blur-md p-6 rounded-3xl border border-emerald-700/60 shadow-xl card-zoom-3d group scroll-reveal-left">
+            <div className="w-14 h-14 rounded-2xl bg-emerald-800 text-emerald-300 flex items-center justify-center mb-5 group-hover:bg-emerald-600 group-hover:text-white transition-colors shadow-md">
               <Leaf className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('reduceWasteTitle')}</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">{t('reduceWasteDesc')}</p>
+            <h3 className="text-xl font-bold font-outfit text-white mb-2">{t('reduceWasteTitle')}</h3>
+            <p className="text-xs text-emerald-200/80 leading-relaxed">{t('reduceWasteDesc')}</p>
           </div>
 
-          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
-            <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-white transition-colors">
+          <div className="bg-emerald-900/70 backdrop-blur-md p-6 rounded-3xl border border-emerald-700/60 shadow-xl card-zoom-3d group scroll-reveal-scale">
+            <div className="w-14 h-14 rounded-2xl bg-orange-500/20 text-orange-400 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-gray-950 transition-colors shadow-md">
               <Heart className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('fightHungerTitle')}</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">{t('fightHungerDesc')}</p>
+            <h3 className="text-xl font-bold font-outfit text-white mb-2">{t('fightHungerTitle')}</h3>
+            <p className="text-xs text-emerald-200/80 leading-relaxed">{t('fightHungerDesc')}</p>
           </div>
 
-          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
-            <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors">
+          <div className="bg-emerald-900/70 backdrop-blur-md p-6 rounded-3xl border border-emerald-700/60 shadow-xl card-zoom-3d group scroll-reveal-scale">
+            <div className="w-14 h-14 rounded-2xl bg-blue-500/20 text-blue-400 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-md">
               <Recycle className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('protectEnvTitle')}</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">{t('protectEnvDesc')}</p>
+            <h3 className="text-xl font-bold font-outfit text-white mb-2">{t('protectEnvTitle')}</h3>
+            <p className="text-xs text-emerald-200/80 leading-relaxed">{t('protectEnvDesc')}</p>
           </div>
 
-          <div className="bg-white/95 p-6 rounded-3xl border border-green-900/10 shadow-lg card-zoom-3d group">
-            <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors">
+          <div className="bg-emerald-900/70 backdrop-blur-md p-6 rounded-3xl border border-emerald-700/60 shadow-xl card-zoom-3d group scroll-reveal-right">
+            <div className="w-14 h-14 rounded-2xl bg-purple-500/20 text-purple-300 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-md">
               <Users className="w-7 h-7" />
             </div>
-            <h3 className="text-xl font-bold font-outfit text-green-950 mb-2">{t('buildCommunityTitle')}</h3>
-            <p className="text-xs text-gray-600 leading-relaxed">{t('buildCommunityDesc')}</p>
+            <h3 className="text-xl font-bold font-outfit text-white mb-2">{t('buildCommunityTitle')}</h3>
+            <p className="text-xs text-emerald-200/80 leading-relaxed">{t('buildCommunityDesc')}</p>
           </div>
 
         </div>
       </section>
 
       {/* ================================================== */}
-      {/* PROBLEM STATEMENT — WITH SCROLL REVEAL */}
+      {/* CORE PROBLEM CARD — SCROLL REVEAL SCALE */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
-        <div className="bg-white/95 rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-orange-500/20 card-zoom-3d space-y-4">
-          <div className="flex items-center space-x-3 border-b border-gray-100 pb-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center shrink-0">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal-scale">
+        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-emerald-950 rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-orange-500/40 card-zoom-3d space-y-4">
+          <div className="flex items-center space-x-3 border-b border-emerald-800 pb-3">
+            <div className="w-10 h-10 rounded-xl bg-orange-500 text-gray-950 flex items-center justify-center shrink-0 shadow-lg">
               <Utensils className="w-5 h-5" />
             </div>
             <div>
-              <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">{t('theReality')}</span>
-              <h2 className="text-xl sm:text-3xl font-black font-outfit text-green-950">{t('problemTitle')}</h2>
+              <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest block">{t('theReality')}</span>
+              <h2 className="text-xl sm:text-3xl font-black font-outfit text-white">{t('problemTitle')}</h2>
             </div>
           </div>
 
-          <p className="text-sm sm:text-base text-gray-700 leading-relaxed font-semibold">
+          <p className="text-sm sm:text-base text-emerald-100 leading-relaxed font-semibold">
             “{t('problemText')}”
           </p>
         </div>
       </section>
 
       {/* ================================================== */}
-      {/* SOLUTION — WITH SCROLL REVEAL */}
+      {/* SOLUTION PIPELINE — VERTICAL STACK TRANSITION */}
       {/* ================================================== */}
-      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 scroll-reveal">
+      <section id="how-it-works" className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 space-y-8 scroll-reveal">
         <div className="text-center max-w-3xl mx-auto space-y-3">
-          <span className="text-xs font-black text-green-800 uppercase tracking-widest bg-green-100 px-3.5 py-1 rounded-full border border-green-200">
+          <span className="text-xs font-black text-amber-400 uppercase tracking-widest bg-emerald-900 px-4 py-1.5 rounded-full border border-emerald-700">
             {t('redistributionEngine')}
           </span>
-          <h2 className="text-2xl sm:text-4xl font-black text-green-950 font-outfit">{t('solutionTitle')}</h2>
-          <p className="text-sm text-gray-600 leading-relaxed font-medium">
+          <h2 className="text-2xl sm:text-4xl font-black font-outfit text-white">{t('solutionTitle')}</h2>
+          <p className="text-sm text-emerald-200/90 leading-relaxed font-medium">
             “{t('solutionSub')}”
           </p>
         </div>
 
-        {/* Vertical Mobile Flow (Switches to Horizontal on Desktop) */}
+        {/* Vertical Mobile Flow (Horizontal on Desktop) */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 pt-4 max-w-4xl mx-auto">
           
           {/* Step 1: Donor */}
-          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-emerald-900/80 backdrop-blur-md p-5 rounded-2xl border-2 border-emerald-700 shadow-xl text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🍱</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">{t('step1Title')}</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">{t('step1Sub')}</p>
+            <h4 className="text-sm font-black font-outfit text-amber-400">{t('step1Title')}</h4>
+            <p className="text-[10px] text-emerald-200 font-semibold">{t('step1Sub')}</p>
           </div>
 
-          <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
+          <div className="text-orange-400 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
           {/* Step 2: AI Smart Matching */}
-          <div className="w-full md:w-1/5 bg-amber-500 text-gray-950 p-5 rounded-2xl border-2 border-amber-600 shadow-md text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-amber-500 text-gray-950 p-5 rounded-2xl border-2 border-amber-400 shadow-xl text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤖</span>
             <h4 className="text-sm font-black font-outfit">{t('step2Title')}</h4>
             <p className="text-[10px] font-bold">{t('step2Sub')}</p>
           </div>
 
-          <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
+          <div className="text-orange-400 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
           {/* Step 3: NGO */}
-          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-emerald-900/80 backdrop-blur-md p-5 rounded-2xl border-2 border-emerald-700 shadow-xl text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤝</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">{t('step3Title')}</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">{t('step3Sub')}</p>
+            <h4 className="text-sm font-black font-outfit text-amber-400">{t('step3Title')}</h4>
+            <p className="text-[10px] text-emerald-200 font-semibold">{t('step3Sub')}</p>
           </div>
 
-          <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
+          <div className="text-orange-400 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
           {/* Step 4: Delivery */}
-          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-emerald-800/20 shadow-md text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-emerald-900/80 backdrop-blur-md p-5 rounded-2xl border-2 border-emerald-700 shadow-xl text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🚚</span>
-            <h4 className="text-sm font-black font-outfit text-green-950">{t('step5Title')}</h4>
-            <p className="text-[10px] text-gray-500 font-semibold">{t('step5Sub')}</p>
+            <h4 className="text-sm font-black font-outfit text-amber-400">{t('step5Title')}</h4>
+            <p className="text-[10px] text-emerald-200 font-semibold">{t('step5Sub')}</p>
           </div>
 
-          <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1">↓</div>
+          <div className="text-orange-400 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
           {/* Step 5: People Served */}
-          <div className="w-full md:w-1/5 bg-emerald-950 text-white p-5 rounded-2xl border-2 border-emerald-800 shadow-md text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-orange-600 text-white p-5 rounded-2xl border-2 border-orange-400 shadow-xl text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">❤️</span>
             <h4 className="text-sm font-black font-outfit">{t('step7Title')}</h4>
-            <p className="text-[10px] text-emerald-200 font-semibold">{t('step7Sub')}</p>
+            <p className="text-[10px] text-orange-100 font-semibold">{t('step7Sub')}</p>
           </div>
 
         </div>
       </section>
 
       {/* ================================================== */}
-      {/* FINAL CALL TO ACTION — WITH SCROLL REVEAL */}
+      {/* FINAL CALL TO ACTION */}
       {/* ================================================== */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 scroll-reveal">
-        <div className="bg-gradient-to-r from-green-950 via-green-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
+        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6 border border-emerald-700">
           <div className="max-w-2xl mx-auto space-y-3">
             <h2 className="text-2xl sm:text-4xl font-black font-outfit">{t('haveExtraFood')}</h2>
             <p className="text-base text-orange-200 italic font-bold">"{t('tagline')} — Anytime, Anywhere, From Any Device."</p>
