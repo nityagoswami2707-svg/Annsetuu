@@ -9,44 +9,20 @@
   --primary-light-green: #4caf50;
   --warm-orange: #f37021;
   --warm-amber: #e65100;
-  --cream-bg: #064e3b;
+  --cream-bg: #faf8f5;
   --cream-card: #ffffff;
-  --dark-text: #ffffff;
+  --dark-text: #0f281e;
 }
 
 body {
   font-family: 'Plus Jakarta Sans', sans-serif;
-  background-color: #064e3b;
-  color: #ffffff;
+  background-color: #faf8f5;
+  color: #0f281e;
   overflow-x: hidden;
 }
 
 h1, h2, h3, h4, h5, h6 {
   font-family: 'Outfit', sans-serif;
-}
-
-/* Glassmorphism */
-.glass-card {
-  background: rgba(15, 40, 30, 0.85);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(76, 175, 80, 0.2);
-  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.3);
-}
-
-.glass-nav {
-  background: rgba(6, 78, 59, 0.95);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border-bottom: 2px solid rgba(243, 112, 33, 0.25);
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
-}
-
-.glass-dark {
-  background: rgba(15, 40, 30, 0.94);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(76, 175, 80, 0.2);
 }
 
 /* Custom Logo Matching Gradients */
@@ -58,28 +34,59 @@ h1, h2, h3, h4, h5, h6 {
   background: linear-gradient(135deg, #e65100 0%, #f37021 50%, #ff9800 100%);
 }
 
-.gradient-hero-overlay {
-  background: linear-gradient(135deg, rgba(15, 40, 30, 0.90) 0%, rgba(20, 83, 45, 0.85) 50%, rgba(243, 112, 33, 0.80) 100%);
+/* Multi-Colored Vibrant Motion Background Mesh */
+@keyframes multiColorMesh {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
 }
 
-.gradient-card-amber {
-  background: linear-gradient(135deg, #ffffff 0%, #fff7ed 100%);
+.portal-motion-bg {
+  background: linear-gradient(
+    -45deg,
+    #fff7ed,
+    #fef3c7,
+    #ecfdf5,
+    #f3e8ff,
+    #ffe4e6,
+    #fdfbf7
+  );
+  background-size: 400% 400%;
+  animation: multiColorMesh 16s ease infinite;
 }
 
-.gradient-card-emerald {
-  background: linear-gradient(135deg, #ffffff 0%, #f0fdf4 100%);
+/* Floating Motion Particles (Orange, Amber, Purple, Emerald, Rose) */
+@keyframes particleFloat1 {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); }
+  33% { transform: translateY(-35px) translateX(25px) rotate(10deg) scale(1.1); }
+  66% { transform: translateY(20px) translateX(-30px) rotate(-10deg) scale(0.9); }
 }
 
-.gradient-text-green {
-  background: linear-gradient(135deg, #1b5e20 0%, #2e7d32 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+@keyframes particleFloat2 {
+  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); }
+  50% { transform: translateY(45px) translateX(-35px) rotate(18deg) scale(1.15); }
 }
 
-.gradient-text-orange {
-  background: linear-gradient(135deg, #e65100 0%, #f37021 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+.motion-particle-orange {
+  animation: particleFloat1 12s ease-in-out infinite;
+}
+
+.motion-particle-purple {
+  animation: particleFloat2 15s ease-in-out infinite;
+}
+
+.motion-particle-amber {
+  animation: particleFloat1 18s ease-in-out infinite;
+}
+
+.motion-particle-emerald {
+  animation: particleFloat2 14s ease-in-out infinite;
 }
 
 /* 3D Ken Burns & Parallax Zoom-Pan Slide Animation */
@@ -97,32 +104,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .animate-kenburns {
   animation: kenburnsZoom 12s ease-in-out infinite alternate;
-}
-
-/* Theme Motion Background Animations */
-@keyframes motionFloat1 {
-  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); }
-  33% { transform: translateY(-30px) translateX(20px) rotate(8deg) scale(1.08); }
-  66% { transform: translateY(20px) translateX(-25px) rotate(-8deg) scale(0.92); }
-}
-
-@keyframes motionFloat2 {
-  0%, 100% { transform: translateY(0px) translateX(0px) rotate(0deg) scale(1); }
-  50% { transform: translateY(40px) translateX(-30px) rotate(15deg) scale(1.1); }
-}
-
-@keyframes waveGradient {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
-}
-
-.motion-bg-particle-1 {
-  animation: motionFloat1 14s ease-in-out infinite;
-}
-
-.motion-bg-particle-2 {
-  animation: motionFloat2 18s ease-in-out infinite;
 }
 
 /* Aesthetic Multi-Stage Scroll Reveal Animations */
@@ -191,26 +172,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .card-zoom-3d:hover {
   transform: translateY(-6px) scale(1.02);
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.35);
-}
-
-/* Animations */
-@keyframes floatSlow {
-  0%, 100% { transform: translateY(0px) rotate(0deg); }
-  50% { transform: translateY(-8px) rotate(1deg); }
-}
-
-@keyframes pulseGlow {
-  0%, 100% { opacity: 0.6; transform: scale(1); }
-  50% { opacity: 0.9; transform: scale(1.05); }
-}
-
-.animate-float {
-  animation: floatSlow 4s ease-in-out infinite;
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 3s ease-in-out infinite;
+  box-shadow: 0 20px 40px -10px rgba(15, 40, 30, 0.15);
 }
 
 /* Custom Scrollbar */
@@ -220,14 +182,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #064e3b;
+  background: #faf8f5;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #f97316;
+  background: #f37021;
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #f59e0b;
+  background: #2e7d32;
 }

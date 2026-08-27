@@ -110,29 +110,29 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-gradient-to-b from-green-950 via-emerald-950 to-green-900 text-white relative overflow-hidden">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
       
-      {/* Dynamic Glow Motion Background */}
-      <div className="absolute top-10 left-1/4 w-96 h-96 bg-purple-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
-      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-amber-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
+      {/* Multi-colored Motion Glow Particles */}
+      <div className="absolute top-10 left-1/4 w-96 h-96 bg-purple-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
+      <div className="absolute bottom-10 right-1/4 w-96 h-96 bg-amber-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-amber"></div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-emerald-950 via-green-950 to-purple-950 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-purple-500/30">
+        <div className="bg-gradient-to-r from-purple-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-purple-300">
           <div>
             <div className="flex items-center space-x-2">
-              <ShieldCheck className="w-6 h-6 text-purple-400" />
+              <ShieldCheck className="w-6 h-6 text-amber-400" />
               <h1 className="text-xl sm:text-3xl font-extrabold font-outfit">Annsetu Admin Portal</h1>
             </div>
-            <p className="text-emerald-200 text-xs sm:text-sm mt-1">Monitor users, NGOs, donations and platform impact.</p>
+            <p className="text-purple-200 text-xs sm:text-sm mt-1">Monitor users, NGOs, donations and platform impact.</p>
           </div>
 
-          <div className="flex flex-wrap gap-1.5 bg-black/40 p-1.5 rounded-2xl border border-purple-500/40 text-xs w-full md:w-auto backdrop-blur-md">
+          <div className="flex flex-wrap gap-1.5 bg-black/40 p-1.5 rounded-2xl border border-purple-400/40 text-xs w-full md:w-auto backdrop-blur-md">
             <button
               onClick={() => setActiveTab('dashboard')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
+                activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
               }`}
             >
               Dashboard
@@ -141,7 +141,7 @@ const AdminDashboard = () => {
             <button
               onClick={() => setActiveTab('ngos')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
+                activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
               }`}
             >
               NGOs
@@ -150,7 +150,7 @@ const AdminDashboard = () => {
             <button
               onClick={() => setActiveTab('donations')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
+                activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
               }`}
             >
               Donations
@@ -159,7 +159,7 @@ const AdminDashboard = () => {
             <button
               onClick={() => setActiveTab('reports')}
               className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-emerald-200'
+                activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
               }`}
             >
               Reports
@@ -170,7 +170,7 @@ const AdminDashboard = () => {
         {/* SUMMARY METRIC CARDS */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 text-gray-900">
           
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/30 shadow-md card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Total Users</span>
               <Users className="w-4 h-4 text-purple-600" />
@@ -179,7 +179,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-emerald-600 font-bold">↑ 12% this week</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/30 shadow-md card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Active NGOs</span>
               <Building2 className="w-4 h-4 text-emerald-600" />
@@ -188,7 +188,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-emerald-600 font-bold">100% Verified</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/30 shadow-md card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Total Donations</span>
               <Utensils className="w-4 h-4 text-amber-600" />
@@ -197,7 +197,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-amber-600 font-bold">Live Streamed</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/30 shadow-md card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Meals Served</span>
               <Utensils className="w-4 h-4 text-amber-600" />
@@ -206,7 +206,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-amber-600 font-bold">Impact High</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-emerald-500/30 shadow-md card-zoom-3d col-span-2 md:col-span-1">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d col-span-2 md:col-span-1">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Pending Deliveries</span>
               <Clock className="w-4 h-4 text-blue-600" />
@@ -218,14 +218,14 @@ const AdminDashboard = () => {
         </div>
 
         {/* MOBILE ANALYTICS TRIGGER BUTTON */}
-        <div className="flex items-center justify-between bg-emerald-900/80 backdrop-blur-md p-4 rounded-2xl border border-emerald-700 shadow-xl">
+        <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-orange-200/60 shadow-xl">
           <div className="flex items-center space-x-2">
-            <BarChart3 className="w-5 h-5 text-amber-400 shrink-0" />
-            <span className="text-xs font-black text-white">Mobile Analytics Engine</span>
+            <BarChart3 className="w-5 h-5 text-orange-600 shrink-0" />
+            <span className="text-xs font-black text-gray-900">Mobile Analytics Engine</span>
           </div>
           <button
             onClick={() => setShowAnalyticsModal(true)}
-            className="px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md btn-bounce-active"
+            className="px-4 py-2 rounded-xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md btn-bounce-active"
           >
             View Analytics
           </button>
@@ -253,7 +253,7 @@ const AdminDashboard = () => {
                     { m: 'Apr', v: 82 }, { m: 'May', v: 110 }, { m: 'Jun', v: 130 }
                   ].map((item, idx) => (
                     <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full bg-emerald-700 rounded-t-md" style={{ height: `${item.v}%` }}></div>
+                      <div className="w-full bg-orange-500 rounded-t-md" style={{ height: `${item.v}%` }}></div>
                       <span className="text-[9px] text-gray-500 font-bold">{item.m}</span>
                     </div>
                   ))}
@@ -264,7 +264,7 @@ const AdminDashboard = () => {
                 <h4 className="text-xs font-bold text-gray-700">Donations By Category</h4>
                 <div className="space-y-2">
                   {[
-                    { label: "Prepared Cooked Food", pct: 58, color: "bg-emerald-600" },
+                    { label: "Prepared Cooked Food", pct: 58, color: "bg-orange-500" },
                     { label: "Catering Surplus", pct: 24, color: "bg-amber-500" },
                     { label: "Bakery / Packaged", pct: 12, color: "bg-blue-600" },
                     { label: "Fresh Raw Produce", pct: 6, color: "bg-purple-600" }
@@ -289,7 +289,7 @@ const AdminDashboard = () => {
         {/* MAIN TAB CONTENT */}
         {activeTab === 'dashboard' && (
           <div className="space-y-4">
-            <h3 className="text-base font-black font-outfit text-white">Recent System Activity</h3>
+            <h3 className="text-base font-black font-outfit text-green-950">Recent System Activity</h3>
             
             <div className="space-y-3 text-gray-900">
               {donations.slice(0, 5).map(item => (
@@ -314,7 +314,7 @@ const AdminDashboard = () => {
         {/* NGO VERIFICATION TAB */}
         {activeTab === 'ngos' && (
           <div className="space-y-4">
-            <h3 className="text-base font-black font-outfit text-white">NGO Partner Verification Center</h3>
+            <h3 className="text-base font-black font-outfit text-green-950">NGO Partner Verification Center</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-900">
               {ngos.map(ngo => (
@@ -358,10 +358,10 @@ const AdminDashboard = () => {
         {activeTab === 'donations' && (
           <div className="space-y-4">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-              <h3 className="text-base font-black font-outfit text-white">Master Donations Register</h3>
+              <h3 className="text-base font-black font-outfit text-green-950">Master Donations Register</h3>
               <button
                 onClick={handleExportCSV}
-                className="px-4 py-2 rounded-xl bg-amber-500 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
+                className="px-4 py-2 rounded-xl bg-orange-500 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
               >
                 <FileSpreadsheet className="w-4 h-4" />
                 <span>Export CSV</span>
@@ -398,7 +398,7 @@ const AdminDashboard = () => {
 
         {/* OVERALL REPORTS TAB */}
         {activeTab === 'reports' && (
-          <div className="bg-white/95 text-gray-900 rounded-3xl p-6 border border-emerald-500/30 shadow-2xl space-y-6">
+          <div className="bg-white/95 text-gray-900 rounded-3xl p-6 border border-orange-200/60 shadow-2xl space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-xl font-black font-outfit text-emerald-950">Overall Platform Report</h3>
@@ -406,9 +406,9 @@ const AdminDashboard = () => {
               </div>
               <button
                 onClick={handleExportPDF}
-                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-emerald-800 to-amber-600 text-white font-bold text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
+                className="px-4 py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-amber-600 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active"
               >
-                <Download className="w-4 h-4" />
+                <Download className="w-4 h-4 text-gray-950" />
                 <span>Download Executive PDF</span>
               </button>
             </div>

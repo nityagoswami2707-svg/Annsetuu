@@ -39,27 +39,27 @@ const DeliveryDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-gradient-to-b from-green-950 via-emerald-950 to-green-900 text-white relative overflow-hidden">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
       
-      {/* Motion Background Glow Orbs */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-blue-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-1"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-500/15 rounded-full filter blur-3xl pointer-events-none motion-bg-particle-2"></div>
+      {/* Multi-colored Motion Particles */}
+      <div className="absolute top-10 left-10 w-96 h-96 bg-blue-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
+      <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-orange"></div>
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Smartphone Driver Header Banner */}
-        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-blue-950 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-500/30">
+        <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-orange-300">
           <div>
             <div className="flex items-center space-x-2">
               <Truck className="w-6 h-6 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
               <h1 className="text-xl sm:text-3xl font-extrabold font-outfit">Delivery Volunteer Portal</h1>
             </div>
-            <p className="text-emerald-200 text-xs sm:text-sm mt-1">Smart Logistics Task Manager for Smartphone Users.</p>
+            <p className="text-blue-100 text-xs sm:text-sm mt-1">Smart Logistics Task Manager for Smartphone Users.</p>
           </div>
 
-          <div className="bg-emerald-900/80 px-3.5 py-2 rounded-2xl border border-emerald-700 text-xs w-full sm:w-auto backdrop-blur-md">
-            <span className="text-emerald-300 font-bold block text-[10px]">Driver Profile & Vehicle</span>
-            <span className="font-extrabold text-amber-400 text-xs sm:text-sm">Ramesh Kumar (GJ-06-EV-4412)</span>
+          <div className="bg-black/30 px-3.5 py-2 rounded-2xl border border-white/20 text-xs w-full sm:w-auto backdrop-blur-md">
+            <span className="text-amber-300 font-bold block text-[10px]">Driver Profile & Vehicle</span>
+            <span className="font-extrabold text-white text-xs sm:text-sm">Ramesh Kumar (GJ-06-EV-4412)</span>
           </div>
         </div>
 
@@ -104,7 +104,7 @@ const DeliveryDashboard = () => {
                 
                 <button
                   onClick={() => handleUpdate(activeAssignment.id, 'NGO Request Sent')}
-                  className="min-h-[48px] px-4 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
+                  className="min-h-[48px] px-4 rounded-2xl bg-green-900 hover:bg-green-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
                 >
                   <Play className="w-4 h-4 text-amber-400" />
                   <span>Start Pickup</span>
@@ -154,7 +154,7 @@ const DeliveryDashboard = () => {
                 className={`w-full min-h-[52px] px-6 rounded-2xl font-black text-sm shadow-xl flex items-center justify-center space-x-2 transition-all ${
                   activeAssignment.status === 'Delivered'
                     ? 'bg-emerald-100 text-emerald-800 border-2 border-emerald-300'
-                    : 'bg-gradient-to-r from-green-900 to-orange-600 hover:from-green-950 hover:to-orange-700 text-white btn-bounce-active'
+                    : 'bg-gradient-to-r from-orange-500 via-amber-500 to-green-700 hover:from-orange-600 hover:to-green-800 text-gray-950 btn-bounce-active'
                 }`}
               >
                 <CheckCircle className="w-5 h-5" />
