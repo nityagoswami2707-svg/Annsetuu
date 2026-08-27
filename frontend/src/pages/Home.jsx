@@ -91,27 +91,8 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 relative overflow-hidden portal-motion-bg min-h-screen text-gray-900">
+    <div className="space-y-16 sm:space-y-24 bg-[#faf8f5] text-[#062c21] min-h-screen">
       
-      {/* Dynamic Multi-Colored Floating Glow Orbs & Particles */}
-      <div className="absolute top-0 left-0 right-0 h-full overflow-hidden pointer-events-none z-0">
-        <div className="absolute top-10 left-10 w-96 h-96 bg-orange-400/25 rounded-full filter blur-3xl motion-particle-orange"></div>
-        <div className="absolute top-1/3 right-10 w-[30rem] h-[30rem] bg-purple-500/20 rounded-full filter blur-3xl motion-particle-purple"></div>
-        <div className="absolute top-2/3 left-1/4 w-[28rem] h-[28rem] bg-amber-400/25 rounded-full filter blur-3xl motion-particle-amber"></div>
-        <div className="absolute bottom-20 right-1/3 w-96 h-96 bg-emerald-400/20 rounded-full filter blur-3xl motion-particle-emerald"></div>
-
-        {/* Floating Animated Icons */}
-        <div className="absolute top-96 left-8 text-orange-500/15 motion-particle-orange hidden lg:block">
-          <Utensils className="w-28 h-28 animate-pulse" />
-        </div>
-        <div className="absolute top-[40%] right-12 text-purple-600/20 motion-particle-purple hidden lg:block">
-          <Heart className="w-32 h-32 fill-purple-500/15 animate-bounce" style={{ animationDuration: '7s' }} />
-        </div>
-        <div className="absolute top-[65%] left-16 text-amber-500/20 motion-particle-amber hidden lg:block">
-          <Leaf className="w-24 h-24" />
-        </div>
-      </div>
-
       {/* HERO SECTION */}
       <section className="relative min-h-[92vh] sm:min-h-[88vh] flex items-center justify-center pt-24 pb-12 overflow-hidden shadow-2xl z-10">
         
@@ -207,7 +188,7 @@ const Home = () => {
 
       {/* REAL-TIME IMPACT COUNTERS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
-        <div className="bg-white/90 backdrop-blur-xl rounded-3xl p-6 sm:p-10 shadow-2xl border border-orange-200/60 text-gray-900">
+        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 text-gray-900">
           
           <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
             <span className="text-xs font-black uppercase tracking-widest text-orange-800 bg-orange-100 px-4 py-1.5 rounded-full border border-orange-300">
@@ -218,7 +199,7 @@ const Home = () => {
 
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-4 sm:gap-6 text-center">
             
-            <div className="p-5 bg-gradient-to-br from-white to-amber-50/80 rounded-2xl border border-amber-200 shadow-md card-zoom-3d space-y-1">
+            <div className="p-5 bg-gradient-to-br from-white to-amber-50/80 rounded-2xl border border-amber-200 shadow-sm card-zoom-3d space-y-1">
               <div className="w-11 h-11 mx-auto rounded-2xl bg-orange-500/20 text-orange-600 flex items-center justify-center mb-2">
                 <Utensils className="w-6 h-6" />
               </div>
@@ -226,7 +207,7 @@ const Home = () => {
               <p className="text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">{t('mealsDonated')}</p>
             </div>
 
-            <div className="p-5 bg-gradient-to-br from-white to-green-50/80 rounded-2xl border border-green-200 shadow-md card-zoom-3d space-y-1">
+            <div className="p-5 bg-gradient-to-br from-white to-green-50/80 rounded-2xl border border-green-200 shadow-sm card-zoom-3d space-y-1">
               <div className="w-11 h-11 mx-auto rounded-2xl bg-emerald-500/20 text-emerald-700 flex items-center justify-center mb-2">
                 <Users className="w-6 h-6" />
               </div>
@@ -234,7 +215,7 @@ const Home = () => {
               <p className="text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">{t('peopleServed')}</p>
             </div>
 
-            <div className="p-5 bg-gradient-to-br from-white to-purple-50/80 rounded-2xl border border-purple-200 shadow-md card-zoom-3d space-y-1">
+            <div className="p-5 bg-gradient-to-br from-white to-purple-50/80 rounded-2xl border border-purple-200 shadow-sm card-zoom-3d space-y-1">
               <div className="w-11 h-11 mx-auto rounded-2xl bg-purple-500/20 text-purple-700 flex items-center justify-center mb-2">
                 <Heart className="w-6 h-6 fill-purple-600" />
               </div>
@@ -242,7 +223,7 @@ const Home = () => {
               <p className="text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">{t('activeDonors')}</p>
             </div>
 
-            <div className="p-5 bg-gradient-to-br from-white to-blue-50/80 rounded-2xl border border-blue-200 shadow-md card-zoom-3d space-y-1">
+            <div className="p-5 bg-gradient-to-br from-white to-blue-50/80 rounded-2xl border border-blue-200 shadow-sm card-zoom-3d space-y-1">
               <div className="w-11 h-11 mx-auto rounded-2xl bg-blue-500/20 text-blue-700 flex items-center justify-center mb-2">
                 <Building2 className="w-6 h-6" />
               </div>
@@ -250,7 +231,7 @@ const Home = () => {
               <p className="text-[11px] font-extrabold text-gray-600 uppercase tracking-wider">{t('partnerNGOs')}</p>
             </div>
 
-            <div className="p-5 bg-gradient-to-br from-white to-orange-50/80 rounded-2xl border border-orange-200 shadow-md card-zoom-3d col-span-2 lg:col-span-1 space-y-1">
+            <div className="p-5 bg-gradient-to-br from-white to-orange-50/80 rounded-2xl border border-orange-200 shadow-sm card-zoom-3d col-span-2 lg:col-span-1 space-y-1">
               <div className="w-11 h-11 mx-auto rounded-2xl bg-amber-500/20 text-amber-700 flex items-center justify-center mb-2">
                 <Recycle className="w-6 h-6" />
               </div>
@@ -279,7 +260,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-green-200 shadow-xl card-zoom-3d group scroll-reveal-left">
+          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-left">
             <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:bg-green-700 group-hover:text-white transition-colors shadow-md">
               <Leaf className="w-7 h-7" />
             </div>
@@ -287,7 +268,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('reduceWasteDesc')}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-orange-200 shadow-xl card-zoom-3d group scroll-reveal-scale">
+          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
             <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-white transition-colors shadow-md">
               <Heart className="w-7 h-7" />
             </div>
@@ -295,7 +276,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('fightHungerDesc')}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-blue-200 shadow-xl card-zoom-3d group scroll-reveal-scale">
+          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
             <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-md">
               <Recycle className="w-7 h-7" />
             </div>
@@ -303,7 +284,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('protectEnvDesc')}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-purple-200 shadow-xl card-zoom-3d group scroll-reveal-right">
+          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-right">
             <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-md">
               <Users className="w-7 h-7" />
             </div>
@@ -316,7 +297,7 @@ const Home = () => {
 
       {/* CORE PROBLEM CARD */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal-scale">
-        <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-gray-950 rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-orange-400 card-zoom-3d space-y-4">
+        <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 text-gray-950 rounded-3xl p-6 sm:p-10 shadow-xl border-2 border-orange-400 card-zoom-3d space-y-4">
           <div className="flex items-center space-x-3 border-b border-orange-400/60 pb-3">
             <div className="w-10 h-10 rounded-xl bg-gray-950 text-orange-400 flex items-center justify-center shrink-0 shadow-lg">
               <Utensils className="w-5 h-5" />
@@ -347,7 +328,7 @@ const Home = () => {
 
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 md:gap-2 pt-4 max-w-4xl mx-auto">
           
-          <div className="w-full md:w-1/5 bg-white/95 backdrop-blur-md p-5 rounded-2xl border-2 border-green-300 shadow-xl text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-green-300 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🍱</span>
             <h4 className="text-sm font-black font-outfit text-green-950">{t('step1Title')}</h4>
             <p className="text-[10px] text-gray-500 font-semibold">{t('step1Sub')}</p>
@@ -355,7 +336,7 @@ const Home = () => {
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
-          <div className="w-full md:w-1/5 bg-amber-500 text-gray-950 p-5 rounded-2xl border-2 border-amber-600 shadow-xl text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-amber-500 text-gray-950 p-5 rounded-2xl border-2 border-amber-600 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤖</span>
             <h4 className="text-sm font-black font-outfit">{t('step2Title')}</h4>
             <p className="text-[10px] font-bold">{t('step2Sub')}</p>
@@ -363,7 +344,7 @@ const Home = () => {
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
-          <div className="w-full md:w-1/5 bg-white/95 backdrop-blur-md p-5 rounded-2xl border-2 border-green-300 shadow-xl text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-green-300 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🤝</span>
             <h4 className="text-sm font-black font-outfit text-green-950">{t('step3Title')}</h4>
             <p className="text-[10px] text-gray-500 font-semibold">{t('step3Sub')}</p>
@@ -371,7 +352,7 @@ const Home = () => {
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
-          <div className="w-full md:w-1/5 bg-white/95 backdrop-blur-md p-5 rounded-2xl border-2 border-green-300 shadow-xl text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-white p-5 rounded-2xl border-2 border-green-300 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">🚚</span>
             <h4 className="text-sm font-black font-outfit text-green-950">{t('step5Title')}</h4>
             <p className="text-[10px] text-gray-500 font-semibold">{t('step5Sub')}</p>
@@ -379,7 +360,7 @@ const Home = () => {
 
           <div className="text-orange-500 text-2xl font-black transform md:rotate-0 rotate-90 my-1 animate-pulse">↓</div>
 
-          <div className="w-full md:w-1/5 bg-orange-600 text-white p-5 rounded-2xl border-2 border-orange-500 shadow-xl text-center space-y-2 card-zoom-3d">
+          <div className="w-full md:w-1/5 bg-orange-600 text-white p-5 rounded-2xl border-2 border-orange-500 shadow-md text-center space-y-2 card-zoom-3d">
             <span className="text-3xl">❤️</span>
             <h4 className="text-sm font-black font-outfit">{t('step7Title')}</h4>
             <p className="text-[10px] text-orange-100 font-semibold">{t('step7Sub')}</p>
@@ -389,7 +370,7 @@ const Home = () => {
       </section>
 
       {/* FINAL CALL TO ACTION */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal pb-16">
         <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6 border border-orange-400">
           <div className="max-w-2xl mx-auto space-y-3">
             <h2 className="text-2xl sm:text-4xl font-black font-outfit">{t('haveExtraFood')}</h2>

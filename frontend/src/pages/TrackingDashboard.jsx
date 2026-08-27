@@ -33,16 +33,11 @@ const TrackingDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
-      
-      {/* Multi-colored Motion Particles */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-blue-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-amber"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         {/* Search Header Banner */}
-        <div className="bg-gradient-to-r from-blue-900 via-emerald-950 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-2xl border border-orange-300 text-center space-y-4">
+        <div className="bg-gradient-to-r from-blue-900 via-emerald-950 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-800 text-center space-y-4">
           <div className="max-w-xl mx-auto space-y-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 bg-black/30 px-3 py-1 rounded-full border border-orange-300/40">
               Real-Time GPS Telematics
@@ -93,7 +88,7 @@ const TrackingDashboard = () => {
               
               <MapView donation={activeDonation} />
 
-              <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-7 shadow-2xl border border-orange-200/60 space-y-5">
+              <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tracking Reference</span>
@@ -145,7 +140,7 @@ const TrackingDashboard = () => {
             </div>
 
             {/* Right Col: Vertical Timeline */}
-            <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-7 shadow-2xl border border-orange-200/60 space-y-5">
+            <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
               <h3 className="text-lg font-black font-outfit text-emerald-950 border-b border-gray-100 pb-3">
                 Vertical Mobile Timeline
               </h3>

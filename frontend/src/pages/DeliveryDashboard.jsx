@@ -39,16 +39,11 @@ const DeliveryDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
-      
-      {/* Multi-colored Motion Particles */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-blue-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-orange-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-orange"></div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         {/* Smartphone Driver Header Banner */}
-        <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-orange-300">
+        <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-800">
           <div>
             <div className="flex items-center space-x-2">
               <Truck className="w-6 h-6 text-amber-400 animate-bounce" style={{ animationDuration: '3s' }} />
@@ -65,7 +60,7 @@ const DeliveryDashboard = () => {
 
         {/* CURRENT ASSIGNMENT CARD */}
         {activeAssignment && (
-          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border-2 border-orange-500/40 p-5 sm:p-7 shadow-2xl space-y-5">
+          <div className="bg-white text-gray-900 rounded-3xl border-2 border-orange-500/40 p-5 sm:p-7 shadow-xl space-y-5">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
                 <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">Active Assignment</span>

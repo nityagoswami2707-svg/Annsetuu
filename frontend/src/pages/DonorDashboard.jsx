@@ -95,17 +95,11 @@ const DonorDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
-      
-      {/* Multi-colored Floating Particles */}
-      <div className="absolute top-10 left-10 w-96 h-96 bg-orange-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-orange"></div>
-      <div className="absolute top-1/3 right-10 w-[26rem] h-[26rem] bg-purple-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
-      <div className="absolute bottom-10 right-10 w-96 h-96 bg-amber-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-amber"></div>
-
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
         
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-orange-600 via-amber-600 to-green-900 text-white rounded-3xl p-6 sm:p-10 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border-2 border-orange-300">
+        <div className="bg-gradient-to-r from-emerald-900 via-green-900 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
           <div className="space-y-2 max-w-xl">
             <div className="inline-flex items-center space-x-2 bg-black/30 px-3 py-1 rounded-full text-[11px] font-black backdrop-blur-md text-orange-200 uppercase tracking-widest border border-orange-300/40">
               <Sparkles className="w-3.5 h-3.5 text-orange-300 animate-spin" style={{ animationDuration: '6s' }} />
@@ -125,7 +119,7 @@ const DonorDashboard = () => {
         </div>
 
         {step === 'form' && (
-          <form onSubmit={handleSubmit} className="bg-white/95 backdrop-blur-xl text-gray-900 rounded-3xl p-5 sm:p-8 shadow-2xl border border-orange-200/60 space-y-7">
+          <form onSubmit={handleSubmit} className="bg-white text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-7">
             
             {/* SECTION 1: DONOR INFORMATION */}
             <div className="space-y-4">
@@ -438,9 +432,9 @@ const DonorDashboard = () => {
 
             <button
               type="submit"
-              className="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-gradient-to-r from-orange-500 via-amber-500 to-green-700 hover:from-orange-600 hover:to-green-800 text-gray-950 font-black text-base shadow-xl flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
+              className="w-full min-h-[52px] py-3.5 px-6 rounded-2xl bg-gradient-to-r from-green-900 to-orange-600 hover:from-green-950 hover:to-orange-700 text-white font-black text-base shadow-xl flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
             >
-              <Send className="w-5 h-5 text-gray-950" />
+              <Send className="w-5 h-5 text-white" />
               <span>Register Donation</span>
             </button>
 
@@ -448,7 +442,7 @@ const DonorDashboard = () => {
         )}
 
         {step === 'matching' && (
-          <div className="bg-white/95 backdrop-blur-xl text-gray-900 rounded-3xl p-8 sm:p-12 shadow-2xl border border-orange-200/60 text-center space-y-6 animate-in zoom-in-95">
+          <div className="bg-white text-gray-900 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-200/80 text-center space-y-6 animate-in zoom-in-95">
             <div className="w-20 h-20 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-md animate-spin" style={{ animationDuration: '3s' }}>
               <Bot className="w-10 h-10" />
             </div>
@@ -461,7 +455,7 @@ const DonorDashboard = () => {
         )}
 
         {step === 'success' && (
-          <div className="bg-white/95 backdrop-blur-xl text-gray-900 rounded-3xl p-6 sm:p-10 shadow-2xl border border-orange-200/60 space-y-6 animate-in fade-in">
+          <div className="bg-white text-gray-900 rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 space-y-6 animate-in fade-in">
             <div className="text-center space-y-3">
               <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600 animate-bounce" />
@@ -510,7 +504,7 @@ const DonorDashboard = () => {
 
                     <button
                       onClick={() => navigate('/track')}
-                      className="w-full sm:w-auto min-h-[44px] px-5 rounded-xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-bold text-xs shadow-md flex items-center justify-center space-x-1.5 btn-bounce-active shrink-0"
+                      className="w-full sm:w-auto min-h-[44px] px-5 rounded-xl bg-green-900 hover:bg-green-950 text-white font-bold text-xs shadow-md flex items-center justify-center space-x-1.5 btn-bounce-active shrink-0"
                     >
                       <span>Send Request</span>
                       <ArrowRight className="w-4 h-4" />
@@ -533,7 +527,7 @@ const DonorDashboard = () => {
         )}
 
         {/* MY REGISTERED DONATIONS HISTORY */}
-        <div className="bg-white/95 backdrop-blur-xl text-gray-900 rounded-3xl p-5 sm:p-8 shadow-2xl border border-orange-200/60 space-y-4">
+        <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-4">
           <h3 className="text-lg font-black font-outfit text-green-950">My Registered Donations</h3>
           
           <div className="space-y-3">
@@ -554,7 +548,7 @@ const DonorDashboard = () => {
 
                 <button
                   onClick={() => navigate('/track')}
-                  className="text-xs text-orange-600 font-black underline hover:text-orange-700 btn-bounce-active"
+                  className="text-xs text-green-800 font-black underline hover:text-green-950 btn-bounce-active"
                 >
                   Track Live →
                 </button>

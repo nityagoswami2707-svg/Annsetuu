@@ -69,16 +69,11 @@ const NgoDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen portal-motion-bg text-gray-900 relative overflow-hidden">
-      
-      {/* Multi-colored Motion Particles */}
-      <div className="absolute top-10 right-10 w-96 h-96 bg-purple-400/20 rounded-full filter blur-3xl pointer-events-none motion-particle-purple"></div>
-      <div className="absolute bottom-10 left-10 w-96 h-96 bg-orange-400/25 rounded-full filter blur-3xl pointer-events-none motion-particle-orange"></div>
-
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         
         {/* Header Banner */}
-        <div className="bg-gradient-to-r from-green-900 via-emerald-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-2xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-orange-300">
+        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-emerald-950 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
           <div>
             <div className="flex items-center space-x-2">
               <Building2 className="w-6 h-6 text-amber-400" />
@@ -100,33 +95,33 @@ const NgoDashboard = () => {
 
         {/* TOP SUMMARY CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
+          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">New Requests</span>
             <p className="text-2xl font-black text-amber-600 font-outfit mt-1">{pendingRequests.length}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
+          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Accepted</span>
             <p className="text-2xl font-black text-emerald-800 font-outfit mt-1">{acceptedDonations.length}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
+          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Pickup Pending</span>
             <p className="text-2xl font-black text-blue-600 font-outfit mt-1">{pickupPending.length}</p>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-orange-200/60 shadow-md card-zoom-3d">
+          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Delivered</span>
             <p className="text-2xl font-black text-purple-700 font-outfit mt-1">{deliveredDonations.length * 50 + 2500}</p>
           </div>
         </div>
 
         {/* NGO Tabs Navigation */}
-        <div className="flex flex-wrap gap-2 border-b border-gray-200/80 pb-3">
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-3">
           <button
             onClick={() => setActiveTab('requests')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'requests' ? 'bg-orange-500 text-gray-950 font-black shadow-md' : 'bg-white/90 text-gray-800 border border-gray-200'
+              activeTab === 'requests' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
             }`}
           >
             Requests ({pendingRequests.length})
@@ -135,7 +130,7 @@ const NgoDashboard = () => {
           <button
             onClick={() => setActiveTab('accepted')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'accepted' ? 'bg-orange-500 text-gray-950 font-black shadow-md' : 'bg-white/90 text-gray-800 border border-gray-200'
+              activeTab === 'accepted' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
             }`}
           >
             Active Pickups ({acceptedDonations.length})
@@ -144,7 +139,7 @@ const NgoDashboard = () => {
           <button
             onClick={() => setActiveTab('register')}
             className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'register' ? 'bg-green-800 text-white font-black shadow-md' : 'bg-white/90 text-gray-800 border border-gray-200'
+              activeTab === 'register' ? 'bg-orange-600 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
             }`}
           >
             + Register NGO
@@ -157,14 +152,14 @@ const NgoDashboard = () => {
             <h3 className="text-base sm:text-lg font-black font-outfit text-green-950">Incoming Food Requests</h3>
             
             {pendingRequests.length === 0 ? (
-              <div className="bg-white/95 text-gray-900 p-8 rounded-3xl text-center border border-orange-200 shadow-xl">
-                <Utensils className="w-10 h-10 mx-auto text-orange-500 mb-2" />
+              <div className="bg-white text-gray-900 p-8 rounded-3xl text-center border border-gray-200 shadow-sm">
+                <Utensils className="w-10 h-10 mx-auto text-emerald-600 mb-2" />
                 <p className="text-xs sm:text-sm font-bold">No pending donation requests right now.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pendingRequests.map(item => (
-                  <div key={item.id} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border border-orange-200/60 shadow-xl p-5 space-y-3.5 card-zoom-3d">
+                  <div key={item.id} className="bg-white text-gray-900 rounded-3xl border border-gray-200/80 shadow-md p-5 space-y-3.5 card-zoom-3d">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                       <span className="text-xs font-black font-mono text-emerald-900">
                         Donation {item.id}
@@ -219,7 +214,7 @@ const NgoDashboard = () => {
             onClick={() => setSelectedDetailsDonation(null)}
           >
             <div 
-              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto border-t-4 border-orange-500 animate-in slide-in-from-bottom duration-300"
+              className="bg-white rounded-t-3xl sm:rounded-3xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto border-t-4 border-emerald-700 animate-in slide-in-from-bottom duration-300"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between border-b border-gray-100 pb-3">
@@ -319,7 +314,7 @@ const NgoDashboard = () => {
           <div className="space-y-3">
             <h3 className="text-base font-black font-outfit text-green-950">Active Accepted Pickups</h3>
             {acceptedDonations.map(item => (
-              <div key={item.id} className="bg-white/95 text-gray-900 p-4 rounded-2xl border border-gray-200 shadow-md space-y-2 card-zoom-3d">
+              <div key={item.id} className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200 shadow-md space-y-2 card-zoom-3d">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
                   <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">
@@ -335,7 +330,7 @@ const NgoDashboard = () => {
 
         {/* TAB 3: REGISTER NEW NGO */}
         {activeTab === 'register' && (
-          <form onSubmit={handleNgoSubmit} className="bg-white/95 text-gray-900 rounded-3xl p-6 border border-orange-200/60 shadow-2xl space-y-4 max-w-lg mx-auto">
+          <form onSubmit={handleNgoSubmit} className="bg-white text-gray-900 rounded-3xl p-6 border border-gray-200/80 shadow-md space-y-4 max-w-lg mx-auto">
             <h3 className="text-base font-black font-outfit text-emerald-950">Register New NGO Organization</h3>
             
             <div className="space-y-3">
@@ -386,7 +381,7 @@ const NgoDashboard = () => {
 
             <button
               type="submit"
-              className="w-full h-12 rounded-2xl bg-orange-500 text-gray-950 font-black text-xs shadow-md btn-bounce-active"
+              className="w-full h-12 rounded-2xl bg-emerald-800 text-white font-black text-xs shadow-md btn-bounce-active"
             >
               Submit NGO for Admin Verification
             </button>
