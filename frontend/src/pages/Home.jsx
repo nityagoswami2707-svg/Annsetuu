@@ -28,26 +28,36 @@ const Home = () => {
   const { t, setRole, stats } = useApp();
   const navigate = useNavigate();
 
-  // 3D Ken-Burns Hero Slideshow Images
+  // 3D Ken-Burns Hero Slideshow Images with Dynamic Inspirational Thoughts & Subtitles
   const slides = [
     {
       url: "https://images.unsplash.com/photo-1488521787991-ed7bbaae773c?w=1600&auto=format&fit=crop&q=80",
+      title: "“Every Surplus Meal is a Promise of Hope Kept.”",
+      subtitle: "Connecting generous restaurants, caterers, and homes directly to children and families in need.",
       caption: "Volunteers Distributing Fresh Meals to Community Children"
     },
     {
       url: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=1600&auto=format&fit=crop&q=80",
-      caption: "Surplus Food Collected from Fine Dining Restaurants & Banquets"
+      title: "“Zero Hunger Begins When Zero Food Goes to Waste.”",
+      subtitle: "Transforming unserved banquet and hotel feasts into warm nutritious meals within minutes.",
+      caption: "Surplus Food Rescued from Fine Dining Restaurants & Banquets"
     },
     {
       url: "https://images.unsplash.com/photo-1542838132-92c53300491e?w=1600&auto=format&fit=crop&q=80",
+      title: "“Swift, Sustainable & Zero-Emission Food Rescue.”",
+      subtitle: "Our green EV logistics network ensures hot meals reach community shelters with live temperature tracking.",
       caption: "EV Logistics Delivering Warm Food to Shelter Homes"
     },
     {
       url: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=1600&auto=format&fit=crop&q=80",
+      title: "“Dignity, Hygiene & Health in Every Single Plate.”",
+      subtitle: "Quality-checked by partner NGOs to guarantee safety and freshness for every beneficiary.",
       caption: "Community Kitchen Staff Preparing Hygienic Meal Packs"
     },
     {
       url: "https://images.unsplash.com/photo-1532629345422-7515f3d16bb0?w=1600&auto=format&fit=crop&q=80",
+      title: "“Bridging Surplus to Smiles — Anytime, Anywhere.”",
+      subtitle: "Join India’s fastest growing real-time food redistribution ecosystem and turn surplus into joy.",
       caption: "Connecting Surplus Food to Thousands of Happy Smiles"
     }
   ];
@@ -149,13 +159,16 @@ const Home = () => {
             <span>{t('brandName')} — {t('tagline')}</span>
           </div>
 
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-outfit text-white leading-tight tracking-tight drop-shadow-lg">
-            “{t('ctaSubText')}”
-          </h1>
+          {/* DYNAMIC THOUGHTS & HEADLINE CHANGING WITH SLIDESHOW */}
+          <div key={currentSlide} className="space-y-4 animate-in fade-in slide-in-from-bottom-4 duration-700">
+            <h1 className="text-3xl sm:text-5xl lg:text-6xl font-black font-outfit text-white leading-tight tracking-tight drop-shadow-lg min-h-[3.5rem] sm:min-h-[4.5rem]">
+              {slides[currentSlide].title}
+            </h1>
 
-          <p className="text-sm sm:text-lg text-emerald-100/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-sm px-2">
-            {t('heroSubtitle')}
-          </p>
+            <p className="text-sm sm:text-lg text-emerald-100/90 max-w-2xl mx-auto font-medium leading-relaxed drop-shadow-sm px-2">
+              {slides[currentSlide].subtitle}
+            </p>
+          </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 pt-2 max-w-md mx-auto sm:max-w-none">
             <button
