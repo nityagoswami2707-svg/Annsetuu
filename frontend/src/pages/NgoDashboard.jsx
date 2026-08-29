@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Building2, 
   CheckCircle, 
@@ -69,8 +70,12 @@ const NgoDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="ngo" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-emerald-950 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
@@ -95,22 +100,22 @@ const NgoDashboard = () => {
 
         {/* TOP SUMMARY CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">New Requests</span>
             <p className="text-2xl font-black text-amber-600 font-outfit mt-1">{pendingRequests.length}</p>
           </div>
 
-          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Accepted</span>
             <p className="text-2xl font-black text-emerald-800 font-outfit mt-1">{acceptedDonations.length}</p>
           </div>
 
-          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Pickup Pending</span>
             <p className="text-2xl font-black text-blue-600 font-outfit mt-1">{pickupPending.length}</p>
           </div>
 
-          <div className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <span className="text-xs font-bold text-gray-500 block">Delivered</span>
             <p className="text-2xl font-black text-purple-700 font-outfit mt-1">{deliveredDonations.length * 50 + 2500}</p>
           </div>
@@ -152,14 +157,14 @@ const NgoDashboard = () => {
             <h3 className="text-base sm:text-lg font-black font-outfit text-green-950">Incoming Food Requests</h3>
             
             {pendingRequests.length === 0 ? (
-              <div className="bg-white text-gray-900 p-8 rounded-3xl text-center border border-gray-200 shadow-sm">
+              <div className="bg-white/95 backdrop-blur-md text-gray-900 p-8 rounded-3xl text-center border border-gray-200 shadow-sm">
                 <Utensils className="w-10 h-10 mx-auto text-emerald-600 mb-2" />
                 <p className="text-xs sm:text-sm font-bold">No pending donation requests right now.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {pendingRequests.map(item => (
-                  <div key={item.id} className="bg-white text-gray-900 rounded-3xl border border-gray-200/80 shadow-md p-5 space-y-3.5 card-zoom-3d">
+                  <div key={item.id} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border border-gray-200/80 shadow-md p-5 space-y-3.5 card-zoom-3d">
                     <div className="flex items-center justify-between border-b border-gray-100 pb-2">
                       <span className="text-xs font-black font-mono text-emerald-900">
                         Donation {item.id}
@@ -314,7 +319,7 @@ const NgoDashboard = () => {
           <div className="space-y-3">
             <h3 className="text-base font-black font-outfit text-green-950">Active Accepted Pickups</h3>
             {acceptedDonations.map(item => (
-              <div key={item.id} className="bg-white text-gray-900 p-4 rounded-2xl border border-gray-200 shadow-md space-y-2 card-zoom-3d">
+              <div key={item.id} className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200 shadow-md space-y-2 card-zoom-3d">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
                   <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">
@@ -330,7 +335,7 @@ const NgoDashboard = () => {
 
         {/* TAB 3: REGISTER NEW NGO */}
         {activeTab === 'register' && (
-          <form onSubmit={handleNgoSubmit} className="bg-white text-gray-900 rounded-3xl p-6 border border-gray-200/80 shadow-md space-y-4 max-w-lg mx-auto">
+          <form onSubmit={handleNgoSubmit} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-6 border border-gray-200/80 shadow-md space-y-4 max-w-lg mx-auto">
             <h3 className="text-base font-black font-outfit text-emerald-950">Register New NGO Organization</h3>
             
             <div className="space-y-3">

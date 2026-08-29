@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import MapView from '../components/MapView';
 import ImpactReceipt from '../components/ImpactReceipt';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Search, 
   CheckCircle, 
@@ -33,8 +34,12 @@ const TrackingDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="track" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Search Header Banner */}
         <div className="bg-gradient-to-r from-blue-900 via-emerald-950 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-800 text-center space-y-4">
@@ -88,7 +93,7 @@ const TrackingDashboard = () => {
               
               <MapView donation={activeDonation} />
 
-              <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
+              <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
                 <div className="flex items-center justify-between border-b border-gray-100 pb-3">
                   <div>
                     <span className="text-[10px] font-bold text-gray-400 uppercase tracking-wider">Tracking Reference</span>
@@ -140,7 +145,7 @@ const TrackingDashboard = () => {
             </div>
 
             {/* Right Col: Vertical Timeline */}
-            <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
+            <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-7 shadow-md border border-gray-200/80 space-y-5">
               <h3 className="text-lg font-black font-outfit text-emerald-950 border-b border-gray-100 pb-3">
                 Vertical Mobile Timeline
               </h3>

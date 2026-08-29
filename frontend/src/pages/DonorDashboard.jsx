@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import { useNavigate } from 'react-router-dom';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Utensils, 
   Upload, 
@@ -95,8 +96,12 @@ const DonorDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="donor" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
         
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-emerald-900 via-green-900 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
@@ -119,7 +124,7 @@ const DonorDashboard = () => {
         </div>
 
         {step === 'form' && (
-          <form onSubmit={handleSubmit} className="bg-white text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-7">
+          <form onSubmit={handleSubmit} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-7">
             
             {/* SECTION 1: DONOR INFORMATION */}
             <div className="space-y-4">
@@ -442,7 +447,7 @@ const DonorDashboard = () => {
         )}
 
         {step === 'matching' && (
-          <div className="bg-white text-gray-900 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-200/80 text-center space-y-6 animate-in zoom-in-95">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-8 sm:p-12 shadow-xl border border-gray-200/80 text-center space-y-6 animate-in zoom-in-95">
             <div className="w-20 h-20 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center shadow-md animate-spin" style={{ animationDuration: '3s' }}>
               <Bot className="w-10 h-10" />
             </div>
@@ -455,7 +460,7 @@ const DonorDashboard = () => {
         )}
 
         {step === 'success' && (
-          <div className="bg-white text-gray-900 rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 space-y-6 animate-in fade-in">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 space-y-6 animate-in fade-in">
             <div className="text-center space-y-3">
               <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
                 <CheckCircle2 className="w-8 h-8 text-emerald-600 animate-bounce" />
@@ -527,7 +532,7 @@ const DonorDashboard = () => {
         )}
 
         {/* MY REGISTERED DONATIONS HISTORY */}
-        <div className="bg-white text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-4">
+        <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-5 sm:p-8 shadow-xl border border-gray-200/80 space-y-4">
           <h3 className="text-lg font-black font-outfit text-green-950">My Registered Donations</h3>
           
           <div className="space-y-3">

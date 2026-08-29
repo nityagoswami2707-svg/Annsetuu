@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Truck, 
   MapPin, 
@@ -39,8 +40,12 @@ const DeliveryDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="track" />
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Smartphone Driver Header Banner */}
         <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-800">
@@ -60,7 +65,7 @@ const DeliveryDashboard = () => {
 
         {/* CURRENT ASSIGNMENT CARD */}
         {activeAssignment && (
-          <div className="bg-white text-gray-900 rounded-3xl border-2 border-orange-500/40 p-5 sm:p-7 shadow-xl space-y-5">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border-2 border-orange-500/40 p-5 sm:p-7 shadow-xl space-y-5">
             <div className="flex items-center justify-between border-b border-gray-100 pb-3">
               <div>
                 <span className="text-[10px] font-black text-orange-600 uppercase tracking-widest block">Active Assignment</span>

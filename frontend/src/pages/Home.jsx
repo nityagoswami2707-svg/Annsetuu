@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Heart, 
   Utensils, 
@@ -101,8 +102,11 @@ const Home = () => {
   };
 
   return (
-    <div className="space-y-16 sm:space-y-24 bg-[#faf8f5] text-[#062c21] min-h-screen">
+    <div className="space-y-16 sm:space-y-24 bg-[#faf8f5] text-[#062c21] min-h-screen relative overflow-hidden">
       
+      {/* ANNSETU ANIMATED MOTION BACKGROUND LAYER */}
+      <AnnsetuMotionBackground type="home" />
+
       {/* HERO SECTION */}
       <section className="relative min-h-[92vh] sm:min-h-[88vh] flex items-center justify-center pt-24 pb-12 overflow-hidden shadow-2xl z-10">
         
@@ -201,7 +205,7 @@ const Home = () => {
 
       {/* REAL-TIME IMPACT COUNTERS */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal">
-        <div className="bg-white rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 text-gray-900">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-xl border border-gray-200/80 text-gray-900">
           
           <div className="text-center max-w-xl mx-auto mb-8 space-y-2">
             <span className="text-xs font-black uppercase tracking-widest text-orange-800 bg-orange-100 px-4 py-1.5 rounded-full border border-orange-300">
@@ -273,7 +277,7 @@ const Home = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-left">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-left">
             <div className="w-14 h-14 rounded-2xl bg-green-100 text-green-700 flex items-center justify-center mb-5 group-hover:bg-green-700 group-hover:text-white transition-colors shadow-md">
               <Leaf className="w-7 h-7" />
             </div>
@@ -281,7 +285,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('reduceWasteDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
             <div className="w-14 h-14 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center mb-5 group-hover:bg-orange-500 group-hover:text-white transition-colors shadow-md">
               <Heart className="w-7 h-7" />
             </div>
@@ -289,7 +293,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('fightHungerDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-scale">
             <div className="w-14 h-14 rounded-2xl bg-blue-100 text-blue-700 flex items-center justify-center mb-5 group-hover:bg-blue-600 group-hover:text-white transition-colors shadow-md">
               <Recycle className="w-7 h-7" />
             </div>
@@ -297,7 +301,7 @@ const Home = () => {
             <p className="text-xs text-gray-600 leading-relaxed">{t('protectEnvDesc')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-right">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-md card-zoom-3d group scroll-reveal-right">
             <div className="w-14 h-14 rounded-2xl bg-purple-100 text-purple-700 flex items-center justify-center mb-5 group-hover:bg-purple-600 group-hover:text-white transition-colors shadow-md">
               <Users className="w-7 h-7" />
             </div>

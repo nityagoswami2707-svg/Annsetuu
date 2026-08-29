@@ -1,5 +1,6 @@
 import React from 'react';
 import { useApp } from '../context/AppContext';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Heart, 
   Utensils, 
@@ -41,8 +42,12 @@ const ImpactPage = () => {
   ];
 
   return (
-    <div className="pt-24 pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16">
+    <div className="pt-24 pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="impact" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-16 relative z-10">
         
         {/* Header */}
         <div className="text-center max-w-3xl mx-auto space-y-4">
@@ -81,37 +86,37 @@ const ImpactPage = () => {
         {/* Large Visual Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center text-gray-900">
           
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Utensils className="w-8 h-8 mx-auto text-amber-600 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">10,000+</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('mealsSavedLabel')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Heart className="w-8 h-8 mx-auto text-red-500 fill-red-500 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">2,500+</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('peopleServed')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Building2 className="w-8 h-8 mx-auto text-emerald-700 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">45+</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('partnerNGOs')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Users className="w-8 h-8 mx-auto text-purple-600 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">120+</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('activeDonors')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <MapPin className="w-8 h-8 mx-auto text-blue-600 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">5 Cities</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('citiesCoveredLabel')}</p>
           </div>
 
-          <div className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Award className="w-8 h-8 mx-auto text-amber-500 mb-2" />
             <p className="text-3xl font-black text-emerald-950 font-outfit">85+</p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('volunteersEngagedLabel')}</p>
@@ -128,7 +133,7 @@ const ImpactPage = () => {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-gray-900">
             {testimonials.map((tItem, idx) => (
-              <div key={idx} className="bg-white p-6 rounded-3xl border border-gray-200/80 shadow-md flex flex-col justify-between space-y-4 card-zoom-3d">
+              <div key={idx} className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-md flex flex-col justify-between space-y-4 card-zoom-3d">
                 <div className="space-y-3">
                   <Quote className="w-8 h-8 text-amber-500" />
                   <p className="text-xs text-gray-700 italic leading-relaxed">"{tItem.quote}"</p>

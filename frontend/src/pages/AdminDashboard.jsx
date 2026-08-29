@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { jsPDF } from 'jspdf';
+import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
   Users, 
   Building2, 
@@ -110,8 +111,12 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
+    <div className="pt-24 pb-20 sm:pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
+      
+      {/* ANIMATED MOTION BACKGROUND */}
+      <AnnsetuMotionBackground type="admin" />
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-purple-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-purple-800">
@@ -165,7 +170,7 @@ const AdminDashboard = () => {
         {/* SUMMARY METRIC CARDS */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 text-gray-900">
           
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Total Users</span>
               <Users className="w-4 h-4 text-purple-600" />
@@ -174,7 +179,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-emerald-600 font-bold">↑ 12% this week</span>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Active NGOs</span>
               <Building2 className="w-4 h-4 text-emerald-600" />
@@ -183,7 +188,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-emerald-600 font-bold">100% Verified</span>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Total Donations</span>
               <Utensils className="w-4 h-4 text-amber-600" />
@@ -192,7 +197,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-amber-600 font-bold">Live Streamed</span>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Meals Served</span>
               <Utensils className="w-4 h-4 text-amber-600" />
@@ -201,7 +206,7 @@ const AdminDashboard = () => {
             <span className="text-[10px] text-amber-600 font-bold">Impact High</span>
           </div>
 
-          <div className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d col-span-2 md:col-span-1">
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d col-span-2 md:col-span-1">
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Pending Deliveries</span>
               <Clock className="w-4 h-4 text-blue-600" />
@@ -213,7 +218,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* MOBILE ANALYTICS TRIGGER BUTTON */}
-        <div className="flex items-center justify-between bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm">
+        <div className="flex items-center justify-between bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm">
           <div className="flex items-center space-x-2">
             <BarChart3 className="w-5 h-5 text-orange-600 shrink-0" />
             <span className="text-xs font-black text-gray-900">Mobile Analytics Engine</span>
@@ -288,7 +293,7 @@ const AdminDashboard = () => {
             
             <div className="space-y-3 text-gray-900">
               {donations.slice(0, 5).map(item => (
-                <div key={item.id} className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 card-zoom-3d">
+                <div key={item.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 card-zoom-3d">
                   <div>
                     <div className="flex items-center space-x-2">
                       <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
@@ -313,7 +318,7 @@ const AdminDashboard = () => {
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-900">
               {ngos.map(ngo => (
-                <div key={ngo.id} className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
+                <div key={ngo.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
                   <div className="flex items-start space-x-3">
                     <img src={ngo.avatar} alt="NGO" className="w-10 h-10 rounded-xl object-cover border border-gray-200 shrink-0" />
                     <div>
@@ -365,7 +370,7 @@ const AdminDashboard = () => {
 
             <div className="space-y-3 text-gray-900">
               {filteredDonations.map(item => (
-                <div key={item.id} className="bg-white p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-2 card-zoom-3d">
+                <div key={item.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-2 card-zoom-3d">
                   <div className="flex items-center justify-between">
                     <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
                     <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
@@ -393,7 +398,7 @@ const AdminDashboard = () => {
 
         {/* OVERALL REPORTS TAB */}
         {activeTab === 'reports' && (
-          <div className="bg-white text-gray-900 rounded-3xl p-6 border border-gray-200/80 shadow-md space-y-6">
+          <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-6 border border-gray-200/80 shadow-md space-y-6">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-xl font-black font-outfit text-emerald-950">Overall Platform Report</h3>
