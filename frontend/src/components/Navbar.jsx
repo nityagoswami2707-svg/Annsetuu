@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { Link, useLocation } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSelector from './LanguageSelector';
 import NotificationModal from './NotificationModal';
@@ -13,7 +13,11 @@ import {
   ShieldCheck, 
   Truck, 
   Building2,
-  ChevronDown
+  ChevronDown,
+  MoreVertical,
+  Home as HomeIcon,
+  Sparkles,
+  ArrowRight
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -21,16 +25,42 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = useState(false);
+  const [showPortalMenu, setShowPortalMenu] = useState(false);
 
   const location = useLocation();
+  const navigate = useNavigate();
+  const portalMenuRef = useRef(null);
+
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  const roles = [
-    { id: 'donor', labelKey: 'donorPortalRole', icon: Utensils, color: 'text-orange-600' },
-    { id: 'ngo', labelKey: 'ngoPortalRole', icon: Building2, color: 'text-green-700' },
-    { id: 'admin', labelKey: 'adminCenterRole', icon: ShieldCheck, color: 'text-purple-600' },
-    { id: 'delivery', labelKey: 'deliveryDriverRole', icon: Truck, color: 'text-blue-600' }
+  // Close portal dropdown menu when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (portalMenuRef.current && !portalMenuRef.current.contains(event.target)) {
+        setShowPortalMenu(false);
+      }
+    };
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, []);
+
+  const portals = [
+    { id: 'donor', path: '/donor', labelKey: 'donateFood', roleName: 'donor', icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-50', desc: 'Donate surplus meals from restaurants & homes' },
+    { id: 'ngo', path: '/ngo', labelKey: 'ngos', roleName: 'ngo', icon: Building2, color: 'text-green-700', bg: 'bg-green-50', desc: 'Review & accept food requests for shelters' },
+    { id: 'track', path: '/track', labelKey: 'trackDonation', roleName: role, icon: MapPin, color: 'text-amber-600', bg: 'bg-amber-50', desc: 'Live GPS telematics & status tracking' },
+    { id: 'delivery', path: '/delivery', labelKey: 'deliveryDashboard', roleName: 'delivery', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50', desc: 'Logistics task manager for driver volunteers' },
+    { id: 'admin', path: '/admin', labelKey: 'adminPortal', roleName: 'admin', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50', desc: 'System management & analytics center' },
+    { id: 'impact', path: '/impact', labelKey: 'ourImpact', roleName: role, icon: Heart, color: 'text-red-500', bg: 'bg-red-50', desc: 'Quantifiable metrics & stories of hope' }
   ];
+
+  const handlePortalSelect = (portal) => {
+    if (portal.roleName) {
+      setRole(portal.roleName);
+    }
+    navigate(portal.path);
+    setShowPortalMenu(false);
+    setMobileMenuOpen(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-white/95 backdrop-blur-md py-3.5 border-b-2 border-orange-500/20 shadow-md transition-none">
@@ -62,62 +92,86 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Nav Links */}
-          <div className="hidden lg:flex items-center space-x-7">
+          {/* Desktop Navigation: ONLY Homepage + 3 Dots Portal Switcher */}
+          <div className="hidden lg:flex items-center space-x-6">
+            
+            {/* Direct Homepage Link Only */}
             <Link 
               to="/" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
+              className={`text-sm font-extrabold flex items-center space-x-1.5 transition-all tab-animated hover:text-green-700 ${
                 location.pathname === '/' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
               }`}
             >
-              {t('home')}
+              <HomeIcon className="w-4 h-4 text-green-700" />
+              <span>{t('home')}</span>
             </Link>
 
-            <Link 
-              to="/donor" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-orange-600 ${
-                location.pathname === '/donor' ? 'text-orange-600 font-black border-b-2 border-orange-600 pb-1' : 'text-gray-700'
-              }`}
-            >
-              {t('donateFood')}
-            </Link>
+            {/* 3 DOTS PORTAL SWITCHER BUTTON */}
+            <div className="relative" ref={portalMenuRef}>
+              <button
+                onClick={() => setShowPortalMenu(!showPortalMenu)}
+                className={`flex items-center space-x-1.5 px-3.5 py-2 rounded-2xl text-xs font-extrabold transition-all border shadow-sm btn-bounce-active ${
+                  showPortalMenu ? 'bg-orange-500 text-gray-950 border-orange-600' : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-orange-100 hover:text-orange-900'
+                }`}
+                title="Click 3 dots to switch portals"
+                aria-label="Switch Portals Menu"
+              >
+                <MoreVertical className="w-4 h-4 text-orange-600" />
+                <span>Portals & Dashboards</span>
+                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+              </button>
 
-            <Link 
-              to="/ngo" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
-                location.pathname === '/ngo' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
-              }`}
-            >
-              {t('ngos')}
-            </Link>
+              {/* 3 DOTS PORTAL DROPDOWN POPOVER */}
+              {showPortalMenu && (
+                <div className="absolute left-0 mt-2 w-80 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in slide-in-from-top-2">
+                  <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                    <div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 block">Switch Platform Portal</span>
+                      <h4 className="text-xs font-extrabold text-green-950 font-outfit">Select Portal Destination</h4>
+                    </div>
+                    <Sparkles className="w-4 h-4 text-orange-500" />
+                  </div>
 
-            <Link 
-              to="/track" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 flex items-center space-x-1 ${
-                location.pathname === '/track' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
-              }`}
-            >
-              <MapPin className="w-4 h-4 text-orange-500" />
-              <span>{t('trackDonation')}</span>
-            </Link>
+                  <div className="p-2 space-y-1 max-h-[70vh] overflow-y-auto">
+                    {portals.map((portal) => {
+                      const IconComp = portal.icon;
+                      const isActive = location.pathname === portal.path;
 
-            <Link 
-              to="/impact" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-green-700 ${
-                location.pathname === '/impact' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
-              }`}
-            >
-              {t('ourImpact')}
-            </Link>
+                      return (
+                        <button
+                          key={portal.id}
+                          onClick={() => handlePortalSelect(portal)}
+                          className={`w-full flex items-start space-x-3 p-3 rounded-2xl text-left transition-all ${
+                            isActive ? 'bg-orange-100/80 border border-orange-300' : 'hover:bg-gray-50'
+                          }`}
+                        >
+                          <div className={`p-2 rounded-xl shrink-0 ${portal.bg}`}>
+                            <IconComp className={`w-5 h-5 ${portal.color}`} />
+                          </div>
 
-            <Link 
-              to="/admin" 
-              className={`text-sm font-extrabold transition-all tab-animated hover:text-purple-700 ${
-                location.pathname === '/admin' ? 'text-purple-800 font-black border-b-2 border-purple-600 pb-1' : 'text-gray-700'
-              }`}
-            >
-              {t('adminPortal')}
-            </Link>
+                          <div className="flex-1 min-w-0">
+                            <div className="flex items-center justify-between">
+                              <span className={`text-xs font-extrabold ${isActive ? 'text-orange-950 font-black' : 'text-gray-900'}`}>
+                                {t(portal.labelKey)}
+                              </span>
+                              {isActive && (
+                                <span className="text-[9px] font-black bg-orange-500 text-gray-950 px-2 py-0.5 rounded-full uppercase">
+                                  Active
+                                </span>
+                              )}
+                            </div>
+                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5 line-clamp-1">
+                              {portal.desc}
+                            </p>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+              )}
+            </div>
+
           </div>
 
           {/* Right Action Tools */}
@@ -140,41 +194,16 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* Role Selector Dropdown */}
+            {/* 3-Dots Quick Portal Access Button (Also available on toolbar) */}
             <div className="relative">
               <button
-                onClick={() => setShowRoleDropdown(!showRoleDropdown)}
-                className="flex items-center space-x-1.5 px-3.5 py-2 rounded-full text-xs font-black bg-gradient-to-r from-green-800 to-orange-600 text-white hover:from-green-900 hover:to-orange-700 transition-all shadow-md btn-bounce-active"
+                onClick={() => setShowPortalMenu(!showPortalMenu)}
+                className="p-2.5 text-gray-800 bg-orange-100 hover:bg-orange-200 rounded-full transition-all border border-orange-300 tab-animated"
+                title="Switch Portals (3 Dots)"
+                aria-label="3 Dots Portal Switcher"
               >
-                <span className="capitalize">{t(`${role}PortalRole`)}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-80" />
+                <MoreVertical className="w-5 h-5 text-orange-700" />
               </button>
-
-              {showRoleDropdown && (
-                <div className="absolute right-0 mt-2 w-56 bg-white rounded-2xl shadow-2xl border border-gray-100 py-2 z-50 animate-in fade-in slide-in-from-top-2">
-                  <div className="px-3 py-1.5 border-b border-gray-100 text-[10px] font-bold text-gray-400 uppercase tracking-wider">
-                    {t('switchRole')}
-                  </div>
-                  {roles.map((r) => {
-                    const IconComp = r.icon;
-                    return (
-                      <button
-                        key={r.id}
-                        onClick={() => {
-                          setRole(r.id);
-                          setShowRoleDropdown(false);
-                        }}
-                        className={`w-full flex items-center space-x-2.5 px-3.5 py-2 text-xs text-left hover:bg-green-50 transition-colors ${
-                          role === r.id ? 'bg-green-50/80 font-black text-green-900' : 'text-gray-700'
-                        }`}
-                      >
-                        <IconComp className={`w-4 h-4 ${r.color}`} />
-                        <span>{t(r.labelKey)}</span>
-                      </button>
-                    );
-                  })}
-                </div>
-              )}
             </div>
 
             {/* Mobile Menu Toggle */}
@@ -192,55 +221,36 @@ const Navbar = () => {
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b border-gray-200 px-4 pt-3 pb-6 space-y-3 mt-3 shadow-lg animate-in fade-in">
+          <div className="px-2 py-1 text-[10px] font-black uppercase text-orange-600 tracking-wider">
+            Main Navigation
+          </div>
+
           <Link 
             to="/" 
             onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-green-700 border-b border-gray-50"
+            className="flex items-center space-x-2 py-2 text-sm font-bold text-gray-800 hover:text-green-700 border-b border-gray-50"
           >
-            {t('home')}
+            <HomeIcon className="w-4 h-4 text-green-700" />
+            <span>{t('home')}</span>
           </Link>
-          <Link 
-            to="/donor" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-orange-600 border-b border-gray-50"
-          >
-            {t('donorDashboard')}
-          </Link>
-          <Link 
-            to="/ngo" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-green-700 border-b border-gray-50"
-          >
-            {t('ngoDashboard')}
-          </Link>
-          <Link 
-            to="/track" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-green-700 border-b border-gray-50"
-          >
-            {t('trackingDashboard')}
-          </Link>
-          <Link 
-            to="/admin" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-purple-700 border-b border-gray-50"
-          >
-            {t('adminDashboard')}
-          </Link>
-          <Link 
-            to="/delivery" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-blue-700 border-b border-gray-50"
-          >
-            {t('deliveryDashboard')}
-          </Link>
-          <Link 
-            to="/impact" 
-            onClick={() => setMobileMenuOpen(false)}
-            className="block py-2 text-sm font-bold text-gray-800 hover:text-green-700"
-          >
-            {t('ourImpact')}
-          </Link>
+
+          <div className="pt-2 px-2 text-[10px] font-black uppercase text-gray-400 tracking-wider">
+            Switch Portals & Dashboards (3-Dots Options)
+          </div>
+
+          {portals.map((portal) => {
+            const IconComp = portal.icon;
+            return (
+              <button
+                key={portal.id}
+                onClick={() => handlePortalSelect(portal)}
+                className="w-full flex items-center space-x-3 p-2.5 rounded-xl text-left bg-gray-50 hover:bg-orange-50 text-gray-800 border border-gray-100"
+              >
+                <IconComp className={`w-4 h-4 ${portal.color}`} />
+                <span className="text-xs font-bold">{t(portal.labelKey)}</span>
+              </button>
+            );
+          })}
         </div>
       )}
 
