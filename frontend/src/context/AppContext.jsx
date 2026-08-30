@@ -215,8 +215,11 @@ const INITIAL_NOTIFICATIONS = [
 ];
 
 export const AppProvider = ({ children }) => {
-  const [language, setLanguage] = useState('en');
-  // Visitor role removed! Default role is 'donor'
+  // Load saved language or default to 'en'
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('annsetu_language') || 'en';
+  });
+
   const [role, setRole] = useState('donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
@@ -224,6 +227,12 @@ export const AppProvider = ({ children }) => {
   const [selectedReceiptDonation, setSelectedReceiptDonation] = useState(null);
   const [activeToast, setActiveToast] = useState(null);
   const [isRealtimeActive, setIsRealtimeActive] = useState(true);
+
+  // Sync document element lang attribute whenever language changes
+  useEffect(() => {
+    document.documentElement.lang = language;
+    localStorage.setItem('annsetu_language', language);
+  }, [language]);
 
   // SUPABASE REAL-TIME DATABASE SUBSCRIPTION
   useEffect(() => {
@@ -262,6 +271,8 @@ export const AppProvider = ({ children }) => {
 
   const changeLanguage = (langCode) => {
     setLanguage(langCode);
+    localStorage.setItem('annsetu_language', langCode);
+    document.documentElement.lang = langCode;
     const langNames = { en: "English", hi: "हिन्दी", gu: "ગુજરાતી" };
     showToast("Language Preference Updated", `Website language set to ${langNames[langCode] || langCode}.`, "info");
   };
