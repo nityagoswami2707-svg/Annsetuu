@@ -8,7 +8,7 @@ const RegisterPage = () => {
   const { registerUser, t } = useApp();
   const navigate = useNavigate();
 
-  const [selectedRole, setSelectedRole] = useState(null); // 'donor' | 'ngo' | 'volunteer' | 'fund_donor'
+  const [selectedRole, setSelectedRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
   const [ngoPendingSubmitted, setNgoPendingSubmitted] = useState(false);
@@ -60,17 +60,14 @@ const RegisterPage = () => {
         phone,
         location,
         role: selectedRole,
-        // Donor specific
         donorType,
         orgName,
-        // NGO specific
         ngoName,
         address,
         serviceArea,
         regNo,
         beneficiaryType,
         capacity,
-        // Volunteer specific
         transportType,
         availability
       };
@@ -94,21 +91,21 @@ const RegisterPage = () => {
   const rolesConfig = [
     {
       id: 'donor',
-      title: '🍱 Food Donor',
+      title: `🍱 ${t('donorPortalRole')}`,
       subtitle: 'Donate surplus food from restaurants, hotels, cafés, caterers, events, or your home.',
       color: 'border-orange-300 hover:border-orange-500 bg-orange-50/70 text-orange-950',
       badge: 'Surplus Rescue'
     },
     {
       id: 'ngo',
-      title: '🏢 NGO Partner',
+      title: `🏢 ${t('ngoPortalRole')}`,
       subtitle: 'Help receive and distribute surplus food to people in need.',
       color: 'border-green-300 hover:border-green-500 bg-green-50/70 text-green-950',
       badge: 'Verified Distribution'
     },
     {
       id: 'volunteer',
-      title: '🚴 Delivery Volunteer',
+      title: `🚴 ${t('deliveryDriverRole')}`,
       subtitle: 'Help collect and deliver surplus food safely from donors to NGOs.',
       color: 'border-blue-300 hover:border-blue-500 bg-blue-50/70 text-blue-950',
       badge: 'Logistics Partner'
@@ -130,7 +127,6 @@ const RegisterPage = () => {
 
       <div className="max-w-2xl w-full mx-auto px-4 relative z-10 space-y-6">
         
-        {/* NGO PENDING VERIFICATION SCREEN */}
         {ngoPendingSubmitted ? (
           <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-amber-300 text-center space-y-5 animate-in zoom-in-95 duration-500">
             <div className="w-16 h-16 mx-auto rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-2xl font-black">
@@ -159,10 +155,10 @@ const RegisterPage = () => {
                 <UserPlus className="w-6 h-6" />
               </div>
               <h1 className="text-2xl sm:text-3xl font-black font-outfit text-green-950">
-                Join AnnSetu
+                {t('createAccount')}
               </h1>
               <p className="text-xs text-gray-500 font-medium">
-                {!selectedRole ? 'Step 1: Select how you would like to contribute.' : `Step 2: Complete ${selectedRole.toUpperCase().replace('_', ' ')} Registration.`}
+                {!selectedRole ? t('howContribute') : `Step 2: Complete ${selectedRole.toUpperCase().replace('_', ' ')} Registration.`}
               </p>
             </div>
 
@@ -172,11 +168,10 @@ const RegisterPage = () => {
               </div>
             )}
 
-            {/* STEP 1: ROLE SELECTION CARDS */}
             {!selectedRole ? (
               <div className="space-y-4">
                 <h3 className="text-sm font-extrabold text-gray-800 text-center uppercase tracking-wider">
-                  How would you like to contribute?
+                  {t('howContribute')}
                 </h3>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
@@ -199,7 +194,7 @@ const RegisterPage = () => {
                       </div>
 
                       <div className="flex items-center justify-end text-xs font-black text-green-900 space-x-1">
-                        <span>Select Role</span>
+                        <span>{t('selectRoleLabel')}</span>
                         <ArrowRight className="w-3.5 h-3.5" />
                       </div>
                     </button>
@@ -207,7 +202,6 @@ const RegisterPage = () => {
                 </div>
               </div>
             ) : (
-              /* STEP 2: ROLE-SPECIFIC FORM */
               <form onSubmit={handleRegister} className="space-y-4">
                 
                 <div className="flex items-center justify-between bg-orange-50 p-3 rounded-2xl border border-orange-200">
@@ -223,15 +217,14 @@ const RegisterPage = () => {
                     className="text-xs font-bold text-gray-500 hover:text-gray-900 flex items-center space-x-1"
                   >
                     <ArrowLeft className="w-3.5 h-3.5" />
-                    <span>Change Role</span>
+                    <span>{t('changeRole')}</span>
                   </button>
                 </div>
 
-                {/* Common Inputs */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
                   <div>
                     <label className="font-extrabold text-gray-700 block mb-1">
-                      {selectedRole === 'ngo' ? 'Contact Person Name *' : 'Full Name *'}
+                      {selectedRole === 'ngo' ? 'Contact Person Name *' : `${t('fullNameLabel')} *`}
                     </label>
                     <input
                       type="text"
@@ -256,7 +249,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div>
-                    <label className="font-extrabold text-gray-700 block mb-1">Email Address *</label>
+                    <label className="font-extrabold text-gray-700 block mb-1">{t('emailLabel')} *</label>
                     <input
                       type="email"
                       value={email}
@@ -280,7 +273,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div>
-                    <label className="font-extrabold text-gray-700 block mb-1">Password *</label>
+                    <label className="font-extrabold text-gray-700 block mb-1">{t('passwordLabel')} *</label>
                     <input
                       type="password"
                       value={password}
@@ -292,7 +285,7 @@ const RegisterPage = () => {
                   </div>
 
                   <div>
-                    <label className="font-extrabold text-gray-700 block mb-1">Confirm Password *</label>
+                    <label className="font-extrabold text-gray-700 block mb-1">{t('confirmPasswordLabel')} *</label>
                     <input
                       type="password"
                       value={confirmPassword}
@@ -304,7 +297,6 @@ const RegisterPage = () => {
                   </div>
                 </div>
 
-                {/* ROLE SPECIFIC FIELDS */}
                 {selectedRole === 'donor' && (
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs pt-2 border-t border-gray-100">
                     <div>
@@ -440,7 +432,7 @@ const RegisterPage = () => {
                     <span>Registering Account...</span>
                   ) : (
                     <>
-                      <span>Complete Registration</span>
+                      <span>{t('completeRegistration')}</span>
                       <CheckCircle2 className="w-4 h-4" />
                     </>
                   )}
@@ -452,7 +444,7 @@ const RegisterPage = () => {
             <div className="text-center pt-2 text-xs font-medium text-gray-600">
               Already have an account?{' '}
               <Link to="/login" className="font-black text-green-800 hover:underline">
-                Login Here
+                {t('accountLogin')}
               </Link>
             </div>
 

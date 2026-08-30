@@ -28,7 +28,6 @@ const LoginPage = () => {
       setLoading(false);
 
       if (loggedUser) {
-        // Redirect to role dashboard automatically
         const rolePath = loggedUser.role === 'admin' ? '/admin' :
                          loggedUser.role === 'ngo' ? '/ngo' :
                          loggedUser.role === 'volunteer' ? '/volunteer' :
@@ -41,7 +40,7 @@ const LoginPage = () => {
     }
   };
 
-  const handleQuickDemoFill = (demoEmail, demoRole) => {
+  const handleQuickDemoFill = (demoEmail) => {
     setEmail(demoEmail);
     setPassword('demo1234');
   };
@@ -61,10 +60,10 @@ const LoginPage = () => {
               <LogIn className="w-6 h-6" />
             </div>
             <h1 className="text-2xl sm:text-3xl font-black font-outfit text-green-950">
-              Account Login
+              {t('accountLogin')}
             </h1>
             <p className="text-xs text-gray-500 font-medium">
-              Enter your credentials to access your role-based AnnSetu portal.
+              {t('enterCredentialsSub')}
             </p>
           </div>
 
@@ -77,7 +76,7 @@ const LoginPage = () => {
           <form onSubmit={handleLogin} className="space-y-4">
             
             <div className="space-y-1">
-              <label className="text-xs font-extrabold text-gray-700 block">Email Address *</label>
+              <label className="text-xs font-extrabold text-gray-700 block">{t('emailLabel')} *</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -93,13 +92,13 @@ const LoginPage = () => {
 
             <div className="space-y-1">
               <div className="flex justify-between items-center">
-                <label className="text-xs font-extrabold text-gray-700 block">Password *</label>
+                <label className="text-xs font-extrabold text-gray-700 block">{t('passwordLabel')} *</label>
                 <button
                   type="button"
                   onClick={() => alert("Password Reset: Check your email for recovery instructions.")}
                   className="text-[11px] font-bold text-orange-600 hover:underline"
                 >
-                  Forgot Password?
+                  {t('forgotPassword')}
                 </button>
               </div>
               <div className="relative">
@@ -124,7 +123,7 @@ const LoginPage = () => {
                 <span>Authenticating...</span>
               ) : (
                 <>
-                  <span>Login</span>
+                  <span>{t('accountLogin')}</span>
                   <ArrowRight className="w-4 h-4" />
                 </>
               )}
@@ -136,25 +135,25 @@ const LoginPage = () => {
           <div className="space-y-2 pt-2 border-t border-gray-100">
             <span className="text-[10px] font-black uppercase text-gray-400 block text-center">Quick Demo Preset Login</span>
             <div className="grid grid-cols-2 gap-1.5 text-[10px] font-bold">
-              <button onClick={() => handleQuickDemoFill('donor@annsetu.org', 'donor')} className="p-2 bg-orange-50 hover:bg-orange-100 text-orange-900 rounded-xl border border-orange-200">
-                🍱 Donor Login
+              <button onClick={() => handleQuickDemoFill('donor@annsetu.org')} className="p-2 bg-orange-50 hover:bg-orange-100 text-orange-900 rounded-xl border border-orange-200">
+                🍱 {t('donorPortalRole')}
               </button>
-              <button onClick={() => handleQuickDemoFill('ngo@annsetu.org', 'ngo')} className="p-2 bg-green-50 hover:bg-green-100 text-green-900 rounded-xl border border-green-200">
-                🏢 NGO Login
+              <button onClick={() => handleQuickDemoFill('ngo@annsetu.org')} className="p-2 bg-green-50 hover:bg-green-100 text-green-900 rounded-xl border border-green-200">
+                🏢 {t('ngoPortalRole')}
               </button>
-              <button onClick={() => handleQuickDemoFill('volunteer@annsetu.org', 'volunteer')} className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl border border-blue-200">
-                🚴 Volunteer Login
+              <button onClick={() => handleQuickDemoFill('volunteer@annsetu.org')} className="p-2 bg-blue-50 hover:bg-blue-100 text-blue-900 rounded-xl border border-blue-200">
+                🚴 {t('deliveryDriverRole')}
               </button>
-              <button onClick={() => handleQuickDemoFill('fund@annsetu.org', 'fund_donor')} className="p-2 bg-purple-50 hover:bg-purple-100 text-purple-900 rounded-xl border border-purple-200">
+              <button onClick={() => handleQuickDemoFill('fund@annsetu.org')} className="p-2 bg-purple-50 hover:bg-purple-100 text-purple-900 rounded-xl border border-purple-200">
                 💝 Fund Donor
               </button>
             </div>
           </div>
 
           <div className="text-center pt-2 text-xs font-medium text-gray-600">
-            Don't have an account?{' '}
+            {t('dontHaveAccount')}{' '}
             <Link to="/register" className="font-black text-green-800 hover:underline">
-              Register Now
+              {t('registerNow')}
             </Link>
           </div>
 

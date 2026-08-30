@@ -5,17 +5,14 @@ import AnnsetuMotionBackground from './AnnsetuMotionBackground';
 import { ShieldAlert, ArrowLeft, Home } from 'lucide-react';
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
-  const { user, role } = useApp();
+  const { user, role, t } = useApp();
   const navigate = useNavigate();
 
-  // If user is not logged in, redirect to authentication page
   if (!user) {
     return <Navigate to="/auth" replace />;
   }
 
   const currentRole = user.role || role || 'donor';
-
-  // Check if current role is authorized for this route
   const isAuthorized = allowedRoles.includes(currentRole) || currentRole === 'admin';
 
   if (!isAuthorized) {
@@ -38,18 +35,18 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
 
             <div className="space-y-2">
               <span className="text-[10px] font-black uppercase tracking-widest text-red-600 bg-red-50 px-3 py-1 rounded-full border border-red-200">
-                Unauthorized Route Attempt
+                {t('accessDenied')}
               </span>
               <h2 className="text-2xl font-black font-outfit text-red-950">
-                Access Denied
+                {t('accessDenied')}
               </h2>
               <p className="text-xs text-gray-600 font-semibold leading-relaxed">
-                “You don't have permission to access this section.”
+                “{t('noPermissionSub')}”
               </p>
             </div>
 
             <div className="p-3 bg-gray-50 rounded-2xl border border-gray-200 text-xs font-bold text-gray-700">
-              Your Current Active Role: <span className="text-green-800 uppercase">{currentRole.replace('_', ' ')}</span>
+              Active Role: <span className="text-green-800 uppercase">{currentRole.replace('_', ' ')}</span>
             </div>
 
             <div className="pt-2 flex flex-col gap-2">
@@ -58,7 +55,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
                 className="w-full min-h-[48px] px-6 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
               >
                 <Home className="w-4 h-4" />
-                <span>Return to My Dashboard</span>
+                <span>{t('returnToDashboard')}</span>
               </button>
             </div>
           </div>
