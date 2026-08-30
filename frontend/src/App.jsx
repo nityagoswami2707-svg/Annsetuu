@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
@@ -20,15 +20,15 @@ import ImpactPage from './pages/ImpactPage';
 import AuthPage from './pages/AuthPage';
 import AccessDenied from './pages/AccessDenied';
 
-// Guarantees Homepage ALWAYS opens first whenever user opens or visits the website
+// Component to guarantee homepage appears first every time someone opens the website
 function AlwaysOpenHomepageOnVisit() {
   const navigate = useNavigate();
   const location = useLocation();
-  const hasMounted = useRef(false);
 
   useEffect(() => {
-    if (!hasMounted.current) {
-      hasMounted.current = true;
+    const visited = sessionStorage.getItem('annsetu_visited_session');
+    if (!visited) {
+      sessionStorage.setItem('annsetu_visited_session', 'true');
       if (location.pathname !== '/') {
         navigate('/', { replace: true });
       }
@@ -50,14 +50,14 @@ function AppContent() {
 
       <main className="flex-1 pb-20 lg:pb-0">
         <Routes>
-          {/* Public Homepage always opens first */}
+          {/* Requirement 1: Public Homepage always opens first without login */}
           <Route path="/" element={<Home />} />
           
-          {/* Authentication Routes */}
+          {/* Requirement 2, 5, 6, 7, 8: Authentication Routes */}
           <Route path="/auth/:roleParam" element={<AuthPage />} />
           <Route path="/access-denied" element={<AccessDenied />} />
 
-          {/* Role-Based Protected Routes */}
+          {/* Requirement 11, 14, 15: Role-Based Protected Routes */}
           <Route 
             path="/donor" 
             element={
@@ -94,7 +94,7 @@ function AppContent() {
             } 
           />
 
-          {/* Public Tracking & Impact */}
+          {/* Requirement 25: Public Tracking & Impact */}
           <Route path="/track" element={<TrackingDashboard />} />
           <Route path="/impact" element={<ImpactPage />} />
 
