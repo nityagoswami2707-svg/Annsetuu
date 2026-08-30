@@ -4,6 +4,62 @@ import { supabase } from '../lib/supabase';
 
 const AppContext = createContext();
 
+const INITIAL_USERS = [
+  {
+    id: "USR-ADMIN-01",
+    name: "Annsetu Master Admin",
+    email: "admin@annsetu.demo",
+    adminId: "ANNSETU-ADMIN-01",
+    phone: "+91 99999 00000",
+    password: "AnnSetu@2026Demo",
+    role: "admin",
+    verificationStatus: "Verified",
+    createdAt: "2026-01-01"
+  },
+  {
+    id: "USR-DONOR-01",
+    name: "Green Leaf Fine Dining",
+    email: "donor@annsetu.demo",
+    phone: "9428099887",
+    password: "Donor@2026Demo",
+    role: "donor",
+    verificationStatus: "Verified",
+    city: "Vadodara",
+    address: "1st Floor, Crystal Plaza, Vadodara",
+    pincode: "390007",
+    createdAt: "2026-01-15"
+  },
+  {
+    id: "USR-NGO-01",
+    name: "Hope Foundation India",
+    email: "ngo@annsetu.demo",
+    phone: "9876543210",
+    password: "Ngo@2026Demo",
+    role: "ngo",
+    regNo: "REG-2021-987654",
+    contactPerson: "Dr. Rajesh Sharma",
+    verificationStatus: "Verified",
+    city: "Vadodara",
+    address: "Plot 45, Community Center, Alkapuri",
+    pincode: "390007",
+    createdAt: "2026-02-01"
+  },
+  {
+    id: "USR-VOL-01",
+    name: "Ramesh Kumar",
+    email: "volunteer@annsetu.demo",
+    phone: "9106633221",
+    password: "Volunteer@2026Demo",
+    role: "volunteer",
+    vehicleType: "Car / EV",
+    verificationStatus: "Verified",
+    city: "Vadodara",
+    address: "Akota Road, Vadodara",
+    pincode: "390020",
+    createdAt: "2026-02-10"
+  }
+];
+
 const INITIAL_NGOS = [
   {
     id: "NGO-101",
@@ -214,13 +270,47 @@ const INITIAL_NOTIFICATIONS = [
   }
 ];
 
+// Password validation helper
+export const validatePasswordStrength = (password) => {
+  if (!password) return { isValid: false, score: 'Weak', errors: ["Password is required."] };
+
+  const errors = [];
+  if (password.length < 8) errors.push("Minimum 8 characters");
+  if (!/[A-Z]/.test(password)) errors.push("1 uppercase letter (A-Z)");
+  if (!/[a-z]/.test(password)) errors.push("1 lowercase letter (a-z)");
+  if (!/[0-9]/.test(password)) errors.push("1 number (0-9)");
+  if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) errors.push("1 special character (!@#$%^&*)");
+
+  const passedCount = 5 - errors.length;
+  let score = 'Weak';
+  if (passedCount >= 5) score = 'Strong';
+  else if (passedCount >= 3) score = 'Medium';
+
+  return {
+    isValid: errors.length === 0,
+    score,
+    errors
+  };
+};
+
 export const AppProvider = ({ children }) => {
   // Load saved language or default to 'en'
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('annsetu_language') || 'en';
   });
 
-  const [role, setRole] = useState('donor');
+  // User Accounts & Authentication State
+  const [users, setUsers] = useState(INITIAL_USERS);
+  const [currentUser, setCurrentUser] = useState(() => {
+    try {
+      const saved = localStorage.getItem('annsetu_user');
+      return saved ? JSON.parse(saved) : null;
+    } catch (e) {
+      return null;
+    }
+  });
+
+  const [role, setRole] = useState(() => currentUser?.role || 'donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
@@ -233,6 +323,16 @@ export const AppProvider = ({ children }) => {
     document.documentElement.lang = language;
     localStorage.setItem('annsetu_language', language);
   }, [language]);
+
+  // Sync current user to localStorage
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem('annsetu_user', JSON.stringify(currentUser));
+      setRole(currentUser.role);
+    } else {
+      localStorage.removeItem('annsetu_user');
+    }
+  }, [currentUser]);
 
   // SUPABASE REAL-TIME DATABASE SUBSCRIPTION
   useEffect(() => {
@@ -277,6 +377,119 @@ export const AppProvider = ({ children }) => {
     showToast("Language Preference Updated", `Website language set to ${langNames[langCode] || langCode}.`, "info");
   };
 
+  // Authentication Logic
+  const loginUser = (identifier, password, targetRole) => {
+    const cleanId = identifier.trim().toLowerCase();
+    const cleanPhone = identifier.replace(/[^0-9]/g, '');
+
+    const found = users.find(u => 
+      u.email.toLowerCase() === cleanId ||
+      (u.adminId && u.adminId.toLowerCase() === cleanId) ||
+      (u.phone && cleanPhone.length > 5 && u.phone.replace(/[^0-9]/g, '').includes(cleanPhone))
+    );
+
+    if (!found || found.password !== password) {
+      const errMsg = targetRole === 'admin' ? t('adminInvalidCredsMsg') : t('invalidCredsMsg');
+      return { success: false, error: errMsg };
+    }
+
+    // Role check for non-admin target portal
+    if (targetRole && found.role !== 'admin' && found.role !== targetRole) {
+      return { success: false, error: `This account is registered as ${found.role.toUpperCase()}. Please login using the ${found.role.toUpperCase()} portal.` };
+    }
+
+    setCurrentUser(found);
+    setRole(found.role);
+
+    const welcomeMsgs = {
+      donor: t('donorWelcomeMsg'),
+      ngo: t('ngoWelcomeMsg'),
+      volunteer: t('volunteerWelcomeMsg'),
+      admin: t('adminWelcomeMsg')
+    };
+
+    showToast(`Welcome ${found.name}`, welcomeMsgs[found.role] || welcomeMsgs.donor, "success");
+    return { success: true, user: found };
+  };
+
+  const registerUser = (userData) => {
+    const nextId = `USR-${userData.role.toUpperCase()}-${String(users.length + 1).padStart(2, '0')}`;
+    const newUser = {
+      id: nextId,
+      name: userData.name || userData.ngoName || "New Annsetu Partner",
+      email: userData.email,
+      phone: userData.phone || "",
+      password: userData.password,
+      role: userData.role,
+      verificationStatus: userData.role === 'ngo' ? 'Pending' : 'Verified',
+      address: userData.address || "",
+      city: userData.city || "Vadodara",
+      pincode: userData.pincode || "",
+      createdAt: new Date().toISOString().split('T')[0]
+    };
+
+    setUsers(prev => [newUser, ...prev]);
+
+    if (userData.role === 'ngo') {
+      const newNgo = {
+        id: `NGO-${ngos.length + 104}`,
+        name: userData.ngoName,
+        registrationNo: userData.regNo || `REG-2026-${Date.now().toString().slice(-6)}`,
+        contactPerson: userData.contactPersonName || userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        address: userData.address,
+        city: userData.city || "Vadodara",
+        pincode: userData.pincode,
+        type: "Community Food Relief",
+        areasServed: "Vadodara Metropolitan",
+        peopleServedPerDay: 100,
+        availableCapacity: "200 meals/day",
+        verificationStatus: "Pending",
+        badge: "Under Verification",
+        avatar: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=150&auto=format&fit=crop&q=80"
+      };
+      setNgos(prev => [...prev, newNgo]);
+      showToast("NGO Registration Submitted", t('ngoSubmittedMsg'), "info");
+      return { success: true, user: newUser, isPendingNgo: true };
+    } else {
+      setCurrentUser(newUser);
+      setRole(newUser.role);
+      showToast("Account Created! 🎉", `Welcome to Annsetu, ${newUser.name}!`, "success");
+      return { success: true, user: newUser };
+    }
+  };
+
+  const logoutUser = () => {
+    setCurrentUser(null);
+    setRole('donor');
+    showToast("Logged Out", "You have been logged out successfully.", "info");
+  };
+
+  const updatePassword = (identifier, newPassword) => {
+    const cleanId = identifier.trim().toLowerCase();
+    const cleanPhone = identifier.replace(/[^0-9]/g, '');
+
+    const foundIdx = users.findIndex(u => 
+      u.email.toLowerCase() === cleanId ||
+      (u.adminId && u.adminId.toLowerCase() === cleanId) ||
+      (u.phone && cleanPhone.length > 5 && u.phone.replace(/[^0-9]/g, '').includes(cleanPhone))
+    );
+
+    if (foundIdx === -1) {
+      // Security practice: do not reveal whether account exists, return standard success message
+      return { success: true, message: t('passwordResetSuccessMsg') };
+    }
+
+    setUsers(prev => {
+      const updated = [...prev];
+      updated[foundIdx] = { ...updated[foundIdx], password: newPassword };
+      return updated;
+    });
+
+    return { success: true, message: t('passwordResetSuccessMsg') };
+  };
+
   // Trigger floating Toast Notification Popup
   const showToast = (title, message, type = 'info') => {
     const toast = { id: Date.now(), title, message, type };
@@ -318,7 +531,7 @@ export const AppProvider = ({ children }) => {
 
     const newDonation = {
       id: newId,
-      donorName: formData.donorName || "Community Partner",
+      donorName: formData.donorName || currentUser?.name || "Community Partner",
       donorType: formData.donorType || "Restaurant",
       foodName: formData.foodName,
       foodCategory: formData.foodCategory || "Prepared Meal",
@@ -331,8 +544,8 @@ export const AppProvider = ({ children }) => {
       pickupAddress: formData.pickupAddress,
       city: formData.city || "Vadodara",
       pincode: formData.pincode || "390001",
-      contactPerson: formData.contactPerson || formData.donorName,
-      phone: formData.phone || "+91 98000 00000",
+      contactPerson: formData.contactPerson || currentUser?.name || formData.donorName,
+      phone: formData.phone || currentUser?.phone || "+91 98000 00000",
       specialInstructions: formData.specialInstructions || "Handle with care",
       safetyConfirmed: formData.safetyConfirmed,
       imageUrl: formData.imageUrl || "https://images.unsplash.com/photo-1546833999-b9f581a1996d?w=600&auto=format&fit=crop&q=80",
@@ -492,6 +705,12 @@ export const AppProvider = ({ children }) => {
         language,
         setLanguage: changeLanguage,
         t,
+        users,
+        currentUser,
+        loginUser,
+        registerUser,
+        logoutUser,
+        updatePassword,
         role,
         setRole: (r) => {
           setRole(r);
