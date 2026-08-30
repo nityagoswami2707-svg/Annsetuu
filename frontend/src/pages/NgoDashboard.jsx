@@ -20,7 +20,7 @@ import {
 } from 'lucide-react';
 
 const NgoDashboard = () => {
-  const { t, donations, ngos, evaluateDonation, registerNgo } = useApp();
+  const { t, donations, ngos, evaluateDonation, registerNgo, user } = useApp();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('requests');
@@ -40,6 +40,7 @@ const NgoDashboard = () => {
     availableCapacity: "300"
   });
 
+  const isPendingNgo = user?.accountStatus === 'Pending' || user?.role === 'ngo' && user?.accountStatus === 'Pending';
   const activeNgo = ngos[0];
 
   const pendingRequests = donations.filter(d => d.status === 'Pending' || d.status === 'NGO Request Sent');
@@ -77,6 +78,19 @@ const NgoDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
+        {/* PENDING NGO VERIFICATION ALERT BANNER */}
+        {isPendingNgo && (
+          <div className="bg-amber-50 border-2 border-amber-300 text-amber-950 p-5 rounded-3xl space-y-2 shadow-md">
+            <div className="flex items-center space-x-2 text-amber-800">
+              <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 animate-pulse" />
+              <h3 className="font-black text-sm uppercase tracking-wide">Verification Pending</h3>
+            </div>
+            <p className="text-xs font-extrabold leading-relaxed text-amber-900">
+              “Your NGO registration has been submitted. Our team will verify your organization before full platform access is enabled.”
+            </p>
+          </div>
+        )}
+
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-emerald-950 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
           <div>
@@ -92,7 +106,7 @@ const NgoDashboard = () => {
             <div>
               <span className="text-[10px] text-emerald-300 font-bold uppercase block">Verification Status</span>
               <span className="text-xs font-black text-emerald-100 flex items-center">
-                {activeNgo.name} — <span className="text-amber-400 ml-1">Verified ✓</span>
+                {user?.name || activeNgo.name} — <span className={isPendingNgo ? "text-amber-400 ml-1" : "text-emerald-400 ml-1"}>{isPendingNgo ? "Pending Verification ⏳" : "Verified ✓"}</span>
               </span>
             </div>
           </div>
