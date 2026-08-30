@@ -1,5 +1,5 @@
-import React, { useEffect } from 'react';
-import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
 import Navbar from './components/Navbar';
@@ -24,29 +24,11 @@ import AdminDashboard from './pages/AdminDashboard';
 import TrackingDashboard from './pages/TrackingDashboard';
 import ImpactPage from './pages/ImpactPage';
 
-function InitialHomepageRedirect() {
-  const navigate = useNavigate();
-  const location = useLocation();
-
-  useEffect(() => {
-    const hasOpenedSession = sessionStorage.getItem('annsetu_session_opened');
-    if (!hasOpenedSession) {
-      sessionStorage.setItem('annsetu_session_opened', 'true');
-      if (location.pathname !== '/') {
-        navigate('/', { replace: true });
-      }
-    }
-  }, [navigate, location]);
-
-  return null;
-}
-
 function AppContent() {
   const { selectedReceiptDonation, setSelectedReceiptDonation } = useApp();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#064e3b] text-white font-sans antialiased selection:bg-amber-400 selection:text-gray-950 overflow-x-hidden">
-      <InitialHomepageRedirect />
       <Navbar />
       <ToastContainer />
       <PwaInstallBanner />
