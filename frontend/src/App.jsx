@@ -1,5 +1,5 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import React, { useEffect, useRef } from 'react';
+import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
 import Navbar from './components/Navbar';
@@ -20,25 +20,44 @@ import ImpactPage from './pages/ImpactPage';
 import AuthPage from './pages/AuthPage';
 import AccessDenied from './pages/AccessDenied';
 
+// Guarantees Homepage ALWAYS opens first whenever user opens or visits the website
+function AlwaysOpenHomepageOnVisit() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const hasMounted = useRef(false);
+
+  useEffect(() => {
+    if (!hasMounted.current) {
+      hasMounted.current = true;
+      if (location.pathname !== '/') {
+        navigate('/', { replace: true });
+      }
+    }
+  }, [navigate, location]);
+
+  return null;
+}
+
 function AppContent() {
   const { selectedReceiptDonation, setSelectedReceiptDonation } = useApp();
 
   return (
     <div className="min-h-screen flex flex-col bg-[#064e3b] text-white font-sans antialiased selection:bg-amber-400 selection:text-gray-950 overflow-x-hidden">
+      <AlwaysOpenHomepageOnVisit />
       <Navbar />
       <ToastContainer />
       <PwaInstallBanner />
 
       <main className="flex-1 pb-20 lg:pb-0">
         <Routes>
-          {/* Requirement 1: Public Homepage always opens first without login */}
+          {/* Public Homepage always opens first */}
           <Route path="/" element={<Home />} />
           
-          {/* Requirement 2, 5, 6, 7, 8: Authentication Routes */}
+          {/* Authentication Routes */}
           <Route path="/auth/:roleParam" element={<AuthPage />} />
           <Route path="/access-denied" element={<AccessDenied />} />
 
-          {/* Requirement 11, 14, 15: Role-Based Protected Routes */}
+          {/* Role-Based Protected Routes */}
           <Route 
             path="/donor" 
             element={
@@ -75,7 +94,7 @@ function AppContent() {
             } 
           />
 
-          {/* Requirement 25: Public Tracking & Impact */}
+          {/* Public Tracking & Impact */}
           <Route path="/track" element={<TrackingDashboard />} />
           <Route path="/impact" element={<ImpactPage />} />
 
