@@ -214,82 +214,13 @@ const INITIAL_NOTIFICATIONS = [
   }
 ];
 
-// Initial mock registered users for local prototype testing
-const INITIAL_USERS = [
-  {
-    id: "usr_donor_1",
-    email: "donor@annsetu.org",
-    name: "Green Leaf Fine Dining",
-    phone: "+91 94280 99887",
-    location: "Vadodara",
-    role: "donor",
-    accountStatus: "Verified"
-  },
-  {
-    id: "usr_ngo_1",
-    email: "ngo@annsetu.org",
-    name: "Hope Foundation India",
-    phone: "+91 98765 43210",
-    location: "Vadodara",
-    role: "ngo",
-    accountStatus: "Verified"
-  },
-  {
-    id: "usr_ngo_pending",
-    email: "pending.ngo@annsetu.org",
-    name: "Seva Community Kitchen",
-    phone: "+91 99099 55443",
-    location: "Vadodara",
-    role: "ngo",
-    accountStatus: "Pending"
-  },
-  {
-    id: "usr_volunteer_1",
-    email: "volunteer@annsetu.org",
-    name: "Ramesh Kumar",
-    phone: "+91 91066 33221",
-    location: "Vadodara",
-    role: "volunteer",
-    accountStatus: "Verified"
-  },
-  {
-    id: "usr_fund_1",
-    email: "fund@annsetu.org",
-    name: "Anand Patel",
-    phone: "+91 98250 88776",
-    location: "Vadodara",
-    role: "fund_donor",
-    accountStatus: "Verified"
-  },
-  {
-    id: "usr_admin_1",
-    email: "admin@annsetu.org",
-    name: "AnnSetu Administrator",
-    phone: "+91 90000 00000",
-    location: "Vadodara",
-    role: "admin",
-    accountStatus: "Verified"
-  }
-];
-
 export const AppProvider = ({ children }) => {
-  // Language Persistence
+  // Load saved language or default to 'en'
   const [language, setLanguage] = useState(() => {
     return localStorage.getItem('annsetu_language') || 'en';
   });
 
-  // Auth User & Role State Persistence
-  const [user, setUser] = useState(() => {
-    const saved = localStorage.getItem('annsetu_user');
-    return saved ? JSON.parse(saved) : null;
-  });
-
-  const [role, setRoleState] = useState(() => {
-    const saved = localStorage.getItem('annsetu_user');
-    return saved ? JSON.parse(saved).role : 'donor';
-  });
-
-  const [usersList, setUsersList] = useState(INITIAL_USERS);
+  const [role, setRole] = useState('donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
@@ -297,39 +228,32 @@ export const AppProvider = ({ children }) => {
   const [activeToast, setActiveToast] = useState(null);
   const [isRealtimeActive, setIsRealtimeActive] = useState(true);
 
-  // Sync document element lang attribute
+  // Sync document element lang attribute whenever language changes
   useEffect(() => {
     document.documentElement.lang = language;
     localStorage.setItem('annsetu_language', language);
   }, [language]);
 
-  // Persist User & Role State
-  useEffect(() => {
-    if (user) {
-      localStorage.setItem('annsetu_user', JSON.stringify(user));
-      setRoleState(user.role);
-    } else {
-      localStorage.removeItem('annsetu_user');
-    }
-  }, [user]);
-
-  // SUPABASE REAL-TIME & AUTH LISTENER
+  // SUPABASE REAL-TIME DATABASE SUBSCRIPTION
   useEffect(() => {
     let channel;
     try {
       channel = supabase
         .channel('public:donations')
         .on('postgres_changes', { event: '*', schema: 'public', table: 'donations' }, (payload) => {
+          console.log('⚡ Supabase Realtime Event Received:', payload);
           if (payload.eventType === 'INSERT') {
             setDonations(prev => [payload.new, ...prev]);
-            addNotification("Real-Time Donation Added! 🍱", `New donation ${payload.new.id} received via Supabase.`, "success");
+            addNotification("Real-Time Donation Added! 🍱", `New donation ${payload.new.id} received via Supabase Real-Time.`, "success");
           } else if (payload.eventType === 'UPDATE') {
             setDonations(prev => prev.map(item => item.id === payload.new.id ? { ...item, ...payload.new } : item));
-            addNotification("Real-Time Status Update ⚡", `Donation ${payload.new.id} updated to ${payload.new.status}.`, "info");
+            addNotification("Real-Time Status Update ⚡", `Donation ${payload.new.id} updated in database to ${payload.new.status}.`, "info");
           }
         })
         .subscribe((status) => {
-          if (status === 'SUBSCRIBED') setIsRealtimeActive(true);
+          if (status === 'SUBSCRIBED') {
+            setIsRealtimeActive(true);
+          }
         });
     } catch (err) {
       console.warn("Supabase Real-Time Note:", err.message);
@@ -353,16 +277,19 @@ export const AppProvider = ({ children }) => {
     showToast("Language Preference Updated", `Website language set to ${langNames[langCode] || langCode}.`, "info");
   };
 
-  // Toast Notification Popup
+  // Trigger floating Toast Notification Popup
   const showToast = (title, message, type = 'info') => {
     const toast = { id: Date.now(), title, message, type };
     setActiveToast(toast);
+
     setTimeout(() => {
       setActiveToast((prev) => (prev?.id === toast.id ? null : prev));
     }, 4500);
   };
 
-  const dismissToast = () => setActiveToast(null);
+  const dismissToast = () => {
+    setActiveToast(null);
+  };
 
   const addNotification = (title, message, type = 'info') => {
     const newNotif = {
@@ -381,125 +308,6 @@ export const AppProvider = ({ children }) => {
     setNotifications(prev => prev.map(n => ({ ...n, read: true })));
   };
 
-  // --- AUTHENTICATION & PROFILE METHODS ---
-  const registerUser = async (userData) => {
-    // Attempt Supabase Auth Sign-Up if configured
-    let authId = `usr_${Date.now()}`;
-    try {
-      const { data, error } = await supabase.auth.signUp({
-        email: userData.email,
-        password: userData.password,
-        options: {
-          data: {
-            name: userData.name,
-            role: userData.role,
-            phone: userData.phone,
-            location: userData.location
-          }
-        }
-      });
-      if (data?.user?.id) authId = data.user.id;
-    } catch (err) {
-      console.log('Supabase auth fallback active:', err.message);
-    }
-
-    const newUser = {
-      id: authId,
-      email: userData.email,
-      name: userData.name || userData.email.split('@')[0],
-      phone: userData.phone || "+91 98000 00000",
-      location: userData.location || "Vadodara",
-      role: userData.role,
-      accountStatus: userData.role === 'ngo' ? 'Pending' : 'Verified',
-      createdAt: new Date().toISOString()
-    };
-
-    setUsersList(prev => [newUser, ...prev]);
-    setUser(newUser);
-
-    if (userData.role === 'ngo') {
-      // Create pending NGO partner entry
-      registerNgo({
-        name: userData.ngoName || userData.name,
-        registrationNo: userData.regNo || "REG-PENDING",
-        contactPerson: userData.name,
-        email: userData.email,
-        phone: userData.phone,
-        address: userData.address || userData.location,
-        city: userData.location,
-        pincode: userData.pincode || "390001",
-        type: userData.beneficiaryType || "Community Food Relief",
-        availableCapacity: userData.capacity || "200 meals/day"
-      });
-      showToast("NGO Registration Submitted 🏢", "Your NGO application is pending Admin verification.", "warning");
-    } else {
-      showToast("Registration Successful 🎉", `Welcome to AnnSetu, ${newUser.name}!`, "success");
-    }
-
-    return newUser;
-  };
-
-  const loginUser = async (email, password) => {
-    // Attempt Supabase Login
-    try {
-      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-      if (data?.user) {
-        const foundSupabaseUser = {
-          id: data.user.id,
-          email: data.user.email,
-          name: data.user.user_metadata?.name || data.user.email.split('@')[0],
-          phone: data.user.user_metadata?.phone || "+91 98000 00000",
-          location: data.user.user_metadata?.location || "Vadodara",
-          role: data.user.user_metadata?.role || "donor",
-          accountStatus: data.user.user_metadata?.accountStatus || "Verified"
-        };
-        setUser(foundSupabaseUser);
-        showToast("Login Successful 🔓", `Welcome back, ${foundSupabaseUser.name}!`, "success");
-        return foundSupabaseUser;
-      }
-    } catch (err) {
-      console.log('Supabase login local fallback active');
-    }
-
-    // Local Fallback Login Check
-    const foundLocal = usersList.find(u => u.email.toLowerCase() === email.toLowerCase());
-    if (foundLocal) {
-      setUser(foundLocal);
-      showToast("Login Successful 🔓", `Welcome back, ${foundLocal.name}!`, "success");
-      return foundLocal;
-    }
-
-    // Demo Mode Auto-Create Account if new email logged in
-    const defaultRole = email.includes('admin') ? 'admin' :
-                        email.includes('ngo') ? 'ngo' :
-                        email.includes('volunteer') ? 'volunteer' :
-                        email.includes('fund') ? 'fund_donor' : 'donor';
-
-    const mockUser = {
-      id: `usr_${Date.now()}`,
-      email,
-      name: email.split('@')[0].toUpperCase(),
-      phone: "+91 98000 00000",
-      location: "Vadodara",
-      role: defaultRole,
-      accountStatus: "Verified"
-    };
-
-    setUsersList(prev => [mockUser, ...prev]);
-    setUser(mockUser);
-    showToast("Login Successful 🔓", `Welcome back to AnnSetu!`, "success");
-    return mockUser;
-  };
-
-  const logoutUser = async () => {
-    try {
-      await supabase.auth.signOut();
-    } catch (e) {}
-    setUser(null);
-    localStorage.removeItem('annsetu_user');
-    showToast("Logged Out", "You have been safely logged out.", "info");
-  };
-
   // Register New Donation (Donor)
   const registerDonation = (formData) => {
     const nextSeq = donations.length + 125;
@@ -510,7 +318,7 @@ export const AppProvider = ({ children }) => {
 
     const newDonation = {
       id: newId,
-      donorName: formData.donorName || user?.name || "Community Partner",
+      donorName: formData.donorName || "Community Partner",
       donorType: formData.donorType || "Restaurant",
       foodName: formData.foodName,
       foodCategory: formData.foodCategory || "Prepared Meal",
@@ -550,11 +358,14 @@ export const AppProvider = ({ children }) => {
       rejectionReason: ""
     };
 
+    // Async push to Supabase Database (if configured)
     try {
       supabase.from('donations').insert([newDonation]).then(({ error }) => {
         if (error) console.log('Supabase sync info:', error.message);
       });
-    } catch (e) {}
+    } catch (e) {
+      console.log('Supabase local sync');
+    }
 
     setDonations([newDonation, ...donations]);
     addNotification("Donation Registered! ❤️", `Donation ${newId} (${formData.foodName}) registered successfully! Sent to ${targetNgo.name}.`, "success");
@@ -608,7 +419,9 @@ export const AppProvider = ({ children }) => {
         let updatedTimeline = item.timeline.map(t => {
           if (newStatus === "Picked Up" && t.status === "Food Picked Up") return { ...t, timestamp: nowStr, completed: true, detail: "Collected by driver" };
           if (newStatus === "In Transit" && (t.status === "Food Picked Up" || t.status === "In Transit")) return { ...t, timestamp: nowStr, completed: true, detail: "En route on map" };
-          if (newStatus === "Delivered") return { ...t, timestamp: nowStr, completed: true };
+          if (newStatus === "Delivered") {
+            return { ...t, timestamp: nowStr, completed: true };
+          }
           return t;
         });
 
@@ -636,7 +449,6 @@ export const AppProvider = ({ children }) => {
 
   const verifyNgo = (ngoId, status) => {
     setNgos(prev => prev.map(n => n.id === ngoId ? { ...n, verificationStatus: status, badge: status === 'Verified' ? 'Verified NGO Badge' : 'Not Verified' } : n));
-    setUsersList(prev => prev.map(u => u.id === ngoId || u.name === ngoId ? { ...u, accountStatus: status } : u));
     addNotification("NGO Verification Updated", `NGO ${ngoId} verification status set to ${status}.`, "info");
   };
 
@@ -680,17 +492,11 @@ export const AppProvider = ({ children }) => {
         language,
         setLanguage: changeLanguage,
         t,
-        user,
-        role: user ? user.role : role,
+        role,
         setRole: (r) => {
-          setRoleState(r);
-          if (user) setUser({ ...user, role: r });
+          setRole(r);
           showToast("Active Role Switched", `Switched portal role to ${r.toUpperCase()}.`, "info");
         },
-        registerUser,
-        loginUser,
-        logoutUser,
-        usersList,
         donations,
         ngos,
         notifications,

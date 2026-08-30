@@ -101,8 +101,19 @@ const DonorDashboard = () => {
       {/* ANIMATED MOTION BACKGROUND */}
       <AnnsetuMotionBackground type="donor" />
 
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-8 relative z-10">
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
+        {/* Top Homepage Quick Link */}
+        <div className="flex items-center justify-between">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-orange-100 text-emerald-950 font-black text-xs border border-gray-200 shadow-md transition-all btn-bounce-active"
+          >
+            <HomeIcon className="w-4 h-4 text-orange-600" />
+            <span>← {t('home')} ({t('exploreAnnsetu')})</span>
+          </button>
+        </div>
+
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-emerald-900 via-green-900 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-emerald-800">
           <div className="space-y-2 max-w-xl">

@@ -1,19 +1,10 @@
 import React from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import { Heart, Mail, Phone, MapPin, Instagram, Twitter, Linkedin, Facebook } from 'lucide-react';
 
 const Footer = () => {
-  const { t, user } = useApp();
-  const navigate = useNavigate();
-
-  const handleAdminFooterClick = () => {
-    if (user?.role === 'admin') {
-      navigate('/admin/dashboard');
-    } else {
-      navigate('/admin-login');
-    }
-  };
+  const { t } = useApp();
 
   return (
     <footer className="bg-green-950 text-green-100 pt-16 pb-8 border-t-2 border-orange-500/30 relative overflow-hidden">
@@ -71,15 +62,7 @@ const Footer = () => {
               <li><Link to="/ngo" className="hover:text-orange-300 transition-colors">{t('partnerNGO')}</Link></li>
               <li><Link to="/track" className="hover:text-orange-300 transition-colors">{t('trackDonation')}</Link></li>
               <li><Link to="/impact" className="hover:text-orange-300 transition-colors">{t('ourImpact')}</Link></li>
-              <li>
-                <button
-                  type="button"
-                  onClick={handleAdminFooterClick}
-                  className="hover:text-orange-300 transition-colors text-left"
-                >
-                  {t('adminPortal')}
-                </button>
-              </li>
+              <li><Link to="/admin" className="hover:text-orange-300 transition-colors">{t('adminPortal')}</Link></li>
             </ul>
           </div>
 

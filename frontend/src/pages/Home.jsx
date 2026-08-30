@@ -175,16 +175,19 @@ const Home = () => {
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3.5 sm:gap-5 pt-2 max-w-md mx-auto sm:max-w-none">
-            <Link
-              to="/auth"
+            <button
+              onClick={() => {
+                const target = document.getElementById('how-it-works');
+                if (target) target.scrollIntoView({ behavior: 'smooth' });
+              }}
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-base shadow-2xl flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
             >
-              <span>Explore AnnSetu</span>
+              <span>{t('exploreAnnsetu')}</span>
               <ArrowRight className="w-5 h-5" />
-            </Link>
+            </button>
 
             <Link
-              to="/register"
+              to="/donor"
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-base shadow-2xl border-2 border-emerald-400/40 flex items-center justify-center space-x-2 btn-bounce-active tracking-wide"
             >
               <Utensils className="w-5 h-5 text-orange-400" />
@@ -387,25 +390,25 @@ const Home = () => {
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10 scroll-reveal pb-16">
         <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl relative overflow-hidden text-center space-y-6 border border-orange-400">
           <div className="max-w-2xl mx-auto space-y-3">
-            <h2 className="text-2xl sm:text-4xl font-black font-outfit">Ready to make an impact?</h2>
-            <p className="text-base text-orange-200 italic font-bold">"Join the movement to turn surplus food into smiles across India."</p>
+            <h2 className="text-2xl sm:text-4xl font-black font-outfit">{t('haveExtraFood')}</h2>
+            <p className="text-base text-orange-200 italic font-bold">"{t('tagline')} — Anytime, Anywhere, From Any Device."</p>
           </div>
 
           <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <Link
-              to="/auth"
+              to="/donor"
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-base shadow-xl flex items-center justify-center space-x-2 btn-bounce-active"
             >
-              <span>Explore AnnSetu</span>
-              <ArrowRight className="w-5 h-5" />
+              <Utensils className="w-5 h-5" />
+              <span>{t('donateNow')}</span>
             </Link>
 
             <Link
-              to="/register"
+              to="/ngo"
               className="w-full sm:w-auto min-h-[52px] px-8 py-3.5 rounded-2xl bg-white/15 hover:bg-white/25 text-white font-bold text-base border-2 border-white/40 backdrop-blur-md flex items-center justify-center space-x-2 btn-bounce-active"
             >
-              <UserPlus className="w-5 h-5" />
-              <span>Create an Account</span>
+              <Building2 className="w-5 h-5" />
+              <span>{t('partnerNGO')}</span>
             </Link>
           </div>
         </div>
