@@ -47,7 +47,11 @@ export const translations = {
     completeRegistration: "Complete Registration",
     accessDenied: "Access Denied",
     noPermissionSub: "You don't have permission to access this section.",
+    noAdminPrivileges: "You do not have administrator privileges.",
     returnToDashboard: "Return to My Dashboard",
+    adminLoginTitle: "Admin Login",
+    adminLoginSub: "Authorized AnnSetu Administrator Portal",
+    loginAsAdmin: "Login as Admin",
 
     // Impact Counters
     realtimePlatformStats: "Real-Time Platform Stats",
@@ -342,7 +346,11 @@ export const translations = {
     completeRegistration: "पंजीकरण पूरा करें",
     accessDenied: "पहुंच अस्वीकृत",
     noPermissionSub: "आपको इस अनुभाग तक पहुँचने की अनुमति नहीं है।",
+    noAdminPrivileges: "आपके पास प्रशासक के विशेषाधिकार नहीं हैं।",
     returnToDashboard: "मेरे डैशबोर्ड पर लौटें",
+    adminLoginTitle: "एडमिन लॉगिन",
+    adminLoginSub: "अधिकृत अन्नसेतु प्रशासक पोर्टल",
+    loginAsAdmin: "एडमिन के रूप में लॉगिन करें",
 
     // Impact Counters
     realtimePlatformStats: "वास्तविक समय आंकड़े",
@@ -637,7 +645,11 @@ export const translations = {
     completeRegistration: "નોંધણી પૂર્ણ કરો",
     accessDenied: "પ્રવેશ અસ્વીકૃત",
     noPermissionSub: "તમને આ વિભાગ ઍક્સેસ કરવાની પરવાનગી નથી.",
+    noAdminPrivileges: "તમારી પાસે એડમિનિસ્ટ્રેટરના અધિકારો નથી.",
     returnToDashboard: "મારા ડેશબોર્ડ પર પાછા ફરો",
+    adminLoginTitle: "એડમિન લોગિન",
+    adminLoginSub: "સત્તાવાર અન્નસેતુ એડમિનિસ્ટ્રેટર પોર્ટલ",
+    loginAsAdmin: "એડમિન તરીકે લોગિન કરો",
 
     // Impact Counters
     realtimePlatformStats: "રીઅલ-ટાઇમ આંકડા",

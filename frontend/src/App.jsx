@@ -14,6 +14,7 @@ import Home from './pages/Home';
 import AuthLanding from './pages/AuthLanding';
 import LoginPage from './pages/LoginPage';
 import RegisterPage from './pages/RegisterPage';
+import AdminLoginPage from './pages/AdminLoginPage';
 
 import DonorDashboard from './pages/DonorDashboard';
 import NgoDashboard from './pages/NgoDashboard';
@@ -37,15 +38,30 @@ function AppContent() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/about" element={<Home />} />
+          <Route path="/how-it-works" element={<Home />} />
+          <Route path="/partners" element={<Home />} />
+          <Route path="/contact" element={<Home />} />
+          <Route path="/impact" element={<ImpactPage />} />
+          <Route path="/track" element={<TrackingDashboard />} />
+
+          {/* Authentication Routes */}
           <Route path="/auth" element={<AuthLanding />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/register" element={<RegisterPage />} />
-          <Route path="/impact" element={<ImpactPage />} />
-          <Route path="/track" element={<TrackingDashboard />} />
+          <Route path="/admin-login" element={<AdminLoginPage />} />
 
           {/* Protected Role Routes */}
           <Route
             path="/donor"
+            element={
+              <ProtectedRoute allowedRoles={['donor']}>
+                <DonorDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/donor/dashboard"
             element={
               <ProtectedRoute allowedRoles={['donor']}>
                 <DonorDashboard />
@@ -61,6 +77,14 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/ngo/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['ngo']}>
+                <NgoDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/volunteer"
@@ -70,9 +94,24 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
-
+          <Route
+            path="/volunteer/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['volunteer', 'delivery']}>
+                <VolunteerDashboard />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/delivery"
+            element={
+              <ProtectedRoute allowedRoles={['volunteer', 'delivery']}>
+                <VolunteerDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/delivery/dashboard"
             element={
               <ProtectedRoute allowedRoles={['volunteer', 'delivery']}>
                 <VolunteerDashboard />
@@ -88,9 +127,25 @@ function AppContent() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/fund-donor/dashboard"
+            element={
+              <ProtectedRoute allowedRoles={['fund_donor']}>
+                <FundDonorDashboard />
+              </ProtectedRoute>
+            }
+          />
 
           <Route
             path="/admin"
+            element={
+              <ProtectedRoute allowedRoles={['admin']}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/dashboard"
             element={
               <ProtectedRoute allowedRoles={['admin']}>
                 <AdminDashboard />

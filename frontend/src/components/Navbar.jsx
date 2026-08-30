@@ -47,15 +47,14 @@ const Navbar = () => {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Map active user role to dashboard route
   const getUserDashboardPath = () => {
     if (!user) return '/auth';
     switch (user.role) {
-      case 'admin': return '/admin';
-      case 'ngo': return '/ngo';
-      case 'volunteer': return '/volunteer';
-      case 'fund_donor': return '/fund-donor';
-      default: return '/donor';
+      case 'admin': return '/admin/dashboard';
+      case 'ngo': return '/ngo/dashboard';
+      case 'volunteer': return '/volunteer/dashboard';
+      case 'fund_donor': return '/fund-donor/dashboard';
+      default: return '/donor/dashboard';
     }
   };
 
@@ -70,12 +69,17 @@ const Navbar = () => {
     }
   };
 
+  const handleLogout = async () => {
+    await logoutUser();
+    navigate('/');
+  };
+
   const portals = [
-    { id: 'donor', path: '/donor', labelKey: 'donateFood', descKey: 'donorDesc', icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-50' },
-    { id: 'ngo', path: '/ngo', labelKey: 'ngos', descKey: 'ngoDesc', icon: Building2, color: 'text-green-700', bg: 'bg-green-50' },
-    { id: 'volunteer', path: '/volunteer', labelKey: 'deliveryDashboard', descKey: 'deliveryDesc', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { id: 'fund_donor', path: '/fund-donor', labelKey: 'dashboards', descKey: 'impactSubtext', icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { id: 'admin', path: '/admin', labelKey: 'adminPortal', descKey: 'adminDesc', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'donor', path: '/donor/dashboard', labelKey: 'donateFood', descKey: 'donorDesc', icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { id: 'ngo', path: '/ngo/dashboard', labelKey: 'ngos', descKey: 'ngoDesc', icon: Building2, color: 'text-green-700', bg: 'bg-green-50' },
+    { id: 'volunteer', path: '/volunteer/dashboard', labelKey: 'deliveryDashboard', descKey: 'deliveryDesc', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { id: 'fund_donor', path: '/fund-donor/dashboard', labelKey: 'dashboards', descKey: 'impactSubtext', icon: Heart, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'admin', path: '/admin-login', labelKey: 'adminPortal', descKey: 'adminDesc', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' },
     { id: 'impact', path: '/impact', labelKey: 'ourImpact', descKey: 'impactSubtext', icon: Heart, color: 'text-red-500', bg: 'bg-red-50' }
   ];
 
@@ -139,7 +143,7 @@ const Navbar = () => {
                 className="text-sm font-black text-orange-600 bg-orange-50 px-3.5 py-1.5 rounded-xl border border-orange-200 flex items-center space-x-1.5 hover:bg-orange-100"
               >
                 <LayoutDashboard className="w-4 h-4 text-orange-600" />
-                <span>My Dashboard</span>
+                <span>{t('returnToDashboard')}</span>
               </Link>
             ) : (
               /* 3 DOTS PORTAL SWITCHER BUTTON FOR VISITORS */
@@ -212,7 +216,7 @@ const Navbar = () => {
                   {getRoleLabel()}
                 </span>
                 <button
-                  onClick={logoutUser}
+                  onClick={handleLogout}
                   className="p-2 bg-red-50 text-red-700 hover:bg-red-100 rounded-xl border border-red-200 text-xs font-black flex items-center space-x-1 btn-bounce-active"
                   title="Logout"
                 >
@@ -227,14 +231,14 @@ const Navbar = () => {
                   className="px-3.5 py-2 rounded-xl text-xs font-extrabold text-green-900 bg-green-50 hover:bg-green-100 border border-green-200 flex items-center space-x-1"
                 >
                   <LogIn className="w-3.5 h-3.5 text-green-700" />
-                  <span>Login</span>
+                  <span>{t('accountLogin')}</span>
                 </Link>
 
                 <Link
                   to="/auth"
                   className="px-4 py-2 rounded-xl text-xs font-black text-gray-950 bg-orange-500 hover:bg-orange-600 shadow-md flex items-center space-x-1 btn-bounce-active"
                 >
-                  <span>Explore AnnSetu</span>
+                  <span>{t('exploreAnnsetu')}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -269,20 +273,20 @@ const Navbar = () => {
               <Link to={getUserDashboardPath()} onClick={() => setMobileMenuOpen(false)} className="block py-2 text-xs font-black text-orange-600">
                 Go to My Dashboard →
               </Link>
-              <button onClick={() => { logoutUser(); setMobileMenuOpen(false); }} className="w-full text-left py-2 text-xs font-bold text-red-600">
+              <button onClick={() => { handleLogout(); setMobileMenuOpen(false); }} className="w-full text-left py-2 text-xs font-bold text-red-600">
                 Logout
               </button>
             </div>
           ) : (
             <div className="pt-2 border-t space-y-2">
               <Link to="/login" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-xs font-bold text-green-800">
-                Login
+                {t('accountLogin')}
               </Link>
               <Link to="/register" onClick={() => setMobileMenuOpen(false)} className="block py-2 text-xs font-bold text-orange-600">
-                Create an Account
+                {t('createAccount')}
               </Link>
               <Link to="/auth" onClick={() => setMobileMenuOpen(false)} className="block p-3 bg-orange-500 text-gray-950 text-xs font-black text-center rounded-xl shadow-sm">
-                Explore AnnSetu →
+                {t('exploreAnnsetu')} →
               </Link>
             </div>
           )}

@@ -2,13 +2,17 @@ import React from 'react';
 import { Navigate, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import AnnsetuMotionBackground from './AnnsetuMotionBackground';
-import { ShieldAlert, ArrowLeft, Home } from 'lucide-react';
+import { ShieldAlert, Home } from 'lucide-react';
 
 const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const { user, role, t } = useApp();
   const navigate = useNavigate();
 
+  // If unauthenticated: redirect to /admin-login for admin routes, or /auth for normal routes
   if (!user) {
+    if (allowedRoles.includes('admin')) {
+      return <Navigate to="/admin-login" replace />;
+    }
     return <Navigate to="/auth" replace />;
   }
 
@@ -16,10 +20,12 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
   const isAuthorized = allowedRoles.includes(currentRole) || currentRole === 'admin';
 
   if (!isAuthorized) {
-    const userRoleDashboard = currentRole === 'admin' ? '/admin' :
-                              currentRole === 'ngo' ? '/ngo' :
-                              currentRole === 'volunteer' ? '/volunteer' :
-                              currentRole === 'fund_donor' ? '/fund-donor' : '/donor';
+    const userRoleDashboard = currentRole === 'admin' ? '/admin/dashboard' :
+                              currentRole === 'ngo' ? '/ngo/dashboard' :
+                              currentRole === 'volunteer' ? '/volunteer/dashboard' :
+                              currentRole === 'fund_donor' ? '/fund-donor/dashboard' : '/donor/dashboard';
+
+    const isTargetingAdmin = allowedRoles.includes('admin');
 
     return (
       <div className="pt-24 pb-20 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden flex items-center justify-center">
@@ -41,7 +47,7 @@ const ProtectedRoute = ({ children, allowedRoles = [] }) => {
                 {t('accessDenied')}
               </h2>
               <p className="text-xs text-gray-600 font-semibold leading-relaxed">
-                “{t('noPermissionSub')}”
+                {isTargetingAdmin ? `“${t('noAdminPrivileges')}”` : `“${t('noPermissionSub')}”`}
               </p>
             </div>
 
