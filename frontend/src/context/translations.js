@@ -240,6 +240,27 @@ export const translations = {
     storiesOfHope: "Stories of Hope & Transformation",
     storiesSubtext: "Real feedback from restaurant owners, NGO directors, and logistics partners.",
 
+    // Hero Slideshow Thoughts
+    slide1Title: "“Every Surplus Meal is a Promise of Hope Kept.”",
+    slide1Subtitle: "Connecting generous restaurants, caterers, and homes directly to children and families in need.",
+    slide1Caption: "Volunteers Distributing Fresh Meals to Community Children",
+
+    slide2Title: "“Zero Hunger Begins When Zero Food Goes to Waste.”",
+    slide2Subtitle: "Transforming unserved banquet and hotel feasts into warm nutritious meals within minutes.",
+    slide2Caption: "Surplus Food Rescued from Fine Dining Restaurants & Banquets",
+
+    slide3Title: "“Swift, Sustainable & Zero-Emission Food Rescue.”",
+    slide3Subtitle: "Our green EV logistics network ensures hot meals reach community shelters with live temperature tracking.",
+    slide3Caption: "EV Logistics Delivering Warm Food to Shelter Homes",
+
+    slide4Title: "“Dignity, Hygiene & Health in Every Single Plate.”",
+    slide4Subtitle: "Quality-checked by partner NGOs to guarantee safety and freshness for every beneficiary.",
+    slide4Caption: "Community Kitchen Staff Preparing Hygienic Meal Packs",
+
+    slide5Title: "“Bridging Surplus to Smiles — Anytime, Anywhere.”",
+    slide5Subtitle: "Join India’s fastest growing real-time food redistribution ecosystem and turn surplus into joy.",
+    slide5Caption: "Connecting Surplus Food to Thousands of Happy Smiles",
+
     // Footer
     footerDesc: "Annsetu is a technology-enabled social impact platform dedicated to eliminating urban food waste by connecting surplus meal providers with verified grassroots NGOs in real time.",
     platformLinksHeader: "Platform Links",
@@ -489,6 +510,27 @@ export const translations = {
     storiesOfHope: "आशा और परिवर्तन की कहानियां",
     storiesSubtext: "रेस्तरां मालिकों, एनजीओ निदेशकों और लॉजिस्टिक्स भागीदारों की वास्तविक प्रतिक्रिया।",
 
+    // Hero Slideshow Thoughts
+    slide1Title: "“हर अतिरिक्त भोजन आशा का एक निभाया गया वादा है।”",
+    slide1Subtitle: "उदार रेस्तरां, कैटरर्स और घरों को सीधे जरूरतमंद बच्चों और परिवारों से जोड़ना।",
+    slide1Caption: "सामुदायिक बच्चों को ताज़ा भोजन वितरित करते स्वयंसेवक",
+
+    slide2Title: "“शून्य भूख की शुरुआत तब होती है जब शून्य भोजन बर्बाद होता है।”",
+    slide2Subtitle: "रेस्तरां और होटल के अतिरिक्त भोजन को मिनटों में पौष्टिक भोजन में बदलना।",
+    slide2Caption: "रेस्तरां और बैंक्वेट्स से बचाया गया अतिरिक्त भोजन",
+
+    slide3Title: "“तेज़, टिकाऊ और शून्य-उत्सर्जन खाद्य राहत सेवा।”",
+    slide3Subtitle: "हमारा हरित ईवी नेटवर्क गर्म भोजन को आश्रयों तक लाइव ट्रैकिंग के साथ पहुंचाता है।",
+    slide3Caption: "आश्रय गृहों तक गर्म भोजन पहुंचाते ईवी वाहन",
+
+    slide4Title: "“हर एक थाली में सम्मान, स्वच्छता और स्वास्थ्य।”",
+    slide4Subtitle: "हर लाभार्थी के लिए सुरक्षा और ताज़गी की गारंटी के लिए एनजीओ द्वारा गुणवत्ता की जांच।",
+    slide4Caption: "स्वच्छ भोजन पैक तैयार करते सामुदायिक रसोई कर्मचारी",
+
+    slide5Title: "“अतिरिक्त भोजन से मुस्कान तक — कभी भी, कहीं भी।”",
+    slide5Subtitle: "भारत के सबसे तेज़ी से बढ़ते खाद्य पुनर्वितरण तंत्र से जुड़ें और भोजन को खुशियों में बदलें।",
+    slide5Caption: "अतिरिक्त भोजन को हज़ारों खुशहाल मुस्कानों से जोड़ना",
+
     // Footer
     footerDesc: "अन्नसेतु एक प्रौद्योगिकी-संचालित सामाजिक प्रभाव मंच है जो वास्तविक समय में अतिरिक्त भोजनदाताओं को एनजीओ से जोड़कर खाद्य बर्बादी को समाप्त करने के लिए समर्पित है।",
     platformLinksHeader: "प्लेटफ़ॉर्म लिंक",
@@ -737,6 +779,27 @@ export const translations = {
     volunteersEngagedLabel: "સામેલ સ્વયંસેવકો",
     storiesOfHope: "આશા અને પરિવર્તનની વાર્તાઓ",
     storiesSubtext: "રેસ્ટોરન્ટ માલિકો, એનજીઓ ડિરેક્ટરો અને લોજિસ્ટિક્સ ભાગીદારોનો વાસ્તવિક પ્રતિભાવ.",
+
+    // Hero Slideshow Thoughts
+    slide1Title: "“દરેક વધારાનું ભોજન પળાયેલ આશાનું વચન છે.”",
+    slide1Subtitle: "ઉદાર રેસ્ટોરાં, કેટરર્સ અને ઘરોને સીધા જરૂરિયાતમંદ બાળકો અને પરિવારો સાથે જોડવું.",
+    slide1Caption: "સમુદાયના બાળકોને તાજું ભોજન વહેંચતા સ્વયંસેવકો",
+
+    slide2Title: "“શૂન્ય ભૂખની શરૂઆત ત્યારે થાય છે જ્યારે શૂન્ય અન્નનો બગાડ થાય છે.”",
+    slide2Subtitle: "રેસ્ટોરાં અને હોટેલના વધારાના ભોજનને મિનિટોમાં પૌષ્ટિક ભોજનમાં ફેરવવું.",
+    slide2Caption: "રેસ્ટોરાં અને બેન્ક્વેટ્સમાંથી બચાવેલ વધારાનો ખોરાક",
+
+    slide3Title: "“ઝડપી, ટકાઉ અને ઝીરો-એમિશન ખોરાક રાહત સેવા.”",
+    slide3Subtitle: "અમારું ગ્રીન ઇવી નેટવર્ક ગરમ ભોજનને લાઇવ ટ્રેકિંગ સાથે આશ્રયસ્થાનો સુધી પહોંચાડે છે.",
+    slide3Caption: "આશ્રયસ્થાનો સુધી ગરમ ભોજન પહોંચાડતા ઇવી વાહનો",
+
+    slide4Title: "“દરેક થાળીમાં ગૌરવ, સ્વચ્છતા અને સ્વાસ્થ્ય.”",
+    slide4Subtitle: "દરેક લાભાર્થી માટે સુરક્ષા અને તાજગીની ગેરંટી માટે એનજીઓ દ્વારા ગુણવત્તા તપાસ.",
+    slide4Caption: "સ્વચ્છ ભોજન પેક તૈયાર કરતા કોમ્યુનિટી કિચન સ્ટાફ",
+
+    slide5Title: "“વધારાના ખોરાકથી સ્મિત સુધી — ક્યારેય પણ, ગમે ત્યાં.”",
+    slide5Subtitle: "ભારતના સૌથી ઝડપથી વધતા ફૂડ રેડિસ્ટ્રિબ્યુશન નેટવર્ક સાથે જોડાઓ અને ખોરાકને આનંદમાં ફેરવો.",
+    slide5Caption: "વધારાના ખોરાકને હજારો આનંદી સ્મિત સાથે જોડવું",
 
     // Footer
     footerDesc: "અન્નસેતુ એ ટેકનોલોજી-સંચાલિત સામાજિક પ્રભાવ પ્લેટફોર્મ છે જે ખોરાકના બગાડને નાબૂદ કરવા માટે સમર્પિત છે.",
