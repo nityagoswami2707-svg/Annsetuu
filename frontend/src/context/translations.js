@@ -23,6 +23,9 @@ export const translations = {
     adminCenterRole: "Admin Center",
     deliveryDriverRole: "Delivery Driver",
     officialBadge: "Official",
+    portalsAndDashboards: "Portals & Dashboards",
+    switchPortalHeader: "Switch Platform Portal",
+    activeBadge: "Active",
 
     // Impact Counters
     realtimePlatformStats: "Real-Time Platform Stats",
@@ -293,6 +296,9 @@ export const translations = {
     adminCenterRole: "एडमिन सेंटर",
     deliveryDriverRole: "डिलीवरी ड्राइवर",
     officialBadge: "आधिकारिक",
+    portalsAndDashboards: "पोर्टल और डैशबोर्ड",
+    switchPortalHeader: "प्लेटफॉर्म पोर्टल बदलें",
+    activeBadge: "सक्रिय",
 
     // Impact Counters
     realtimePlatformStats: "वास्तविक समय आंकड़े",
@@ -563,6 +569,9 @@ export const translations = {
     adminCenterRole: "એડમિન સેન્ટર",
     deliveryDriverRole: "ડિલિવરી ડ્રાઇવર",
     officialBadge: "સત્તાવાર",
+    portalsAndDashboards: "પોર્ટલ અને ડેશબોર્ડ્સ",
+    switchPortalHeader: "પ્લેટફોર્મ પોર્ટલ બદલો",
+    activeBadge: "સક્રિય",
 
     // Impact Counters
     realtimePlatformStats: "રીઅલ-ટાઇમ આંકડા",

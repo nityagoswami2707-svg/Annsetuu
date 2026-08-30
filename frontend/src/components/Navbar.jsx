@@ -45,12 +45,12 @@ const Navbar = () => {
   }, []);
 
   const portals = [
-    { id: 'donor', path: '/donor', labelKey: 'donateFood', roleName: 'donor', icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-50', desc: 'Donate surplus meals from restaurants & homes' },
-    { id: 'ngo', path: '/ngo', labelKey: 'ngos', roleName: 'ngo', icon: Building2, color: 'text-green-700', bg: 'bg-green-50', desc: 'Review & accept food requests for shelters' },
-    { id: 'track', path: '/track', labelKey: 'trackDonation', roleName: role, icon: MapPin, color: 'text-amber-600', bg: 'bg-amber-50', desc: 'Live GPS telematics & status tracking' },
-    { id: 'delivery', path: '/delivery', labelKey: 'deliveryDashboard', roleName: 'delivery', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50', desc: 'Logistics task manager for driver volunteers' },
-    { id: 'admin', path: '/admin', labelKey: 'adminPortal', roleName: 'admin', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50', desc: 'System management & analytics center' },
-    { id: 'impact', path: '/impact', labelKey: 'ourImpact', roleName: role, icon: Heart, color: 'text-red-500', bg: 'bg-red-50', desc: 'Quantifiable metrics & stories of hope' }
+    { id: 'donor', path: '/donor', labelKey: 'donateFood', descKey: 'donorDesc', roleName: 'donor', icon: Utensils, color: 'text-orange-600', bg: 'bg-orange-50' },
+    { id: 'ngo', path: '/ngo', labelKey: 'ngos', descKey: 'ngoDesc', roleName: 'ngo', icon: Building2, color: 'text-green-700', bg: 'bg-green-50' },
+    { id: 'track', path: '/track', labelKey: 'trackDonation', descKey: 'trackingDesc', roleName: role, icon: MapPin, color: 'text-amber-600', bg: 'bg-amber-50' },
+    { id: 'delivery', path: '/delivery', labelKey: 'deliveryDashboard', descKey: 'deliveryDesc', roleName: 'delivery', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50' },
+    { id: 'admin', path: '/admin', labelKey: 'adminPortal', descKey: 'adminDesc', roleName: 'admin', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' },
+    { id: 'impact', path: '/impact', labelKey: 'ourImpact', descKey: 'impactSubtext', roleName: role, icon: Heart, color: 'text-red-500', bg: 'bg-red-50' }
   ];
 
   const handlePortalSelect = (portal) => {
@@ -117,7 +117,7 @@ const Navbar = () => {
                 aria-label="Switch Portals Menu"
               >
                 <MoreVertical className="w-4 h-4 text-orange-600" />
-                <span>Portals & Dashboards</span>
+                <span>{t('portalsAndDashboards')}</span>
                 <ChevronDown className="w-3.5 h-3.5 opacity-70" />
               </button>
 
@@ -126,8 +126,12 @@ const Navbar = () => {
                 <div className="absolute left-0 mt-2 w-80 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in slide-in-from-top-2">
                   <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
                     <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 block">Switch Platform Portal</span>
-                      <h4 className="text-xs font-extrabold text-green-950 font-outfit">Select Portal Destination</h4>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 block">
+                        {t('switchPortalHeader')}
+                      </span>
+                      <h4 className="text-xs font-extrabold text-green-950 font-outfit">
+                        {t('dashboardsTitle')}
+                      </h4>
                     </div>
                     <Sparkles className="w-4 h-4 text-orange-500" />
                   </div>
@@ -156,12 +160,12 @@ const Navbar = () => {
                               </span>
                               {isActive && (
                                 <span className="text-[9px] font-black bg-orange-500 text-gray-950 px-2 py-0.5 rounded-full uppercase">
-                                  Active
+                                  {t('activeBadge')}
                                 </span>
                               )}
                             </div>
                             <p className="text-[10px] text-gray-500 leading-tight mt-0.5 line-clamp-1">
-                              {portal.desc}
+                              {t(portal.descKey)}
                             </p>
                           </div>
                         </button>
@@ -194,12 +198,12 @@ const Navbar = () => {
               )}
             </button>
 
-            {/* 3-Dots Quick Portal Access Button (Also available on toolbar) */}
+            {/* 3-Dots Quick Portal Access Button */}
             <div className="relative">
               <button
                 onClick={() => setShowPortalMenu(!showPortalMenu)}
-                className="p-2.5 text-gray-800 bg-orange-100 hover:bg-orange-200 rounded-full transition-all border border-orange-300 tab-animated"
-                title="Switch Portals (3 Dots)"
+                className="p-2.5 text-gray-800 bg-orange-100 hover:bg-orange-200 rounded-full transition-all border border-orange-300 tab-animated flex items-center justify-center"
+                title={t('switchPortalHeader')}
                 aria-label="3 Dots Portal Switcher"
               >
                 <MoreVertical className="w-5 h-5 text-orange-700" />
@@ -222,7 +226,7 @@ const Navbar = () => {
       {mobileMenuOpen && (
         <div className="lg:hidden bg-white border-b border-gray-200 px-4 pt-3 pb-6 space-y-3 mt-3 shadow-lg animate-in fade-in">
           <div className="px-2 py-1 text-[10px] font-black uppercase text-orange-600 tracking-wider">
-            Main Navigation
+            {t('home')}
           </div>
 
           <Link 
@@ -235,7 +239,7 @@ const Navbar = () => {
           </Link>
 
           <div className="pt-2 px-2 text-[10px] font-black uppercase text-gray-400 tracking-wider">
-            Switch Portals & Dashboards (3-Dots Options)
+            {t('portalsAndDashboards')} (3-Dots)
           </div>
 
           {portals.map((portal) => {
