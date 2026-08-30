@@ -177,28 +177,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 /* Aesthetic Multi-Stage Scroll Reveal Animations */
-.scroll-reveal {
-  opacity: 0;
-  transform: translateY(40px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-left {
-  opacity: 0;
-  transform: translateX(-40px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-.scroll-reveal-right {
-  opacity: 0;
-  transform: translateX(40px);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
+.scroll-reveal,
+.scroll-reveal-left,
+.scroll-reveal-right,
 .scroll-reveal-scale {
-  opacity: 0;
-  transform: scale(0.92);
-  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1), transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+  opacity: 1;
+  transform: translateY(0) translateX(0) scale(1);
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 .scroll-reveal.revealed,
