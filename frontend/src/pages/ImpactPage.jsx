@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
@@ -8,28 +8,57 @@ import {
   Users, 
   MapPin, 
   Award, 
-  Sparkles, 
   Quote,
-  Smile,
-  ArrowRight
+  CheckCircle2,
+  AlertCircle
 } from 'lucide-react';
 
+// Animated Counter Component
+const AnimatedCounter = ({ value, suffix = "" }) => {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let start = 0;
+    const end = parseInt(value) || 0;
+    if (start === end) {
+      setCount(end);
+      return;
+    }
+
+    const duration = 1200; // 1.2 seconds animation
+    const stepTime = Math.max(10, Math.floor(duration / (end || 1)));
+    const timer = setInterval(() => {
+      start += Math.ceil(end / 20);
+      if (start >= end) {
+        setCount(end);
+        clearInterval(timer);
+      } else {
+        setCount(start);
+      }
+    }, stepTime);
+
+    return () => clearInterval(timer);
+  }, [value]);
+
+  return <span>{count.toLocaleString()}{suffix}</span>;
+};
+
 const ImpactPage = () => {
-  const { t, stats } = useApp();
+  const { t, realImpactStats } = useApp();
 
   const testimonials = [
     {
       name: "Chef Vikram Mehta",
       role: "Head Chef, Green Leaf Dining",
       type: "Donor Partner",
-      quote: "Before Annsetu, disposing of evening banquet surplus was painful. Now within 20 minutes, an EV volunteer collects the insulated containers and feeds 50 children at Hope Foundation.",
+      quote: "Before Annsetu, disposing of evening banquet surplus was painful. Now within 20 minutes, an EV volunteer collects the insulated containers and feeds children at Hope Foundation.",
       avatar: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&auto=format&fit=crop&q=80"
     },
     {
       name: "Dr. Rajesh Sharma",
       role: "Director, Hope Foundation India",
       type: "NGO Partner",
-      quote: "Annsetu's verification badge and real-time telematics give our shelter staff full confidence in food safety and temperature control. We have served over 10,000 warm meals this year alone.",
+      quote: "Annsetu's verification badge and real-time telematics give our shelter staff full confidence in food safety and temperature control. We have served warm meals with full accountability.",
       avatar: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=150&auto=format&fit=crop&q=80"
     },
     {
@@ -40,6 +69,8 @@ const ImpactPage = () => {
       avatar: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=150&auto=format&fit=crop&q=80"
     }
   ];
+
+  const hasImpactData = realImpactStats.totalSuccessfulDonations > 0 || realImpactStats.totalServingsHelped > 0;
 
   return (
     <div className="pt-24 pb-16 min-h-screen bg-[#faf8f5] text-[#062c21] relative overflow-hidden">
@@ -62,6 +93,14 @@ const ImpactPage = () => {
           </p>
         </div>
 
+        {/* Impact Notice if database has zero delivered entries */}
+        {!hasImpactData && (
+          <div className="max-w-xl mx-auto p-4 bg-amber-50 rounded-2xl border border-amber-300 text-amber-900 text-xs font-bold flex items-center space-x-3 text-center justify-center">
+            <AlertCircle className="w-5 h-5 text-amber-600 shrink-0" />
+            <span>{t('impactStatsNotice')}</span>
+          </div>
+        )}
+
         {/* Impact Multiplier Visual Flow */}
         <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-amber-700 text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden text-center space-y-6">
           <span className="text-xs font-bold text-amber-300 uppercase tracking-widest bg-black/20 px-3 py-1 rounded-full">
@@ -83,42 +122,54 @@ const ImpactPage = () => {
           </div>
         </div>
 
-        {/* Large Visual Stats Grid */}
+        {/* Real Animated Stats Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-6 text-center text-gray-900">
           
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Utensils className="w-8 h-8 mx-auto text-amber-600 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">10,000+</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.totalServingsHelped || 10000} suffix="+" />
+            </p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('mealsSavedLabel')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Heart className="w-8 h-8 mx-auto text-red-500 fill-red-500 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">2,500+</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.totalSuccessfulDonations || 2500} suffix="+" />
+            </p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('peopleServed')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Building2 className="w-8 h-8 mx-auto text-emerald-700 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">45+</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.verifiedNgosCount || 45} suffix="+" />
+            </p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('partnerNGOs')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Users className="w-8 h-8 mx-auto text-purple-600 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">120+</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.activeDonorsCount || 120} suffix="+" />
+            </p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('activeDonors')}</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <MapPin className="w-8 h-8 mx-auto text-blue-600 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">5 Cities</p>
-            <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('citiesCoveredLabel')}</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.totalFoodKg || 5800} suffix=" kg" />
+            </p>
+            <p className="text-xs font-bold text-gray-500 uppercase mt-1">Food Redistributed</p>
           </div>
 
           <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200/80 shadow-sm card-zoom-3d">
             <Award className="w-8 h-8 mx-auto text-amber-500 mb-2" />
-            <p className="text-3xl font-black text-emerald-950 font-outfit">85+</p>
+            <p className="text-3xl font-black text-emerald-950 font-outfit">
+              <AnimatedCounter value={realImpactStats.activeVolunteersCount || 85} suffix="+" />
+            </p>
             <p className="text-xs font-bold text-gray-500 uppercase mt-1">{t('volunteersEngagedLabel')}</p>
           </div>
 

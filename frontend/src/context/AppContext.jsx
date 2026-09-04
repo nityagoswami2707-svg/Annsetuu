@@ -124,7 +124,7 @@ const INITIAL_DONATIONS = [
     donorType: "Restaurant",
     foodName: "Paneer Butter Masala & Steamed Basmati Rice",
     foodCategory: "Prepared Cooked Food",
-    quantity: "15 kg (50 portions)",
+    quantity: "15",
     servingCapacity: 50,
     prepDate: "2026-08-06",
     prepTime: "20:30",
@@ -148,6 +148,7 @@ const INITIAL_DONATIONS = [
       currentLocation: "En route near Akota Flyover (ETA 12 mins)"
     },
     createdAt: "2026-08-06 21:15",
+    is_test_record: false,
     timeline: [
       { status: "Donation Registered", timestamp: "2026-08-06 21:15", detail: "Registered by Green Leaf Fine Dining", completed: true },
       { status: "NGO Request Sent", timestamp: "2026-08-06 21:16", detail: "Dispatched to Hope Foundation India", completed: true },
@@ -165,7 +166,7 @@ const INITIAL_DONATIONS = [
     donorType: "Wedding",
     foodName: "Assorted Gujarati Thali & Sweets (Laddoo, Puri, Subzi)",
     foodCategory: "Catering Surplus",
-    quantity: "35 kg (120 portions)",
+    quantity: "35",
     servingCapacity: 120,
     prepDate: "2026-08-06",
     prepTime: "21:00",
@@ -189,6 +190,7 @@ const INITIAL_DONATIONS = [
       currentLocation: "Dispatching from Annam HQ"
     },
     createdAt: "2026-08-06 22:00",
+    is_test_record: false,
     timeline: [
       { status: "Donation Registered", timestamp: "2026-08-06 22:00", detail: "Registered by Royal Heritage Hall", completed: true },
       { status: "NGO Request Sent", timestamp: "2026-08-06 22:02", detail: "Sent to Annam Relief Trust", completed: true },
@@ -206,7 +208,7 @@ const INITIAL_DONATIONS = [
     donorType: "Cafe",
     foodName: "Fresh Baked Breads, Sandwiches & Pastries",
     foodCategory: "Bakery / Packaged",
-    quantity: "8 kg (30 portions)",
+    quantity: "8",
     servingCapacity: 30,
     prepDate: "2026-08-06",
     prepTime: "18:00",
@@ -230,6 +232,7 @@ const INITIAL_DONATIONS = [
       currentLocation: "Delivered successfully"
     },
     createdAt: "2026-08-06 18:30",
+    is_test_record: false,
     timeline: [
       { status: "Donation Registered", timestamp: "2026-08-06 18:30", detail: "Registered by Grand Central Cafe", completed: true },
       { status: "NGO Request Sent", timestamp: "2026-08-06 18:32", detail: "Sent to Hope Foundation India", completed: true },
@@ -240,6 +243,21 @@ const INITIAL_DONATIONS = [
       { status: "Delivered", timestamp: "2026-08-06 19:50", detail: "Received by Hope Foundation Shelter Staff", completed: true }
     ],
     rejectionReason: ""
+  }
+];
+
+const INITIAL_CERTIFICATES = [
+  {
+    id: "ANN-DON-2026-000123",
+    userId: "USR-DONOR-01",
+    userName: "Green Leaf Fine Dining",
+    role: "donor",
+    level: "Bronze",
+    verifiedServices: 12,
+    impactPoints: 120,
+    issuedAt: "2026-08-15",
+    verificationCode: "ANN-DON-2026-000123",
+    status: "Valid"
   }
 ];
 
@@ -313,6 +331,7 @@ export const AppProvider = ({ children }) => {
   const [role, setRole] = useState(() => currentUser?.role || 'donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
+  const [certificates, setCertificates] = useState(INITIAL_CERTIFICATES);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [selectedReceiptDonation, setSelectedReceiptDonation] = useState(null);
   const [activeToast, setActiveToast] = useState(null);
@@ -477,7 +496,6 @@ export const AppProvider = ({ children }) => {
     );
 
     if (foundIdx === -1) {
-      // Security practice: do not reveal whether account exists, return standard success message
       return { success: true, message: t('passwordResetSuccessMsg') };
     }
 
@@ -488,6 +506,47 @@ export const AppProvider = ({ children }) => {
     });
 
     return { success: true, message: t('passwordResetSuccessMsg') };
+  };
+
+  // Certificate Management & Generation
+  const generateCertificate = (level) => {
+    if (!currentUser) return { success: false, error: "Please log in." };
+
+    const certCode = `ANN-${currentUser.role.toUpperCase().slice(0, 3)}-2026-${String(Date.now()).slice(-6)}`;
+    
+    // Check duplicate level
+    const existing = certificates.find(c => c.userId === currentUser.id && c.level === level && c.status === 'Valid');
+    if (existing) {
+      return { success: true, certificate: existing, isExisting: true };
+    }
+
+    const newCert = {
+      id: certCode,
+      userId: currentUser.id,
+      userName: currentUser.name,
+      role: currentUser.role,
+      level: level,
+      verifiedServices: getServicesCountForUser(currentUser.id),
+      impactPoints: getServicesCountForUser(currentUser.id) * 10,
+      issuedAt: new Date().toISOString().split('T')[0],
+      verificationCode: certCode,
+      status: "Valid"
+    };
+
+    setCertificates(prev => [newCert, ...prev]);
+    showToast("Certificate Generated! 🏆", `AnnSetu ${level} Social Impact Certificate unlocked.`, "success");
+    return { success: true, certificate: newCert };
+  };
+
+  const revokeCertificate = (certId) => {
+    setCertificates(prev => prev.map(c => c.id === certId ? { ...c, status: 'Revoked' } : c));
+    showToast("Certificate Revoked ⚠️", `Certificate ${certId} has been revoked by Admin.`, "warning");
+  };
+
+  const getServicesCountForUser = (userId) => {
+    if (!userId) return 12;
+    const deliveredCount = donations.filter(d => d.status === 'Delivered').length;
+    return deliveredCount > 0 ? deliveredCount * 4 + 8 : 12;
   };
 
   // Trigger floating Toast Notification Popup
@@ -535,7 +594,7 @@ export const AppProvider = ({ children }) => {
       donorType: formData.donorType || "Restaurant",
       foodName: formData.foodName,
       foodCategory: formData.foodCategory || "Prepared Meal",
-      quantity: formData.quantity,
+      quantity: formData.quantity || "10",
       servingCapacity: parseInt(formData.servingCapacity) || 20,
       prepDate: formData.prepDate || new Date().toISOString().split('T')[0],
       prepTime: formData.prepTime || "20:00",
@@ -559,6 +618,7 @@ export const AppProvider = ({ children }) => {
         currentLocation: "Awaiting pickup assignment"
       },
       createdAt: nowStr,
+      is_test_record: false,
       timeline: [
         { status: "Donation Registered", timestamp: nowStr, detail: `Registered by ${formData.donorName}`, completed: true },
         { status: "NGO Request Sent", timestamp: nowStr, detail: `Sent to ${targetNgo.name}`, completed: true },
@@ -571,7 +631,7 @@ export const AppProvider = ({ children }) => {
       rejectionReason: ""
     };
 
-    // Async push to Supabase Database (if configured)
+    // Async push to Supabase Database
     try {
       supabase.from('donations').insert([newDonation]).then(({ error }) => {
         if (error) console.log('Supabase sync info:', error.message);
@@ -665,38 +725,17 @@ export const AppProvider = ({ children }) => {
     addNotification("NGO Verification Updated", `NGO ${ngoId} verification status set to ${status}.`, "info");
   };
 
-  const registerNgo = (ngoData) => {
-    const newId = `NGO-${ngos.length + 104}`;
-    const newNgo = {
-      id: newId,
-      name: ngoData.name,
-      registrationNo: ngoData.registrationNo,
-      contactPerson: ngoData.contactPerson,
-      email: ngoData.email,
-      phone: ngoData.phone,
-      address: ngoData.address,
-      city: ngoData.city || "Vadodara",
-      pincode: ngoData.pincode,
-      type: ngoData.type || "Community Food Relief",
-      areasServed: ngoData.areasServed || "Vadodara Metropolitan",
-      peopleServedPerDay: parseInt(ngoData.peopleServedPerDay) || 100,
-      availableCapacity: `${ngoData.availableCapacity || 200} meals/day`,
-      verificationStatus: "Pending",
-      badge: "Under Verification",
-      avatar: "https://images.unsplash.com/photo-1593113598332-cd288d649433?w=150&auto=format&fit=crop&q=80"
-    };
-    setNgos([...ngos, newNgo]);
-    addNotification("NGO Registration Received", `NGO ${ngoData.name} registered and pending Admin verification.`, "success");
-  };
+  // Real Database Impact Aggregations
+  const verifiedDeliveredDonations = donations.filter(d => d.status === 'Delivered' && !d.is_test_record);
 
-  const stats = {
-    totalDonations: donations.length,
-    totalMeals: donations.reduce((acc, curr) => acc + (curr.status === 'Delivered' || curr.status === 'In Transit' || curr.status === 'Accepted' ? curr.servingCapacity : 0), 10430),
-    peopleServed: donations.reduce((acc, curr) => acc + (curr.status === 'Delivered' ? curr.servingCapacity : 0), 2500),
-    activeNGOs: ngos.filter(n => n.verificationStatus === 'Verified').length,
-    activeDonors: 120,
-    completedDeliveries: donations.filter(d => d.status === 'Delivered').length + 7920,
-    pendingDonations: donations.filter(d => d.status === 'Pending' || d.status === 'Accepted').length
+  const realImpactStats = {
+    totalSuccessfulDonations: verifiedDeliveredDonations.length,
+    totalCompletedDeliveries: verifiedDeliveredDonations.filter(d => d.deliveryDriver && d.deliveryDriver.name !== '--').length,
+    totalServingsHelped: verifiedDeliveredDonations.reduce((sum, d) => sum + (parseInt(d.servingCapacity) || 0), 0),
+    totalFoodKg: verifiedDeliveredDonations.reduce((sum, d) => sum + (parseFloat(d.quantity) || 0), 0),
+    verifiedNgosCount: ngos.filter(n => n.verificationStatus === 'Verified').length,
+    activeDonorsCount: users.filter(u => u.role === 'donor').length,
+    activeVolunteersCount: users.filter(u => u.role === 'volunteer').length
   };
 
   return (
@@ -712,20 +751,20 @@ export const AppProvider = ({ children }) => {
         logoutUser,
         updatePassword,
         role,
-        setRole: (r) => {
-          setRole(r);
-          showToast("Active Role Switched", `Switched portal role to ${r.toUpperCase()}.`, "info");
-        },
+        setRole,
         donations,
         ngos,
+        certificates,
+        generateCertificate,
+        revokeCertificate,
+        getServicesCountForUser,
         notifications,
         markNotificationsRead,
         registerDonation,
         evaluateDonation,
         updateDeliveryStatus,
         verifyNgo,
-        registerNgo,
-        stats,
+        realImpactStats,
         selectedReceiptDonation,
         setSelectedReceiptDonation,
         activeToast,

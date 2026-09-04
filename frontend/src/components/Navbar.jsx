@@ -61,7 +61,9 @@ const Navbar = () => {
   ];
 
   const handlePortalSelect = (portal) => {
-    if (!currentUser) {
+    if (portal.id === 'impact' || portal.id === 'track') {
+      navigate(portal.path);
+    } else if (!currentUser) {
       navigate(`/auth/${portal.roleName || 'donor'}`);
     } else {
       navigate(portal.path);
@@ -240,6 +242,17 @@ const Navbar = () => {
                       >
                         <User className="w-4 h-4 text-orange-500" />
                         <span>{t('myDashboard')}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          navigate('/certificates');
+                        }}
+                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left"
+                      >
+                        <Award className="w-4 h-4 text-amber-500" />
+                        <span>{t('myCertificates')}</span>
                       </button>
 
                       <button

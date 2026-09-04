@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import { AppProvider, useApp } from './context/AppContext';
 
@@ -19,6 +19,47 @@ import DeliveryDashboard from './pages/DeliveryDashboard';
 import ImpactPage from './pages/ImpactPage';
 import AuthPage from './pages/AuthPage';
 import AccessDenied from './pages/AccessDenied';
+import CertificatesDashboard from './pages/CertificatesDashboard';
+import CertificateVerifyPage from './pages/CertificateVerifyPage';
+
+// Professional 1.5s Site Startup Loading Overlay
+function SiteStartupLoader() {
+  const [loading, setLoading] = useState(() => {
+    return !sessionStorage.getItem('annsetu_loaded_splash');
+  });
+
+  useEffect(() => {
+    if (loading) {
+      sessionStorage.setItem('annsetu_loaded_splash', 'true');
+      const timer = setTimeout(() => setLoading(false), 1400);
+      return () => clearTimeout(timer);
+    }
+  }, [loading]);
+
+  if (!loading) return null;
+
+  return (
+    <div className="fixed inset-0 z-[100] bg-[#064e3b] text-white flex flex-col items-center justify-center p-4 animate-out fade-out duration-500">
+      <div className="space-y-4 text-center animate-pulse">
+        <div className="relative bg-white rounded-3xl p-3 shadow-2xl inline-block border-2 border-amber-400">
+          <img src="/annsetu_logo.png" alt="AnnSetu" className="h-16 w-auto object-contain" />
+        </div>
+        <h1 className="text-3xl font-black font-outfit tracking-tight">
+          Ann<span className="text-orange-400">setu</span>
+        </h1>
+        <p className="text-xs font-bold text-emerald-200 uppercase tracking-widest">
+          Connecting surplus with smiles...
+        </p>
+
+        <div className="flex items-center justify-center space-x-2 pt-2 text-amber-400">
+          <span className="w-2.5 h-2.5 rounded-full bg-amber-400 animate-ping"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-orange-400 animate-ping delay-100"></span>
+          <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping delay-200"></span>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 // Component to guarantee homepage appears first every time someone opens the website
 function AlwaysOpenHomepageOnVisit() {
@@ -43,6 +84,7 @@ function AppContent() {
 
   return (
     <div className="min-h-screen flex flex-col bg-[#064e3b] text-white font-sans antialiased selection:bg-amber-400 selection:text-gray-950 overflow-x-hidden">
+      <SiteStartupLoader />
       <AlwaysOpenHomepageOnVisit />
       <Navbar />
       <ToastContainer />
@@ -50,14 +92,14 @@ function AppContent() {
 
       <main className="flex-1 pb-20 lg:pb-0">
         <Routes>
-          {/* Requirement 1: Public Homepage always opens first without login */}
+          {/* Public Homepage always opens first */}
           <Route path="/" element={<Home />} />
           
-          {/* Requirement 2, 5, 6, 7, 8: Authentication Routes */}
+          {/* Authentication Routes */}
           <Route path="/auth/:roleParam" element={<AuthPage />} />
           <Route path="/access-denied" element={<AccessDenied />} />
 
-          {/* Requirement 11, 14, 15: Role-Based Protected Routes */}
+          {/* Role-Based Protected Routes */}
           <Route 
             path="/donor" 
             element={
@@ -94,9 +136,19 @@ function AppContent() {
             } 
           />
 
-          {/* Requirement 25: Public Tracking & Impact */}
-          <Route path="/track" element={<TrackingDashboard />} />
+          <Route 
+            path="/certificates" 
+            element={
+              <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
+                <CertificatesDashboard />
+              </ProtectedRoute>
+            } 
+          />
+
+          {/* Requirement 1: 100% PUBLIC Impact Page & Verification */}
           <Route path="/impact" element={<ImpactPage />} />
+          <Route path="/track" element={<TrackingDashboard />} />
+          <Route path="/certificate/verify/:code" element={<CertificateVerifyPage />} />
 
           {/* Fallback to Homepage */}
           <Route path="*" element={<Navigate to="/" replace />} />
