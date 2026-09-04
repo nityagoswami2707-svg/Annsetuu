@@ -21,11 +21,16 @@ import {
   Clock,
   Eye,
   Check,
-  X
+  X,
+  Award,
+  LogOut,
+  Home
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
-  const { t, donations, ngos, stats, verifyNgo, setSelectedReceiptDonation } = useApp();
+  const { t, donations, ngos, stats, verifyNgo, setSelectedReceiptDonation, logoutUser } = useApp();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
@@ -118,6 +123,38 @@ const AdminDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
+        {/* Top Action Bar */}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-orange-100 text-emerald-950 font-black text-xs border border-gray-200 shadow-md transition-all btn-bounce-active"
+          >
+            <Home className="w-4 h-4 text-orange-600" />
+            <span>← {t('home')}</span>
+          </button>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => navigate('/certificates')}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md transition-all btn-bounce-active"
+            >
+              <Award className="w-4 h-4" />
+              <span>{t('myCertificates')}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                logoutUser();
+                navigate('/');
+              }}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>{t('logoutBtn')}</span>
+            </button>
+          </div>
+        </div>
+
         {/* Header Banner */}
         <div className="bg-gradient-to-r from-purple-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col md:flex-row items-start md:items-center justify-between gap-4 border border-purple-800">
           <div>

@@ -12,11 +12,16 @@ import {
   Navigation,
   ArrowRight,
   ExternalLink,
-  Play
+  Play,
+  Award,
+  LogOut,
+  Home
 } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 
 const DeliveryDashboard = () => {
-  const { t, donations, updateDeliveryStatus, setSelectedReceiptDonation } = useApp();
+  const { t, donations, updateDeliveryStatus, setSelectedReceiptDonation, logoutUser } = useApp();
+  const navigate = useNavigate();
   const [confirmModalDonation, setConfirmModalDonation] = useState(null);
 
   const driverDeliveries = donations.filter(d => d.status !== 'Rejected');
@@ -47,6 +52,38 @@ const DeliveryDashboard = () => {
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
+        {/* Top Action Bar */}
+        <div className="flex items-center justify-between gap-3 flex-wrap">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-orange-100 text-emerald-950 font-black text-xs border border-gray-200 shadow-md transition-all btn-bounce-active"
+          >
+            <Home className="w-4 h-4 text-orange-600" />
+            <span>← {t('home')}</span>
+          </button>
+
+          <div className="flex items-center space-x-2">
+            <button
+              onClick={() => navigate('/certificates')}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md transition-all btn-bounce-active"
+            >
+              <Award className="w-4 h-4" />
+              <span>{t('myCertificates')}</span>
+            </button>
+
+            <button
+              onClick={() => {
+                logoutUser();
+                navigate('/');
+              }}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>{t('logoutBtn')}</span>
+            </button>
+          </div>
+        </div>
+
         {/* Smartphone Driver Header Banner */}
         <div className="bg-gradient-to-r from-blue-900 via-indigo-950 to-orange-600 text-white rounded-3xl p-5 sm:p-8 shadow-xl relative overflow-hidden flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border border-blue-800">
           <div>
