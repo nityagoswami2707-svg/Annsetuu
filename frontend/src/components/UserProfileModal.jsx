@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
+import AnnsetuMotionBackground from './AnnsetuMotionBackground';
 import { 
   User, 
   Mail, 
@@ -45,8 +46,34 @@ const UserProfileModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm text-gray-900 animate-in fade-in overflow-y-auto pt-20 pb-10">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl border-2 border-orange-500/30 relative space-y-5 my-auto max-h-[88vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-[#faf8f5] text-[#062c21] overflow-y-auto animate-in fade-in flex flex-col">
+      {/* Background Motion Layer */}
+      <AnnsetuMotionBackground type="home" />
+
+      {/* Top Fixed Control Bar */}
+      <div className="relative z-20 max-w-7xl mx-auto w-full px-4 sm:px-6 lg:px-8 pt-20 pb-4 flex items-center justify-between">
+        <div className="flex items-center space-x-3">
+          <div className="p-3 bg-emerald-800 text-white rounded-2xl shadow-md">
+            <User className="w-6 h-6 text-orange-400" />
+          </div>
+          <div>
+            <h1 className="text-2xl sm:text-3xl font-black font-outfit text-emerald-950">{t('myProfile')}</h1>
+            <p className="text-xs text-gray-600 font-semibold">Official Verified AnnSetu User Profile & Settings</p>
+          </div>
+        </div>
+
+        <button
+          onClick={onClose}
+          className="px-4 py-2 rounded-2xl bg-white hover:bg-orange-100 text-emerald-950 font-black text-xs border border-gray-200 shadow-md flex items-center space-x-1.5 btn-bounce-active cursor-pointer"
+        >
+          <X className="w-4 h-4 text-orange-600" />
+          <span>Close Profile</span>
+        </button>
+      </div>
+
+      {/* Full-Screen Content Area */}
+      <div className="relative z-10 max-w-4xl mx-auto w-full px-4 sm:px-6 lg:px-8 pb-16 flex-1">
+        <div className="bg-white/95 backdrop-blur-md rounded-3xl p-6 sm:p-10 shadow-2xl border-2 border-orange-500/20 space-y-8">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
@@ -206,6 +233,7 @@ const UserProfileModal = ({ isOpen, onClose }) => {
           </form>
         )}
 
+        </div>
       </div>
     </div>
   );
