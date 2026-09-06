@@ -21,6 +21,7 @@ import AuthPage from './pages/AuthPage';
 import AccessDenied from './pages/AccessDenied';
 import CertificatesDashboard from './pages/CertificatesDashboard';
 import CertificateVerifyPage from './pages/CertificateVerifyPage';
+import UserProfilePage from './pages/UserProfilePage';
 
 // Professional 1.5s Site Startup Loading Overlay
 function SiteStartupLoader() {
@@ -141,6 +142,24 @@ function AppContent() {
             element={
               <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
                 <CertificatesDashboard />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/profile" 
+            element={
+              <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
+                <UserProfilePage />
+              </ProtectedRoute>
+            } 
+          />
+
+          <Route 
+            path="/my-profile" 
+            element={
+              <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
+                <UserProfilePage />
               </ProtectedRoute>
             } 
           />

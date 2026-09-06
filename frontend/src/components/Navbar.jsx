@@ -3,7 +3,6 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSelector from './LanguageSelector';
 import NotificationModal from './NotificationModal';
-import UserProfileModal from './UserProfileModal';
 import { 
   Heart, 
   Utensils, 
@@ -32,7 +31,6 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
-  const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPortalMenu, setShowPortalMenu] = useState(false);
 
   const location = useLocation();
@@ -267,7 +265,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          setShowProfileModal(true);
+                          navigate('/profile');
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -316,7 +314,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          setShowProfileModal(true);
+                          navigate('/profile');
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -371,6 +369,19 @@ const Navbar = () => {
             <span>{t('home')}</span>
           </Link>
 
+          {currentUser && (
+            <button
+              onClick={() => {
+                setMobileMenuOpen(false);
+                navigate('/profile');
+              }}
+              className="w-full flex items-center space-x-2 py-2 text-sm font-black text-emerald-950 hover:text-orange-600 border-b border-gray-50 bg-orange-50 px-2 rounded-xl text-left"
+            >
+              <User className="w-4 h-4 text-orange-500" />
+              <span>👤 {t('myProfile')}</span>
+            </button>
+          )}
+
           <div className="pt-2 px-2 text-[10px] font-black uppercase text-orange-600 tracking-wider">
             {t('portalsAndDashboards')} (3-Dots)
           </div>
@@ -394,11 +405,6 @@ const Navbar = () => {
       {showNotifModal && (
         <NotificationModal onClose={() => setShowNotifModal(false)} />
       )}
-      {/* User Profile Modal */}
-      <UserProfileModal
-        isOpen={showProfileModal}
-        onClose={() => setShowProfileModal(false)}
-      />
     </nav>
   );
 };
