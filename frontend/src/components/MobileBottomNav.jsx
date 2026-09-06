@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import NotificationModal from './NotificationModal';
+import UserProfileBox from './UserProfileBox';
 import { 
   Home as HomeIcon, 
   Utensils, 
@@ -21,6 +22,7 @@ const MobileBottomNav = () => {
   const navigate = useNavigate();
 
   const [showNotifModal, setShowNotifModal] = useState(false);
+  const [showProfileBox, setShowProfileBox] = useState(false);
   const [showProfileSheet, setShowProfileSheet] = useState(false);
 
   const unreadCount = notifications.filter(n => !n.read).length;
@@ -34,7 +36,7 @@ const MobileBottomNav = () => {
           { id: 'requests', label: 'Requests', path: '/ngo', icon: Building2 },
           { id: 'track', label: 'Tracking', path: '/track', icon: MapPin },
           { id: 'notif', label: 'Alerts', action: () => setShowNotifModal(true), icon: Bell, badge: unreadCount },
-          { id: 'profile', label: 'Profile', path: '/profile', icon: User }
+          { id: 'profile', label: 'Profile', action: () => setShowProfileBox(true), icon: User }
         ];
       case 'delivery':
         return [
@@ -42,7 +44,7 @@ const MobileBottomNav = () => {
           { id: 'map', label: 'Map', path: '/track', icon: MapPin },
           { id: 'track', label: 'Tracking', path: '/track', icon: CheckSquare },
           { id: 'notif', label: 'Alerts', action: () => setShowNotifModal(true), icon: Bell, badge: unreadCount },
-          { id: 'profile', label: 'Profile', path: '/profile', icon: User }
+          { id: 'profile', label: 'Profile', action: () => setShowProfileBox(true), icon: User }
         ];
       case 'admin':
         return [
@@ -50,7 +52,7 @@ const MobileBottomNav = () => {
           { id: 'donations', label: 'Donations', path: '/admin', icon: Utensils },
           { id: 'ngos', label: 'NGOs', path: '/ngo', icon: Building2 },
           { id: 'reports', label: 'Reports', path: '/impact', icon: BarChart3 },
-          { id: 'profile', label: 'Profile', path: '/profile', icon: User }
+          { id: 'profile', label: 'Profile', action: () => setShowProfileBox(true), icon: User }
         ];
       case 'donor':
       default:
@@ -59,7 +61,7 @@ const MobileBottomNav = () => {
           { id: 'donate', label: t('donateFood'), path: '/donor', icon: Utensils },
           { id: 'track', label: t('trackDonation'), path: '/track', icon: MapPin },
           { id: 'notif', label: 'Alerts', action: () => setShowNotifModal(true), icon: Bell, badge: unreadCount },
-          { id: 'profile', label: 'Profile', path: '/profile', icon: User }
+          { id: 'profile', label: 'Profile', action: () => setShowProfileBox(true), icon: User }
         ];
     }
   };
@@ -107,6 +109,11 @@ const MobileBottomNav = () => {
       {/* Notifications Drawer */}
       {showNotifModal && (
         <NotificationModal onClose={() => setShowNotifModal(false)} />
+      )}
+
+      {/* Profile Side Box Panel (Same as Notification Box) */}
+      {showProfileBox && (
+        <UserProfileBox onClose={() => setShowProfileBox(false)} />
       )}
 
       {/* Profile Bottom Sheet Modal for Mobile (Visitor Role Removed) */}

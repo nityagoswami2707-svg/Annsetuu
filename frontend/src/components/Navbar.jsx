@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSelector from './LanguageSelector';
 import NotificationModal from './NotificationModal';
+import UserProfileBox from './UserProfileBox';
 import { 
   Heart, 
   Utensils, 
@@ -30,6 +31,7 @@ const Navbar = () => {
   const { t, currentUser, logoutUser, role, notifications } = useApp();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
+  const [showProfileBox, setShowProfileBox] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
   const [showPortalMenu, setShowPortalMenu] = useState(false);
 
@@ -117,9 +119,6 @@ const Navbar = () => {
                   {t('officialBadge')}
                 </span>
               </div>
-              <p className="text-xs font-bold text-green-700 tracking-wide">
-                {t('tagline')}
-              </p>
             </div>
           </Link>
 
@@ -265,7 +264,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          navigate('/profile');
+                          setShowProfileBox(true);
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -314,7 +313,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          navigate('/profile');
+                          setShowProfileBox(true);
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -373,7 +372,7 @@ const Navbar = () => {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                navigate('/profile');
+                setShowProfileBox(true);
               }}
               className="w-full flex items-center space-x-2 py-2 text-sm font-black text-emerald-950 hover:text-orange-600 border-b border-gray-50 bg-orange-50 px-2 rounded-xl text-left"
             >
@@ -404,6 +403,11 @@ const Navbar = () => {
 
       {showNotifModal && (
         <NotificationModal onClose={() => setShowNotifModal(false)} />
+      )}
+
+      {/* User Profile Side Panel Box (Same as Notification Box) */}
+      {showProfileBox && (
+        <UserProfileBox onClose={() => setShowProfileBox(false)} />
       )}
     </nav>
   );
