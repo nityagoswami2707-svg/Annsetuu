@@ -265,7 +265,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          window.open('/profile', '_blank');
+                          navigate('/profile');
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -314,7 +314,7 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          window.open('/profile', '_blank');
+                          navigate('/profile');
                         }}
                         className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
@@ -373,7 +373,7 @@ const Navbar = () => {
             <button
               onClick={() => {
                 setMobileMenuOpen(false);
-                window.open('/profile', '_blank');
+                navigate('/profile');
               }}
               className="w-full flex items-center space-x-2 py-2 text-sm font-black text-emerald-950 hover:text-orange-600 border-b border-gray-50 bg-orange-50 px-2 rounded-xl text-left"
             >
