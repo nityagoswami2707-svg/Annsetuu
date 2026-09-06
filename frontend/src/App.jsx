@@ -22,6 +22,7 @@ import AccessDenied from './pages/AccessDenied';
 import CertificatesDashboard from './pages/CertificatesDashboard';
 import CertificateVerifyPage from './pages/CertificateVerifyPage';
 import UserProfilePage from './pages/UserProfilePage';
+import UserProfileBox from './components/UserProfileBox';
 
 // Professional 1.5s Site Startup Loading Overlay
 function SiteStartupLoader() {
@@ -107,6 +108,30 @@ function OfflineNetworkBanner() {
   );
 }
 
+// Component to render dashboard with Profile side drawer for /profile route
+function ProfilePageRoute() {
+  const { currentUser } = useApp();
+  const navigate = useNavigate();
+
+  if (!currentUser) return <Navigate to="/auth/donor" replace />;
+
+  const userDashboard = currentUser.role === 'admin' ? '/admin' : currentUser.role === 'ngo' ? '/ngo' : currentUser.role === 'volunteer' ? '/delivery' : '/donor';
+
+  const handleClose = () => {
+    navigate(userDashboard, { replace: true });
+  };
+
+  return (
+    <>
+      {currentUser.role === 'donor' && <DonorDashboard />}
+      {currentUser.role === 'ngo' && <NgoDashboard />}
+      {currentUser.role === 'volunteer' && <DeliveryDashboard />}
+      {currentUser.role === 'admin' && <AdminDashboard />}
+      <UserProfileBox onClose={handleClose} />
+    </>
+  );
+}
+
 function AppContent() {
   const { selectedReceiptDonation, setSelectedReceiptDonation } = useApp();
 
@@ -178,7 +203,7 @@ function AppContent() {
             path="/profile" 
             element={
               <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
-                <UserProfilePage />
+                <ProfilePageRoute />
               </ProtectedRoute>
             } 
           />
@@ -187,7 +212,7 @@ function AppContent() {
             path="/my-profile" 
             element={
               <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
-                <UserProfilePage />
+                <ProfilePageRoute />
               </ProtectedRoute>
             } 
           />

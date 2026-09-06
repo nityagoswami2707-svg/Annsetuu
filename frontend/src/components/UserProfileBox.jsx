@@ -134,12 +134,12 @@ const UserProfileBox = ({ onClose }) => {
       className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
       onClick={onClose}
     >
-      {/* SIDE PANEL BOX (Same layout & drawer style as Notification Box) */}
+      {/* SIDE PANEL DRAWER (85-90% width on mobile, 420px on desktop) */}
       <div 
-        className="w-full sm:w-1/2 md:w-5/12 lg:w-4/12 min-w-[320px] sm:min-w-[400px] bg-white h-screen max-h-screen shadow-2xl flex flex-col justify-between border-l-4 border-orange-500 animate-in slide-in-from-right duration-300"
+        className="w-[88vw] sm:w-[420px] lg:w-[440px] max-w-full bg-white h-screen max-h-screen shadow-2xl flex flex-col justify-between border-l-4 border-orange-500 animate-in slide-in-from-right duration-300"
         onClick={(e) => e.stopPropagation()}
       >
-        {/* Header (Matching Notification Modal Header) */}
+        {/* Sticky Header */}
         <div className="p-5 border-b-2 border-green-100 flex items-center justify-between bg-emerald-950 text-white shadow-md shrink-0">
           <div className="flex items-center space-x-3">
             <div className="w-11 h-11 rounded-2xl bg-orange-500 text-white flex items-center justify-center font-black text-xl shadow-lg shrink-0">
@@ -152,7 +152,7 @@ const UserProfileBox = ({ onClose }) => {
                   {currentUser.role || 'User'}
                 </span>
               </div>
-              <p className="text-xs text-emerald-200 font-medium">Verified User Profile & Account Settings</p>
+              <p className="text-xs text-emerald-200 font-medium">Official Verified AnnSetu User Profile & Settings</p>
             </div>
           </div>
 
