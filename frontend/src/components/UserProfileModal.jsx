@@ -45,8 +45,8 @@ const UserProfileModal = ({ isOpen, onClose }) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm text-gray-900 animate-in fade-in">
-      <div className="bg-white rounded-3xl max-w-lg w-full p-6 sm:p-8 shadow-2xl border-2 border-orange-500/30 relative space-y-6 overflow-hidden max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/60 backdrop-blur-sm text-gray-900 animate-in fade-in overflow-y-auto pt-20 pb-10">
+      <div className="bg-white rounded-3xl max-w-lg w-full p-5 sm:p-7 shadow-2xl border-2 border-orange-500/30 relative space-y-5 my-auto max-h-[88vh] overflow-y-auto">
         
         {/* Header */}
         <div className="flex items-center justify-between border-b border-gray-100 pb-4">
