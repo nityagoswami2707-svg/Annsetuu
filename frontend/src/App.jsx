@@ -80,6 +80,33 @@ function AlwaysOpenHomepageOnVisit() {
   return null;
 }
 
+// Component to handle offline network status gracefully on mobile
+function OfflineNetworkBanner() {
+  const [isOffline, setIsOffline] = useState(!navigator.onLine);
+
+  useEffect(() => {
+    const handleOnline = () => setIsOffline(false);
+    const handleOffline = () => setIsOffline(true);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, []);
+
+  if (!isOffline) return null;
+
+  return (
+    <div className="fixed top-0 left-0 right-0 z-[110] bg-orange-600 text-white text-xs font-bold px-4 py-2 text-center shadow-lg flex items-center justify-center space-x-2 animate-in slide-in-from-top">
+      <span>⚠️ Connection problem. You are offline. Some live AnnSetu features require internet.</span>
+      <button onClick={() => window.location.reload()} className="underline font-black bg-black/20 px-2 py-0.5 rounded cursor-pointer">Retry</button>
+    </div>
+  );
+}
+
 function AppContent() {
   const { selectedReceiptDonation, setSelectedReceiptDonation } = useApp();
 
@@ -87,6 +114,7 @@ function AppContent() {
     <div className="min-h-screen flex flex-col bg-[#064e3b] text-white font-sans antialiased selection:bg-amber-400 selection:text-gray-950 overflow-x-hidden">
       <SiteStartupLoader />
       <AlwaysOpenHomepageOnVisit />
+      <OfflineNetworkBanner />
       <Navbar />
       <ToastContainer />
       <PwaInstallBanner />

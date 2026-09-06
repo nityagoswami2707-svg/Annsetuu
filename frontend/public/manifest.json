@@ -1,21 +1,25 @@
 {
-  "short_name": "Annsetu",
-  "name": "Annsetu — Bridging Surplus to Smiles",
+  "short_name": "AnnSetu",
+  "name": "AnnSetu",
+  "description": "Bridging Surplus to Smiles — Official Food Donation & Redistribution Platform",
   "icons": [
     {
       "src": "/annsetu_logo.png",
       "type": "image/png",
-      "sizes": "192x192"
+      "sizes": "192x192",
+      "purpose": "any maskable"
     },
     {
       "src": "/annsetu_logo.png",
       "type": "image/png",
-      "sizes": "512x512"
+      "sizes": "512x512",
+      "purpose": "any maskable"
     }
   ],
   "start_url": "/",
   "background_color": "#064e3b",
   "theme_color": "#064e3b",
   "display": "standalone",
-  "orientation": "portrait-primary"
+  "orientation": "portrait-primary",
+  "categories": ["social", "food", "charity", "productivity"]
 }
