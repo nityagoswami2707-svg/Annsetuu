@@ -345,14 +345,19 @@ const AdminDashboard = () => {
 
               <div className="space-y-2">
                 <h4 className="text-xs font-bold text-gray-700">Donation Growth & Monthly Volume</h4>
-                <div className="h-40 flex items-end justify-between gap-2 pt-6 px-1 border-b border-gray-200">
+                <div className="h-44 flex items-end justify-between gap-3 pt-8 pb-2 px-3 border-b-2 border-gray-200 bg-gray-50/80 rounded-2xl">
                   {[
-                    { m: 'Jan', v: 60 }, { m: 'Feb', v: 75 }, { m: 'Mar', v: 90 },
-                    { m: 'Apr', v: 82 }, { m: 'May', v: 110 }, { m: 'Jun', v: 130 }
+                    { m: 'Jan', count: '600', pct: 45 }, 
+                    { m: 'Feb', count: '750', pct: 55 }, 
+                    { m: 'Mar', count: '900', pct: 70 },
+                    { m: 'Apr', count: '820', pct: 62 }, 
+                    { m: 'May', count: '1,100', pct: 85 }, 
+                    { m: 'Jun', count: '1,350', pct: 100 }
                   ].map((item, idx) => (
-                    <div key={idx} className="flex-1 flex flex-col items-center gap-1">
-                      <div className="w-full bg-orange-500 rounded-t-md" style={{ height: `${item.v}%` }}></div>
-                      <span className="text-[9px] text-gray-500 font-bold">{item.m}</span>
+                    <div key={idx} className="flex-1 flex flex-col items-center justify-end h-full group">
+                      <span className="text-[10px] font-black text-emerald-900 mb-1 opacity-90">{item.count}</span>
+                      <div className="w-full bg-gradient-to-t from-orange-600 to-amber-400 rounded-t-lg shadow-sm group-hover:scale-105 transition-transform" style={{ height: `${item.pct}%`, minHeight: '16px' }}></div>
+                      <span className="text-[10px] text-gray-700 font-extrabold mt-1.5">{item.m}</span>
                     </div>
                   ))}
                 </div>
