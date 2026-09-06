@@ -21,7 +21,10 @@ import {
   UserCheck,
   LogOut,
   User,
-  KeyRound
+  KeyRound,
+  BarChart2,
+  Settings,
+  Award
 } from 'lucide-react';
 
 const Navbar = () => {
@@ -39,7 +42,7 @@ const Navbar = () => {
 
   const unreadCount = notifications.filter(n => !n.read).length;
 
-  // Close dropdown menus when clicking outside
+  // Close dropdown menus when clicking outside or pressing Escape
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (portalMenuRef.current && !portalMenuRef.current.contains(event.target)) {
@@ -49,8 +52,20 @@ const Navbar = () => {
         setShowProfileDropdown(false);
       }
     };
+
+    const handleKeyDown = (event) => {
+      if (event.key === 'Escape') {
+        setShowPortalMenu(false);
+        setShowProfileDropdown(false);
+      }
+    };
+
     document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener('keydown', handleKeyDown);
+    };
   }, []);
 
   const portals = [
@@ -217,75 +232,107 @@ const Navbar = () => {
               <div className="relative" ref={profileDropdownRef}>
                 <button
                   onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-emerald-800 text-white hover:bg-emerald-900 border border-emerald-700 transition-all btn-bounce-active"
+                  className="flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-emerald-800 text-white hover:bg-emerald-900 border border-emerald-700 transition-all btn-bounce-active cursor-pointer"
+                  title="Click to open profile menu"
                 >
-                  <UserCheck className="w-4 h-4 text-orange-400" />
-                  <span className="text-xs font-black max-w-[100px] truncate">{currentUser.name}</span>
-                  <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                  <UserCheck className="w-4 h-4 text-orange-400 shrink-0" />
+                  <span className="text-xs font-black max-w-[110px] sm:max-w-[140px] truncate">{currentUser.name}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 opacity-80 shrink-0 transition-transform ${showProfileDropdown ? 'rotate-180' : ''}`} />
                 </button>
 
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-64 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in text-gray-900">
-                    <div className="px-4 py-2 border-b border-gray-100">
-                      <p className="text-xs font-black text-emerald-950">Hello, {currentUser.name}</p>
-                      <span className="text-[10px] font-bold bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full uppercase">
-                        Role: {currentUser.role}
-                      </span>
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in text-gray-900">
+                    
+                    {/* Header showing full name and uppercase role */}
+                    <div className="px-4 py-2 border-b border-gray-100 space-y-1">
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-emerald-800 shrink-0" />
+                        <p className="text-xs font-black text-emerald-950 truncate max-w-[200px]" title={currentUser.name}>
+                          {currentUser.name}
+                        </p>
+                      </div>
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-black bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                          {currentUser.role}
+                        </span>
+                        <span className="text-[9px] font-bold text-gray-400 truncate max-w-[130px]">
+                          {currentUser.email}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="p-2 space-y-1 text-xs font-bold">
+                      
+                      {/* 1. My Profile */}
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
                           setShowProfileModal(true);
                         }}
-                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left border-b border-gray-100 mb-1"
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
-                        <User className="w-4 h-4 text-emerald-700" />
-                        <span>{t('myProfile')}</span>
+                        <User className="w-4 h-4 text-emerald-700 shrink-0" />
+                        <span>👤 {t('myProfile')}</span>
                       </button>
 
+                      {/* 2. My Dashboard */}
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
                           const dest = currentUser.role === 'admin' ? '/admin' : `/${currentUser.role === 'volunteer' ? 'delivery' : currentUser.role}`;
                           navigate(dest);
                         }}
-                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left"
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
-                        <HomeIcon className="w-4 h-4 text-orange-500" />
-                        <span>{t('myDashboard')}</span>
+                        <HomeIcon className="w-4 h-4 text-orange-500 shrink-0" />
+                        <span>🏠 {t('myDashboard')}</span>
                       </button>
 
+                      {/* 3. My Impact */}
+                      <button
+                        onClick={() => {
+                          setShowProfileDropdown(false);
+                          navigate('/impact');
+                        }}
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                      >
+                        <BarChart2 className="w-4 h-4 text-emerald-600 shrink-0" />
+                        <span>📊 {t('myImpact')}</span>
+                      </button>
+
+                      {/* 4. My Certificates */}
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
                           navigate('/certificates');
                         }}
-                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left"
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
-                        <Award className="w-4 h-4 text-amber-500" />
-                        <span>{t('myCertificates')}</span>
+                        <Award className="w-4 h-4 text-amber-500 shrink-0" />
+                        <span>🏆 {t('myCertificates')}</span>
                       </button>
 
+                      {/* 5. Account Settings */}
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
-                          navigate(`/auth/${currentUser.role}`);
+                          setShowProfileModal(true);
                         }}
-                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left"
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
                       >
-                        <KeyRound className="w-4 h-4 text-emerald-600" />
-                        <span>{t('changePassword')}</span>
+                        <Settings className="w-4 h-4 text-gray-600 shrink-0" />
+                        <span>⚙ Account Settings</span>
                       </button>
 
+                      {/* 6. Logout */}
                       <button
                         onClick={handleLogout}
-                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-red-50 text-red-600 text-left border-t border-gray-100 mt-1"
+                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-red-50 text-red-600 text-left border-t border-gray-100 mt-1 transition-colors"
                       >
-                        <LogOut className="w-4 h-4" />
-                        <span>{t('logoutBtn')}</span>
+                        <LogOut className="w-4 h-4 shrink-0" />
+                        <span>🚪 {t('logoutBtn')}</span>
                       </button>
+
                     </div>
                   </div>
                 )}
