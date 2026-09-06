@@ -485,6 +485,25 @@ export const AppProvider = ({ children }) => {
     showToast("Logged Out", "You have been logged out successfully.", "info");
   };
 
+  const updateUserProfile = (updatedFields) => {
+    if (!currentUser) return;
+    
+    const updatedUser = { ...currentUser, ...updatedFields };
+    setCurrentUser(updatedUser);
+    
+    setUsers(prev => prev.map(u => u.id === currentUser.id ? updatedUser : u));
+
+    try {
+      supabase.from('users').update(updatedFields).eq('id', currentUser.id).then(({ error }) => {
+        if (error) console.log('Supabase profile sync info:', error.message);
+      });
+    } catch (e) {
+      console.log('Local profile updated');
+    }
+
+    showToast("Profile Updated! ✨", "Profile updated successfully.", "success");
+  };
+
   const updatePassword = (identifier, newPassword) => {
     const cleanId = identifier.trim().toLowerCase();
     const cleanPhone = identifier.replace(/[^0-9]/g, '');
@@ -749,6 +768,7 @@ export const AppProvider = ({ children }) => {
         loginUser,
         registerUser,
         logoutUser,
+        updateUserProfile,
         updatePassword,
         role,
         setRole,

@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useApp } from '../context/AppContext';
 import LanguageSelector from './LanguageSelector';
 import NotificationModal from './NotificationModal';
+import UserProfileModal from './UserProfileModal';
 import { 
   Heart, 
   Utensils, 
@@ -28,6 +29,7 @@ const Navbar = () => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [showNotifModal, setShowNotifModal] = useState(false);
   const [showProfileDropdown, setShowProfileDropdown] = useState(false);
+  const [showProfileModal, setShowProfileModal] = useState(false);
   const [showPortalMenu, setShowPortalMenu] = useState(false);
 
   const location = useLocation();
@@ -235,12 +237,23 @@ const Navbar = () => {
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
+                          setShowProfileModal(true);
+                        }}
+                        className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left border-b border-gray-100 mb-1"
+                      >
+                        <User className="w-4 h-4 text-emerald-700" />
+                        <span>{t('myProfile')}</span>
+                      </button>
+
+                      <button
+                        onClick={() => {
+                          setShowProfileDropdown(false);
                           const dest = currentUser.role === 'admin' ? '/admin' : `/${currentUser.role === 'volunteer' ? 'delivery' : currentUser.role}`;
                           navigate(dest);
                         }}
                         className="w-full flex items-center space-x-2 p-2 rounded-xl hover:bg-orange-50 text-left"
                       >
-                        <User className="w-4 h-4 text-orange-500" />
+                        <HomeIcon className="w-4 h-4 text-orange-500" />
                         <span>{t('myDashboard')}</span>
                       </button>
 
@@ -334,6 +347,11 @@ const Navbar = () => {
       {showNotifModal && (
         <NotificationModal onClose={() => setShowNotifModal(false)} />
       )}
+      {/* User Profile Modal */}
+      <UserProfileModal
+        isOpen={showProfileModal}
+        onClose={() => setShowProfileModal(false)}
+      />
     </nav>
   );
 };

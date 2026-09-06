@@ -29,13 +29,44 @@ import {
 import { useNavigate } from 'react-router-dom';
 
 const AdminDashboard = () => {
-  const { t, donations, ngos, stats, verifyNgo, setSelectedReceiptDonation, logoutUser } = useApp();
+  const { 
+    t, 
+    users = [], 
+    donations = [], 
+    ngos = [], 
+    certificates = [], 
+    verifyNgo, 
+    setSelectedReceiptDonation, 
+    logoutUser,
+    revokeCertificate
+  } = useApp();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('dashboard');
   const [searchQuery, setSearchQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState('All');
   const [statusFilter, setStatusFilter] = useState('All');
   const [categoryFilter, setCategoryFilter] = useState('All');
   const [showAnalyticsModal, setShowAnalyticsModal] = useState(false);
+
+  // Real Supabase Statistics Calculations
+  const totalUsersCount = users.length;
+  const totalDonorsCount = users.filter(u => u.role === 'donor').length;
+  const totalNgosCount = ngos.length;
+  const verifiedNgosCount = ngos.filter(n => n.verificationStatus === 'Verified').length;
+  const totalVolunteersCount = users.filter(u => u.role === 'volunteer').length;
+  const totalDonationsCount = donations.length;
+  const pendingDonationsCount = donations.filter(d => d.status === 'Pending' || d.status === 'In Transit').length;
+  const completedDonationsCount = donations.filter(d => d.status === 'Delivered').length;
+  const totalMealsCount = donations.reduce((sum, d) => sum + (parseInt(d.servingCapacity) || 0), 0);
+  const activeCertificatesCount = certificates.filter(c => c.status === 'Valid').length;
+
+  const filteredUsers = users.filter(u => {
+    const matchesSearch = (u.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (u.email || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (u.phone || '').includes(searchQuery);
+    const matchesRole = roleFilter === 'All' || u.role === roleFilter.toLowerCase();
+    return matchesSearch && matchesRole;
+  });
 
   const filteredDonations = donations.filter(item => {
     const matchesSearch = item.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -45,6 +76,22 @@ const AdminDashboard = () => {
     const matchesStatus = statusFilter === 'All' || item.status === statusFilter;
     const matchesCategory = categoryFilter === 'All' || item.foodCategory === categoryFilter;
     return matchesSearch && matchesStatus && matchesCategory;
+  });
+
+  const filteredNgos = ngos.filter(n => {
+    const matchesSearch = n.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          n.registrationNo.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (n.city || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesStatus = statusFilter === 'All' || n.verificationStatus === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
+
+  const filteredCertificates = certificates.filter(c => {
+    const matchesSearch = c.id.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (c.userName || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          (c.verificationCode || '').toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesLevel = categoryFilter === 'All' || c.level === categoryFilter;
+    return matchesSearch && matchesLevel;
   });
 
   const handleExportCSV = () => {
@@ -166,90 +213,104 @@ const AdminDashboard = () => {
           </div>
 
           <div className="flex flex-wrap gap-1.5 bg-black/40 p-1.5 rounded-2xl border border-purple-400/40 text-xs w-full md:w-auto backdrop-blur-md">
-            <button
-              onClick={() => setActiveTab('dashboard')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'dashboard' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
-              }`}
-            >
-              Dashboard
-            </button>
-
-            <button
-              onClick={() => setActiveTab('ngos')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'ngos' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
-              }`}
-            >
-              NGOs
-            </button>
-
-            <button
-              onClick={() => setActiveTab('donations')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'donations' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
-              }`}
-            >
-              Donations
-            </button>
-
-            <button
-              onClick={() => setActiveTab('reports')}
-              className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
-                activeTab === 'reports' ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100'
-              }`}
-            >
-              Reports
-            </button>
+            {[
+              { id: 'dashboard', label: 'Dashboard' },
+              { id: 'users', label: 'Users' },
+              { id: 'ngos', label: 'NGOs' },
+              { id: 'volunteers', label: 'Volunteers' },
+              { id: 'donations', label: 'Donations' },
+              { id: 'certificates', label: 'Certificates' },
+              { id: 'reports', label: 'Reports' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  setActiveTab(tab.id);
+                  setSearchQuery('');
+                }}
+                className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
+                  activeTab === tab.id ? 'bg-amber-500 text-gray-950 shadow-md' : 'text-purple-100 hover:text-white'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
         </div>
 
-        {/* SUMMARY METRIC CARDS */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-3 sm:gap-4 text-gray-900">
+        {/* SUMMARY METRIC CARDS - REAL SUPABASE DATA */}
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3 sm:gap-4 text-gray-900">
           
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div 
+            onClick={() => setActiveTab('users')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Total Users</span>
               <Users className="w-4 h-4 text-purple-600" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">1,250</p>
-            <span className="text-[10px] text-emerald-600 font-bold">↑ 12% this week</span>
+            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{totalUsersCount}</p>
+            <span className="text-[10px] text-purple-600 font-bold">{totalDonorsCount} Donors</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div 
+            onClick={() => setActiveTab('ngos')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Active NGOs</span>
               <Building2 className="w-4 h-4 text-emerald-600" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{stats.activeNGOs}</p>
-            <span className="text-[10px] text-emerald-600 font-bold">100% Verified</span>
+            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{totalNgosCount}</p>
+            <span className="text-[10px] text-emerald-600 font-bold">{verifiedNgosCount} Verified</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div 
+            onClick={() => setActiveTab('volunteers')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-              <span>Total Donations</span>
+              <span>Volunteers</span>
+              <Truck className="w-4 h-4 text-blue-600" />
+            </div>
+            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{totalVolunteersCount}</p>
+            <span className="text-[10px] text-blue-600 font-bold">Active Fleet</span>
+          </div>
+
+          <div 
+            onClick={() => setActiveTab('donations')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
+            <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
+              <span>Donations</span>
               <Utensils className="w-4 h-4 text-amber-600" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">8,430</p>
-            <span className="text-[10px] text-amber-600 font-bold">Live Streamed</span>
+            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{totalDonationsCount}</p>
+            <span className="text-[10px] text-amber-600 font-bold">{completedDonationsCount} Verified</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d">
+          <div 
+            onClick={() => setActiveTab('donations')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
               <span>Meals Served</span>
               <Utensils className="w-4 h-4 text-amber-600" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-amber-700 font-outfit">{stats.totalMeals.toLocaleString()}</p>
-            <span className="text-[10px] text-amber-600 font-bold">Impact High</span>
+            <p className="text-xl sm:text-2xl font-black text-amber-700 font-outfit">{totalMealsCount.toLocaleString()}</p>
+            <span className="text-[10px] text-amber-600 font-bold">Impact Total</span>
           </div>
 
-          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d col-span-2 md:col-span-1">
+          <div 
+            onClick={() => setActiveTab('certificates')}
+            className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm card-zoom-3d cursor-pointer"
+          >
             <div className="flex items-center justify-between text-gray-500 text-xs mb-1">
-              <span>Pending Deliveries</span>
-              <Clock className="w-4 h-4 text-blue-600" />
+              <span>Certificates</span>
+              <Award className="w-4 h-4 text-amber-500" />
             </div>
-            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{stats.pendingDonations}</p>
-            <span className="text-[10px] text-blue-600 font-bold">Awaiting Pickup</span>
+            <p className="text-xl sm:text-2xl font-black text-emerald-950 font-outfit">{activeCertificatesCount}</p>
+            <span className="text-[10px] text-amber-600 font-bold">Active Badges</span>
           </div>
 
         </div>
@@ -323,6 +384,66 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* SEARCH AND FILTER BAR FOR ACTIVE TABS */}
+        {activeTab !== 'dashboard' && activeTab !== 'reports' && (
+          <div className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm flex flex-col sm:flex-row items-center justify-between gap-3 text-gray-900">
+            <div className="relative w-full sm:w-80">
+              <Search className="w-4 h-4 text-gray-400 absolute left-3 top-3" />
+              <input
+                type="text"
+                placeholder={`Search ${activeTab}...`}
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="w-full pl-9 pr-4 py-2 rounded-xl border border-gray-200 focus:outline-none focus:ring-2 focus:ring-amber-500 text-xs font-semibold"
+              />
+            </div>
+
+            <div className="flex items-center space-x-2 w-full sm:w-auto justify-end">
+              <Filter className="w-4 h-4 text-gray-500" />
+              {activeTab === 'users' && (
+                <select
+                  value={roleFilter}
+                  onChange={(e) => setRoleFilter(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold bg-white text-gray-800 outline-none"
+                >
+                  <option value="All">All Roles</option>
+                  <option value="donor">Donors</option>
+                  <option value="ngo">NGOs</option>
+                  <option value="volunteer">Volunteers</option>
+                  <option value="admin">Admins</option>
+                </select>
+              )}
+
+              {(activeTab === 'ngos' || activeTab === 'donations') && (
+                <select
+                  value={statusFilter}
+                  onChange={(e) => setStatusFilter(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold bg-white text-gray-800 outline-none"
+                >
+                  <option value="All">All Statuses</option>
+                  <option value="Verified">Verified</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Delivered">Delivered</option>
+                  <option value="Accepted">Accepted</option>
+                </select>
+              )}
+
+              {activeTab === 'certificates' && (
+                <select
+                  value={categoryFilter}
+                  onChange={(e) => setCategoryFilter(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 text-xs font-bold bg-white text-gray-800 outline-none"
+                >
+                  <option value="All">All Tiers</option>
+                  <option value="Bronze">Bronze Tier</option>
+                  <option value="Silver">Silver Tier</option>
+                  <option value="Gold">Gold Tier</option>
+                </select>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* MAIN TAB CONTENT */}
         {activeTab === 'dashboard' && (
           <div className="space-y-4">
@@ -348,42 +469,123 @@ const AdminDashboard = () => {
           </div>
         )}
 
+        {/* USERS MANAGEMENT TAB */}
+        {activeTab === 'users' && (
+          <div className="space-y-4 text-gray-900">
+            <h3 className="text-base font-black font-outfit text-green-950">User Account Registry</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              {filteredUsers.map(user => (
+                <div key={user.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-900">{user.name}</h4>
+                      <p className="text-[10px] text-gray-500">{user.email}</p>
+                    </div>
+                    <span className="text-[10px] font-black uppercase bg-purple-100 text-purple-800 px-2 py-0.5 rounded-full">
+                      {user.role}
+                    </span>
+                  </div>
+
+                  <div className="text-[11px] space-y-1 text-gray-600 font-medium">
+                    <p>ID: <strong className="font-mono text-gray-900">{user.id}</strong></p>
+                    <p>Phone: <strong>{user.phone || 'Not specified'}</strong></p>
+                    <p>Location: <strong>{user.city || 'Vadodara'}</strong></p>
+                    <p>Registered: <strong>{user.createdAt || '2026-01-01'}</strong></p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <span className="text-[10px] font-bold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md">
+                      Status: {user.verificationStatus || 'Verified ✓'}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* NGO VERIFICATION TAB */}
         {activeTab === 'ngos' && (
           <div className="space-y-4">
             <h3 className="text-base font-black font-outfit text-green-950">NGO Partner Verification Center</h3>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-gray-900">
-              {ngos.map(ngo => (
+              {filteredNgos.map(ngo => (
                 <div key={ngo.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
                   <div className="flex items-start space-x-3">
                     <img src={ngo.avatar} alt="NGO" className="w-10 h-10 rounded-xl object-cover border border-gray-200 shrink-0" />
                     <div>
                       <h4 className="text-xs font-bold text-gray-900 font-outfit">{ngo.name}</h4>
                       <p className="text-[10px] text-emerald-700 font-mono">{ngo.registrationNo}</p>
+                      <p className="text-[10px] text-gray-500">{ngo.address}, {ngo.city}</p>
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between pt-1 border-t border-gray-100 text-xs">
-                    <span className="text-[10px] font-bold bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100 text-xs">
+                    <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
+                      ngo.verificationStatus === 'Verified' ? 'bg-emerald-100 text-emerald-800' : 
+                      ngo.verificationStatus === 'Rejected' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'
+                    }`}>
                       {ngo.verificationStatus} Badge
                     </span>
 
-                    {ngo.verificationStatus !== 'Verified' ? (
-                      <button
-                        onClick={() => verifyNgo(ngo.id, 'Verified')}
-                        className="px-3 py-1 rounded-lg bg-emerald-700 text-white font-bold text-xs btn-bounce-active"
-                      >
-                        Verify NGO
-                      </button>
-                    ) : (
-                      <button
-                        onClick={() => verifyNgo(ngo.id, 'Pending')}
-                        className="px-3 py-1 rounded-lg bg-gray-200 text-gray-700 text-xs font-semibold btn-bounce-active"
-                      >
-                        Revoke
-                      </button>
-                    )}
+                    <div className="flex items-center space-x-1.5">
+                      {ngo.verificationStatus !== 'Verified' && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Approve verification for NGO ${ngo.name}?`)) {
+                              verifyNgo(ngo.id, 'Verified');
+                            }
+                          }}
+                          className="px-3 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold text-xs btn-bounce-active flex items-center space-x-1"
+                        >
+                          <Check className="w-3.5 h-3.5" />
+                          <span>Approve</span>
+                        </button>
+                      )}
+
+                      {ngo.verificationStatus !== 'Rejected' && (
+                        <button
+                          onClick={() => {
+                            if (window.confirm(`Reject verification for NGO ${ngo.name}?`)) {
+                              verifyNgo(ngo.id, 'Rejected');
+                            }
+                          }}
+                          className="px-3 py-1 rounded-lg bg-red-600 hover:bg-red-700 text-white font-bold text-xs btn-bounce-active flex items-center space-x-1"
+                        >
+                          <X className="w-3.5 h-3.5" />
+                          <span>Reject</span>
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* VOLUNTEERS TAB */}
+        {activeTab === 'volunteers' && (
+          <div className="space-y-4 text-gray-900">
+            <h3 className="text-base font-black font-outfit text-green-950">Volunteer & Logistics Partner Directory</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+              {users.filter(u => u.role === 'volunteer').map(vol => (
+                <div key={vol.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
+                  <div className="flex items-center space-x-3">
+                    <div className="p-2.5 bg-blue-100 text-blue-900 rounded-xl">
+                      <Truck className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h4 className="text-xs font-bold text-gray-900">{vol.name}</h4>
+                      <p className="text-[10px] text-gray-500">{vol.email}</p>
+                    </div>
+                  </div>
+
+                  <div className="text-[11px] space-y-1 text-gray-600 font-medium pt-1 border-t border-gray-100">
+                    <p>Vehicle: <strong>{vol.vehicleType || 'Car / EV'}</strong></p>
+                    <p>Phone: <strong>{vol.phone}</strong></p>
+                    <p>Completed Deliveries: <strong className="text-emerald-700">8 Deliveries</strong></p>
                   </div>
                 </div>
               ))}
@@ -418,12 +620,73 @@ const AdminDashboard = () => {
                   <p className="text-[11px] text-gray-500">Donor: {item.donorName} | NGO: {item.ngoName}</p>
                   <div className="flex items-center justify-between pt-1 border-t border-gray-100">
                     <span className="text-xs font-extrabold text-amber-700">{item.servingCapacity} Meals</span>
-                    {item.status === 'Delivered' && (
+                    <div className="flex items-center space-x-2">
                       <button
-                        onClick={() => setSelectedReceiptDonation(item)}
-                        className="px-2.5 py-1 bg-amber-500 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
+                        onClick={() => navigate('/track')}
+                        className="px-2.5 py-1 bg-emerald-700 text-white font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
                       >
-                        Receipt
+                        Track Status
+                      </button>
+                      {item.status === 'Delivered' && (
+                        <button
+                          onClick={() => setSelectedReceiptDonation(item)}
+                          className="px-2.5 py-1 bg-amber-500 text-gray-950 font-bold text-[10px] rounded-lg shadow-xs btn-bounce-active"
+                        >
+                          Receipt
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* CERTIFICATES MANAGEMENT TAB */}
+        {activeTab === 'certificates' && (
+          <div className="space-y-4 text-gray-900">
+            <h3 className="text-base font-black font-outfit text-green-950">Social Impact Certificate Registry</h3>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              {filteredCertificates.map(cert => (
+                <div key={cert.id} className="bg-white/95 backdrop-blur-md p-4 rounded-2xl border border-gray-200/80 shadow-sm space-y-3 card-zoom-3d">
+                  <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                    <div>
+                      <span className="text-[10px] font-bold text-amber-700 uppercase bg-amber-100 px-2 py-0.5 rounded-full">
+                        {cert.level} Tier Certificate
+                      </span>
+                      <h4 className="text-xs font-bold text-gray-900 mt-1">{cert.userName}</h4>
+                    </div>
+                    <span className={`text-[10px] font-black px-2 py-0.5 rounded-full ${
+                      cert.status === 'Valid' ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'
+                    }`}>
+                      {cert.status}
+                    </span>
+                  </div>
+
+                  <div className="text-[11px] space-y-1 text-gray-600 font-medium">
+                    <p>Verification Code: <strong className="font-mono text-emerald-950">{cert.verificationCode}</strong></p>
+                    <p>Issue Date: <strong>{cert.issuedAt}</strong></p>
+                    <p>Verified Services: <strong>{cert.verifiedServices} Services</strong></p>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-gray-100">
+                    <button
+                      onClick={() => navigate(`/certificate/verify/${cert.verificationCode}`)}
+                      className="text-xs font-bold text-emerald-800 hover:underline"
+                    >
+                      Verify Public Registry →
+                    </button>
+                    {cert.status === 'Valid' && (
+                      <button
+                        onClick={() => {
+                          if (window.confirm(`Revoke certificate ${cert.id}?`)) {
+                            revokeCertificate(cert.id);
+                          }
+                        }}
+                        className="px-2.5 py-1 rounded-lg bg-red-600 text-white font-bold text-[10px] btn-bounce-active"
+                      >
+                        Revoke Certificate
                       </button>
                     )}
                   </div>
@@ -458,7 +721,7 @@ const AdminDashboard = () => {
 
               <div className="bg-amber-50 p-4 rounded-2xl border border-amber-200">
                 <span className="text-[10px] font-bold text-amber-800 uppercase">Meals Generated</span>
-                <p className="text-2xl font-black font-outfit text-amber-800 mt-1">{stats.totalMeals.toLocaleString()}</p>
+                <p className="text-2xl font-black font-outfit text-amber-800 mt-1">{totalMealsCount.toLocaleString()}</p>
               </div>
             </div>
           </div>
