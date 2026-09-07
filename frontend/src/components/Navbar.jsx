@@ -87,9 +87,9 @@ const Navbar = () => {
   };
 
   const handleLogout = () => {
-    logoutUser();
+    navigate('/', { replace: true });
+    logoutUser(navigate);
     setShowProfileDropdown(false);
-    navigate('/');
   };
 
   return (

@@ -222,8 +222,8 @@ const DonorDashboard = () => {
 
             <button
               onClick={() => {
-                logoutUser();
-                navigate('/');
+                navigate('/', { replace: true });
+                logoutUser(navigate);
               }}
               className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer"
             >

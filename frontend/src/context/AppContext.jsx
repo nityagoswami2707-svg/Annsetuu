@@ -322,7 +322,7 @@ const INITIAL_DONATIONS = [
       { status: "NGO Request Sent", timestamp: "2026-08-06 21:16", detail: "Dispatched to Hope Foundation India", completed: true },
       { status: "NGO Accepted", timestamp: "2026-08-06 21:25", detail: "Accepted by Hope Foundation (Dr. Rajesh)", completed: true },
       { status: "Pickup Assigned", timestamp: "2026-08-06 21:30", detail: "Assigned to Ramesh Kumar (EV Van)", completed: true },
-      { status: "Food Picked Up", timestamp: "2026-08-06 22:00", detail: "Collected from Green Leaf Kitchen", completed: true },
+      { status: "Food Picked Up", timestamp: "2026-08-06 22:00", detail: "Collected from AnnSetu Verified Donor Kitchen", completed: true },
       { status: "In Transit", timestamp: "2026-08-06 22:10", detail: "En route to Hope Foundation Shelter", completed: true },
       { status: "Delivered", timestamp: "--", detail: "Awaiting final confirmation at shelter", completed: false }
     ],
@@ -509,6 +509,21 @@ export const AppProvider = ({ children }) => {
 
   // NGO Requirement Handlers
   const createNgoRequirement = (formData) => {
+    const timeStr = formData.requiredByTime || "20:00";
+    const [h, m] = timeStr.split(':').map(val => parseInt(val, 10) || 0);
+    const totalMins = h * 60 + m;
+
+    // Validate 07:00 (420 mins) to 22:00 (1320 mins)
+    if (totalMins < 420 || totalMins > 1320) {
+      showToast("Invalid Pickup Time ⚠️", "NGO food pickup requests are only allowed between 7:00 AM (07:00) and 10:00 PM (22:00).", "error");
+      return { success: false, error: "NGO food pickup requests are only allowed between 7:00 AM and 10:00 PM." };
+    }
+
+    const foodTiming = (totalMins >= 420 && totalMins < 960) ? "morning" : "evening";
+    const foodTimingText = foodTiming === "morning"
+      ? "🌅 Morning Food — 7:00 AM–4:00 PM"
+      : "🌆 Evening Food — 4:00 PM–10:00 PM";
+
     const nextSeq = ngoRequests.length + 1;
     const reqId = `REQ-2026-${String(nextSeq).padStart(3, '0')}`;
     const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
@@ -532,7 +547,9 @@ export const AppProvider = ({ children }) => {
       isOrganicWaste: isWaste,
       urgencyLevel: formData.urgencyLevel || "Normal",
       requiredByDate: formData.requiredByDate || new Date().toISOString().split('T')[0],
-      requiredByTime: formData.requiredByTime || "20:00",
+      requiredByTime: timeStr,
+      foodTiming: foodTiming,
+      foodTimingText: foodTimingText,
       peopleCount: parseInt(formData.peopleCount) || 50,
       city: formData.city || currentUser?.city || "Vadodara",
       address: formData.address || currentUser?.address || "Vadodara",
@@ -543,8 +560,8 @@ export const AppProvider = ({ children }) => {
     };
 
     setNgoRequests(prev => [newReq, ...prev]);
-    addNotification("Requirement Posted! 📢", `NGO Food Requirement ${reqId} (${newReq.quantityRequired} ${unit}) published.`, "success");
-    return newReq;
+    addNotification("Requirement Posted! 📢", `NGO Food Requirement ${reqId} (${newReq.quantityRequired} ${unit}) published (${foodTimingText}).`, "success");
+    return { success: true, req: newReq };
   };
 
   const fulfillNgoRequirement = (requestId, offeredQuantity, donorInfo = {}) => {
@@ -844,7 +861,10 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const logoutUser = () => {
+  const logoutUser = (navigateFn) => {
+    if (typeof navigateFn === 'function') {
+      navigateFn('/', { replace: true });
+    }
     setCurrentUser(null);
     setRole('donor');
     showToast("Logged Out", "You have been logged out successfully.", "info");

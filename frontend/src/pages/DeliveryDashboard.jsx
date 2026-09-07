@@ -130,8 +130,8 @@ const DeliveryDashboard = () => {
 
             <button
               onClick={() => {
-                logoutUser();
-                navigate('/');
+                navigate('/', { replace: true });
+                logoutUser(navigate);
               }}
               className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer"
             >
@@ -170,26 +170,81 @@ const DeliveryDashboard = () => {
               </span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-              <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 space-y-1">
-                <span className="text-[10px] font-bold text-gray-400 uppercase">Food Quantity & Meals</span>
-                <p className="font-extrabold text-gray-900 text-sm">{activeAssignment.foodName}</p>
-                <p className="text-amber-700 font-extrabold">{activeAssignment.servingCapacity} Meals ({activeAssignment.quantity})</p>
-              </div>
+            {/* Privacy Check: Details revealed ONLY after opportunity is accepted */}
+            {acceptedAssignments[activeAssignment.id] || activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered' ? (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+                <div className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 space-y-1">
+                  <span className="text-[10px] font-bold text-gray-400 uppercase">Food Quantity & Meals</span>
+                  <p className="font-extrabold text-gray-900 text-sm">{activeAssignment.foodName}</p>
+                  <p className="text-amber-700 font-extrabold">{activeAssignment.servingCapacity} Meals ({activeAssignment.quantity})</p>
+                  <p className="text-orange-800 font-bold text-[11px]">
+                    {activeAssignment.foodTiming === 'morning' ? '🌅 Morning (7 AM - 4 PM)' : '🌆 Evening (4 PM - 10 PM)'}
+                  </p>
+                </div>
 
-              <div className="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-200 space-y-1">
-                <span className="text-[10px] font-bold text-amber-800 uppercase">Pickup Address (Donor)</span>
-                <p className="font-bold text-gray-900">{activeAssignment.donorName}</p>
-                <p className="text-gray-600 text-[11px]">{activeAssignment.pickupAddress}, {activeAssignment.city}</p>
-                <p className="text-amber-900 font-bold"><Phone className="w-3 h-3 inline mr-1" /> {activeAssignment.phone}</p>
-              </div>
+                <div className="p-3.5 bg-amber-50/80 rounded-2xl border border-amber-200 space-y-1">
+                  <span className="text-[10px] font-bold text-amber-800 uppercase">Pickup Address (Donor)</span>
+                  <p className="font-bold text-gray-900">{activeAssignment.donorName}</p>
+                  <p className="text-gray-600 text-[11px]">{activeAssignment.pickupAddress}, {activeAssignment.city}</p>
+                  <p className="text-amber-900 font-bold"><Phone className="w-3 h-3 inline mr-1" /> {activeAssignment.phone}</p>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeAssignment.pickupAddress + ', ' + activeAssignment.city)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-1.5 px-3 py-1 rounded-xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-[11px] shadow-sm mt-1 btn-bounce-active"
+                  >
+                    <Navigation className="w-3 h-3" />
+                    <span>📍 Navigate to Donor</span>
+                  </a>
+                </div>
 
-              <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-1 sm:col-span-2">
-                <span className="text-[10px] font-bold text-emerald-800 uppercase">Destination (NGO Shelter)</span>
-                <p className="font-extrabold text-emerald-950 text-sm">{activeAssignment.ngoName}</p>
-                <p className="text-emerald-800 text-[11px]">Pickup Time: <strong>{activeAssignment.prepTime}</strong> ({activeAssignment.city}, Gujarat)</p>
+                <div className="p-3.5 bg-emerald-50/80 rounded-2xl border border-emerald-200 space-y-1 sm:col-span-2 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <div>
+                    <span className="text-[10px] font-bold text-emerald-800 uppercase">Destination (NGO Shelter)</span>
+                    <p className="font-extrabold text-emerald-950 text-sm">{activeAssignment.ngoName}</p>
+                    <p className="text-emerald-800 text-[11px]">Pickup Time: <strong>{activeAssignment.prepTime}</strong> ({activeAssignment.city}, Gujarat)</p>
+                  </div>
+                  <a
+                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(activeAssignment.ngoName + ', ' + activeAssignment.city)}`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-black text-[11px] shadow-sm btn-bounce-active self-start sm:self-auto"
+                  >
+                    <Navigation className="w-3 h-3" />
+                    <span>📍 Navigate to NGO</span>
+                  </a>
+                </div>
               </div>
-            </div>
+            ) : (
+              /* Privacy-Protected Opportunity Overview (Unaccepted) */
+              <div className="p-4 bg-gray-50 rounded-2xl border-2 border-dashed border-gray-300 space-y-3 text-xs">
+                <div className="grid grid-cols-2 gap-2">
+                  <div>
+                    <span className="font-bold text-gray-400 block text-[10px] uppercase">Destination NGO:</span>
+                    <span className="font-black text-emerald-950 text-sm">{activeAssignment.ngoName}</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-gray-400 block text-[10px] uppercase">Food Category & Qty:</span>
+                    <span className="font-extrabold text-gray-900">{activeAssignment.foodName} ({activeAssignment.servingCapacity} Meals)</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-gray-400 block text-[10px] uppercase">General Area:</span>
+                    <span className="font-extrabold text-gray-800">{activeAssignment.city || 'Vadodara Central'}, Gujarat</span>
+                  </div>
+                  <div>
+                    <span className="font-bold text-gray-400 block text-[10px] uppercase">Food Timing Slot:</span>
+                    <span className="font-extrabold text-orange-800">
+                      {activeAssignment.foodTiming === 'morning' ? '🌅 Morning (7 AM - 4 PM)' : '🌆 Evening (4 PM - 10 PM)'}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-center text-xs font-black text-amber-900 flex items-center justify-center space-x-2">
+                  <ShieldCheck className="w-4 h-4 text-amber-600 shrink-0" />
+                  <span>🔒 Accept delivery opportunity to unlock donor exact address, contact phone, and navigation route.</span>
+                </div>
+              </div>
+            )}
 
             {/* Volunteer Accept/Reject Request Controls */}
             <div className="p-4 bg-emerald-50 rounded-2xl border border-emerald-200 space-y-3">
@@ -207,13 +262,13 @@ const DeliveryDashboard = () => {
                   onClick={() => handleAcceptDelivery(activeAssignment.id)}
                   disabled={acceptedAssignments[activeAssignment.id] || activeAssignment.status === 'Delivered'}
                   className={`py-3 rounded-2xl font-black text-xs shadow-md flex items-center justify-center space-x-1.5 transition-all ${
-                    acceptedAssignments[activeAssignment.id]
+                    acceptedAssignments[activeAssignment.id] || activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered'
                       ? 'bg-emerald-900 text-white cursor-default'
                       : 'bg-emerald-700 hover:bg-emerald-800 text-white btn-bounce-active cursor-pointer'
                   }`}
                 >
                   <CheckCircle className="w-4 h-4 text-emerald-300" />
-                  <span>{acceptedAssignments[activeAssignment.id] ? 'ACCEPTED ✓' : 'ACCEPT DELIVERY'}</span>
+                  <span>{acceptedAssignments[activeAssignment.id] || activeAssignment.status === 'Picked Up' || activeAssignment.status === 'In Transit' || activeAssignment.status === 'Delivered' ? 'ACCEPTED ✓' : 'ACCEPT DELIVERY'}</span>
                 </button>
 
                 <button
@@ -222,7 +277,7 @@ const DeliveryDashboard = () => {
                   className="py-3 rounded-2xl bg-red-100 hover:bg-red-200 text-red-900 font-black text-xs shadow-sm flex items-center justify-center space-x-1.5 transition-all btn-bounce-active cursor-pointer"
                 >
                   <AlertCircle className="w-4 h-4 text-red-600" />
-                  <span>REJECT REQUEST</span>
+                  <span>DECLINE REQUEST</span>
                 </button>
               </div>
             </div>
@@ -254,7 +309,7 @@ const DeliveryDashboard = () => {
                 </button>
 
                 <a
-                  href={`https://www.google.com/maps/dir/?api=1&destination=22.3072,73.1811`}
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent((activeAssignment.pickupAddress || activeAssignment.ngoName) + ', ' + activeAssignment.city)}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="min-h-[48px] px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active cursor-pointer"

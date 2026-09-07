@@ -486,7 +486,7 @@ const AuthPage = () => {
                       type="text"
                       value={regData.fullName}
                       onChange={(e) => setRegData(prev => ({ ...prev, fullName: e.target.value }))}
-                      placeholder="e.g. Green Leaf Dining or Vikram Mehta"
+                      placeholder="e.g. AnnSetu Verified Donor or Vikram Mehta"
                       className="w-full min-h-[44px] px-3.5 rounded-xl border border-gray-300 text-xs font-bold text-gray-900 focus:ring-2 focus:ring-amber-500 focus:outline-none"
                       required
                     />

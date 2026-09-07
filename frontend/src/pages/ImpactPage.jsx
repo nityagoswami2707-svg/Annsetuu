@@ -49,7 +49,7 @@ const ImpactPage = () => {
   const testimonials = [
     {
       name: "Chef Vikram Mehta",
-      role: "Head Chef, Green Leaf Dining",
+      role: "Head Chef, AnnSetu Partner Dining",
       type: "Donor Partner",
       quote: "Before Annsetu, disposing of evening banquet surplus was painful. Now within 20 minutes, an EV volunteer collects the insulated containers and feeds children at Hope Foundation.",
       avatar: "https://images.unsplash.com/photo-1577219491135-ce391730fb2c?w=150&auto=format&fit=crop&q=80"
