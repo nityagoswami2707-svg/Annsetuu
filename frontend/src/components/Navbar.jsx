@@ -238,20 +238,24 @@ const Navbar = () => {
             {currentUser ? (
               <div className="relative" ref={profileDropdownRef}>
                 <button
-                  onClick={() => setShowProfileDropdown(!showProfileDropdown)}
-                  className="flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-emerald-800 text-white hover:bg-emerald-900 border border-emerald-700 transition-all btn-bounce-active cursor-pointer"
-                  title="Click to open profile menu"
+                  type="button"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowProfileDropdown(prev => !prev);
+                  }}
+                  className="flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white border-2 border-orange-400/40 shadow-md transition-all btn-bounce-active cursor-pointer active:scale-95"
+                  title="Click to manage profile and account"
                 >
                   <UserCheck className="w-4 h-4 text-orange-400 shrink-0" />
-                  <span className="text-xs font-black max-w-[110px] sm:max-w-[140px] truncate">{currentUser.name}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 opacity-80 shrink-0 transition-transform ${showProfileDropdown ? 'rotate-180' : ''}`} />
+                  <span className="text-xs font-black max-w-[120px] sm:max-w-[160px] truncate">{currentUser.name}</span>
+                  <ChevronDown className={`w-3.5 h-3.5 text-orange-300 shrink-0 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
                 </button>
 
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in text-gray-900">
+                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border-2 border-orange-500/40 py-3 z-[9999] animate-in fade-in text-gray-900">
                     
                     {/* Header showing full name and uppercase role */}
-                    <div className="px-4 py-2 border-b border-gray-100 space-y-1">
+                    <div className="px-4 py-2.5 border-b border-gray-100 bg-orange-50/50 rounded-t-3xl space-y-1">
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-emerald-800 shrink-0" />
                         <p className="text-xs font-black text-emerald-950 truncate max-w-[200px]" title={currentUser.name}>
@@ -259,10 +263,10 @@ const Navbar = () => {
                         </p>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black bg-orange-100 text-orange-800 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        <span className="text-[10px] font-black bg-orange-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
                           {currentUser.role}
                         </span>
-                        <span className="text-[9px] font-bold text-gray-400 truncate max-w-[130px]">
+                        <span className="text-[9px] font-bold text-gray-500 truncate max-w-[130px]">
                           {currentUser.email}
                         </span>
                       </div>
@@ -270,38 +274,44 @@ const Navbar = () => {
 
                     <div className="p-2 space-y-1 text-xs font-bold">
                       
-                      {/* 1. My Profile */}
+                      {/* 1. My Profile & Account Settings */}
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setShowProfileDropdown(false);
                           setShowProfileBox(true);
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-emerald-950 text-left transition-colors cursor-pointer"
                       >
                         <User className="w-4 h-4 text-emerald-700 shrink-0" />
-                        <span>👤 {t('myProfile')}</span>
+                        <span>👤 {t('myProfile')} & Account Settings</span>
                       </button>
 
                       {/* 2. My Dashboard */}
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setShowProfileDropdown(false);
                           const dest = currentUser.role === 'admin' ? '/admin' : `/${currentUser.role === 'volunteer' ? 'delivery' : currentUser.role}`;
                           navigate(dest);
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
                       >
-                        <HomeIcon className="w-4 h-4 text-orange-500 shrink-0" />
+                        <HomeIcon className="w-4 h-4 text-orange-600 shrink-0" />
                         <span>🏠 {t('myDashboard')}</span>
                       </button>
 
                       {/* 3. My Certificates */}
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setShowProfileDropdown(false);
                           navigate('/certificates');
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
                       >
                         <Award className="w-4 h-4 text-amber-500 shrink-0" />
                         <span>🏆 {t('myCertificates')}</span>
@@ -310,35 +320,30 @@ const Navbar = () => {
                       {/* 4. My Receipts (Donor Only) */}
                       {currentUser.role === 'donor' && (
                         <button
-                          onClick={() => {
+                          type="button"
+                          onClick={(e) => {
+                            e.stopPropagation();
                             setShowProfileDropdown(false);
                             navigate('/donor');
                           }}
-                          className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                          className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
                         >
                           <FileText className="w-4 h-4 text-orange-600 shrink-0" />
                           <span>🧾 My Receipts</span>
                         </button>
                       )}
 
-                      {/* 5. Account Settings */}
+                      {/* 5. Logout */}
                       <button
-                        onClick={() => {
+                        type="button"
+                        onClick={(e) => {
+                          e.stopPropagation();
                           setShowProfileDropdown(false);
-                          setShowProfileBox(true);
+                          handleLogout();
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-red-100 text-red-700 text-left border-t border-gray-100 mt-1 transition-colors cursor-pointer font-black"
                       >
-                        <Settings className="w-4 h-4 text-gray-600 shrink-0" />
-                        <span>⚙ Account Settings</span>
-                      </button>
-
-                      {/* 6. Logout */}
-                      <button
-                        onClick={handleLogout}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-red-50 text-red-600 text-left border-t border-gray-100 mt-1 transition-colors"
-                      >
-                        <LogOut className="w-4 h-4 shrink-0" />
+                        <LogOut className="w-4 h-4 text-red-600 shrink-0" />
                         <span>🚪 {t('logoutBtn')}</span>
                       </button>
 

@@ -132,7 +132,7 @@ const UserProfileBox = ({ onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
+      className="fixed inset-0 z-[99999] flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
       onClick={onClose}
     >
       {/* SIDE PANEL DRAWER (85-90% width on mobile, 420px on desktop) */}
