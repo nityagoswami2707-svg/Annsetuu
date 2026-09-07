@@ -78,7 +78,7 @@ const Navbar = () => {
   ];
 
   const handlePortalSelect = (portal) => {
-    if (portal.id === 'impact' || portal.id === 'track') {
+    if (portal.id === 'impact') {
       navigate(portal.path);
     } else if (!currentUser) {
       navigate(`/auth/${portal.roleName || 'donor'}`);

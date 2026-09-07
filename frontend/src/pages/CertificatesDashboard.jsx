@@ -442,11 +442,14 @@ const CertificatesDashboard = () => {
         <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in">
           <div className="bg-white rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl border-4 border-orange-400 relative text-gray-900 space-y-6">
             
+            {/* Close Button (Explicit 44x44px minimum touch target, safe-area offset for mobile APK) */}
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all z-20 shadow-md"
+              className="absolute top-4 right-4 min-w-[44px] min-h-[44px] px-3.5 py-2 rounded-2xl bg-red-100 hover:bg-red-200 text-red-950 font-black text-xs flex items-center space-x-1.5 transition-all z-30 shadow-md border border-red-300 btn-bounce-active active:scale-95 cursor-pointer"
+              aria-label="Close Certificate Preview"
             >
-              <X className="w-5 h-5" />
+              <X className="w-4 h-4 text-red-700" />
+              <span className="font-black">✕ Close</span>
             </button>
 
             {/* Certificate Print Wrapper (Exact Reference Artwork Match) */}

@@ -217,9 +217,16 @@ function AppContent() {
             } 
           />
 
-          {/* Requirement 1: 100% PUBLIC Impact Page & Verification */}
+          {/* Public Impact Page & Verification */}
           <Route path="/impact" element={<ImpactPage />} />
-          <Route path="/track" element={<TrackingDashboard />} />
+          <Route 
+            path="/track" 
+            element={
+              <ProtectedRoute allowedRoles={['donor', 'ngo', 'volunteer', 'admin']}>
+                <TrackingDashboard />
+              </ProtectedRoute>
+            } 
+          />
           <Route path="/certificate/verify/:code" element={<CertificateVerifyPage />} />
 
           {/* Fallback to Homepage */}

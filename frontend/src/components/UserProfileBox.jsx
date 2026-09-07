@@ -18,7 +18,8 @@ import {
   CheckCircle2,
   Lock,
   RefreshCw,
-  X
+  X,
+  FileText
 } from 'lucide-react';
 
 const UserProfileBox = ({ onClose }) => {
@@ -379,6 +380,27 @@ const UserProfileBox = ({ onClose }) => {
               <span>View My Certificates</span>
             </button>
           </div>
+
+          {/* My Receipts Box (ONLY FOR DONOR ACCOUNT) */}
+          {currentUser.role === 'donor' && (
+            <div className="p-4 bg-emerald-50/80 rounded-2xl border-2 border-emerald-200 space-y-3">
+              <div className="flex items-center space-x-2 border-b border-emerald-200 pb-2">
+                <FileText className="w-4 h-4 text-emerald-800" />
+                <h4 className="text-xs font-black font-outfit uppercase tracking-wide text-emerald-950">Donation Receipts</h4>
+              </div>
+
+              <button
+                onClick={() => {
+                  onClose();
+                  navigate('/donor');
+                }}
+                className="w-full py-2.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs flex items-center justify-center space-x-1.5 shadow-md btn-bounce-active cursor-pointer"
+              >
+                <FileText className="w-4 h-4" />
+                <span>🧾 My Receipts</span>
+              </button>
+            </div>
+          )}
 
         </div>
 

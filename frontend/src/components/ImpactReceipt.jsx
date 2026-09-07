@@ -196,12 +196,14 @@ const ImpactReceipt = ({ donation, onClose }) => {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in overflow-y-auto">
       <div className="w-full max-w-2xl bg-[#FAF9F5] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 relative text-[#0F382C] my-6">
         
-        {/* Close Button */}
+        {/* Close Button (Explicit 44x44px minimum touch target, safe-area offset for mobile APK) */}
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 p-2 rounded-full bg-gray-200/80 hover:bg-gray-300 text-[#0F382C] transition-colors z-20 shadow-md"
+          className="absolute top-4 right-4 min-w-[44px] min-h-[44px] px-3.5 py-2 rounded-2xl bg-red-100 hover:bg-red-200 text-red-950 font-black text-xs flex items-center space-x-1.5 transition-all z-30 shadow-md border border-red-300 btn-bounce-active active:scale-95 cursor-pointer"
+          aria-label="Close Receipt Preview"
         >
-          <X className="w-5 h-5" />
+          <X className="w-4 h-4 text-red-700" />
+          <span className="font-black">✕ Close</span>
         </button>
 
         {/* PRINTABLE RECEIPT TEMPLATE (EXACT REFERENCE MATCH) */}
