@@ -240,6 +240,36 @@ const AuthPage = () => {
             <p className="text-xs font-bold text-green-700">"{t('tagline')}"</p>
           </div>
 
+          {/* 4 Role Navigation Tabs */}
+          <div className="grid grid-cols-4 gap-1 p-1.5 bg-gray-100/90 rounded-2xl border border-gray-200">
+            {[
+              { id: 'donor', label: 'DONOR', color: 'bg-orange-500 text-gray-950 shadow' },
+              { id: 'ngo', label: 'NGO', color: 'bg-green-700 text-white shadow' },
+              { id: 'volunteer', label: 'VOLUNTEER', color: 'bg-blue-600 text-white shadow' },
+              { id: 'admin', label: 'ADMIN', color: 'bg-purple-600 text-white shadow' }
+            ].map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => {
+                  setError('');
+                  setSuccessMsg('');
+                  if (tab.id === 'admin' && mode === 'register') {
+                    setMode('login');
+                  }
+                  navigate(`/auth/${tab.id}`);
+                }}
+                className={`py-2 px-1 text-center rounded-xl text-[11px] font-black transition-all ${
+                  role === tab.id
+                    ? tab.color
+                    : 'text-gray-600 hover:text-gray-950 hover:bg-white/60'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
           {/* Quick Demo Credentials Bar */}
           {mode === 'login' && (
             <div className="p-3 bg-amber-50 rounded-2xl border border-amber-300 flex items-center justify-between gap-2">

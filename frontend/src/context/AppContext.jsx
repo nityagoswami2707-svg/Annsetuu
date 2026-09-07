@@ -412,9 +412,14 @@ export const AppProvider = ({ children }) => {
       return { success: false, error: errMsg };
     }
 
-    // Role check for non-admin target portal
-    if (targetRole && found.role !== 'admin' && found.role !== targetRole) {
-      return { success: false, error: `This account is registered as ${found.role.toUpperCase()}. Please login using the ${found.role.toUpperCase()} portal.` };
+    // Role check for target portal tab
+    if (targetRole && found.role !== targetRole) {
+      if (targetRole === 'admin' && found.role !== 'admin') {
+        return { success: false, error: `This account is registered as a ${found.role.toUpperCase()}. It does not have Admin authorization. Please switch to the ${found.role.toUpperCase()} tab to log in.` };
+      }
+      if (found.role !== 'admin') {
+        return { success: false, error: `This account is registered as a ${found.role.toUpperCase()}. Please switch to the ${found.role.toUpperCase()} tab to log in.` };
+      }
     }
 
     setCurrentUser(found);

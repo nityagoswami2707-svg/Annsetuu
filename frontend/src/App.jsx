@@ -151,6 +151,8 @@ function AppContent() {
           
           {/* Authentication Routes */}
           <Route path="/auth/:roleParam" element={<AuthPage />} />
+          <Route path="/auth" element={<AuthPage />} />
+          <Route path="/login" element={<AuthPage />} />
           <Route path="/access-denied" element={<AccessDenied />} />
 
           {/* Role-Based Protected Routes */}

@@ -122,7 +122,7 @@ const Navbar = () => {
             </div>
           </Link>
 
-          {/* Desktop Navigation: ONLY Homepage & Portals/Dashboards 3-Dots Menu */}
+          {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-6">
             
             {/* Direct Homepage Link */}
@@ -136,75 +136,88 @@ const Navbar = () => {
               <span>{t('home')}</span>
             </Link>
 
-            {/* ONLY PORTALS & DASHBOARDS 3-DOTS BUTTON IN MENUBAR */}
-            <div className="relative" ref={portalMenuRef}>
-              <button
-                onClick={() => setShowPortalMenu(!showPortalMenu)}
-                className={`flex items-center space-x-1.5 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all border shadow-sm btn-bounce-active ${
-                  showPortalMenu ? 'bg-orange-500 text-gray-950 border-orange-600' : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-orange-100 hover:text-orange-900'
-                }`}
-                title="Click 3 dots to switch portals and dashboards"
-                aria-label="Portals and Dashboards Menu"
-              >
-                <MoreVertical className="w-4 h-4 text-orange-600" />
-                <span>{t('portalsAndDashboards')}</span>
-                <ChevronDown className="w-3.5 h-3.5 opacity-70" />
-              </button>
+            {/* Direct Our Impact Link */}
+            <Link 
+              to="/impact" 
+              className={`text-sm font-extrabold flex items-center space-x-1.5 transition-all tab-animated hover:text-green-700 ${
+                location.pathname === '/impact' ? 'text-green-800 font-black border-b-2 border-green-600 pb-1' : 'text-gray-700'
+              }`}
+            >
+              <Heart className="w-4 h-4 text-red-500 fill-red-500/20" />
+              <span>{t('ourImpact')}</span>
+            </Link>
 
-              {/* 3-DOTS PORTALS & DASHBOARDS POPOVER */}
-              {showPortalMenu && (
-                <div className="absolute left-0 mt-2 w-80 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in slide-in-from-top-2">
-                  <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
-                    <div>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 block">
-                        {t('switchPortalHeader')}
-                      </span>
-                      <h4 className="text-xs font-extrabold text-green-950 font-outfit">
-                        {t('dashboardsTitle')}
-                      </h4>
+            {/* Portals & Dashboards 3-dots Menu (Visible when logged in or for role navigation) */}
+            {currentUser && (
+              <div className="relative" ref={portalMenuRef}>
+                <button
+                  onClick={() => setShowPortalMenu(!showPortalMenu)}
+                  className={`flex items-center space-x-1.5 px-4 py-2 rounded-2xl text-xs font-extrabold transition-all border shadow-sm btn-bounce-active ${
+                    showPortalMenu ? 'bg-orange-500 text-gray-950 border-orange-600' : 'bg-gray-100 text-gray-800 border-gray-200 hover:bg-orange-100 hover:text-orange-900'
+                  }`}
+                  title="Click 3 dots to switch portals and dashboards"
+                  aria-label="Portals and Dashboards Menu"
+                >
+                  <MoreVertical className="w-4 h-4 text-orange-600" />
+                  <span>{t('portalsAndDashboards')}</span>
+                  <ChevronDown className="w-3.5 h-3.5 opacity-70" />
+                </button>
+
+                {/* 3-DOTS PORTALS & DASHBOARDS POPOVER */}
+                {showPortalMenu && (
+                  <div className="absolute left-0 mt-2 w-80 bg-white rounded-3xl shadow-2xl border-2 border-orange-200 py-3 z-50 animate-in fade-in slide-in-from-top-2">
+                    <div className="px-4 py-2 border-b border-gray-100 flex items-center justify-between">
+                      <div>
+                        <span className="text-[10px] font-black uppercase tracking-widest text-orange-600 block">
+                          {t('switchPortalHeader')}
+                        </span>
+                        <h4 className="text-xs font-extrabold text-green-950 font-outfit">
+                          {t('dashboardsTitle')}
+                        </h4>
+                      </div>
+                      <Sparkles className="w-4 h-4 text-orange-500" />
                     </div>
-                    <Sparkles className="w-4 h-4 text-orange-500" />
-                  </div>
 
-                  <div className="p-2 space-y-1 max-h-[70vh] overflow-y-auto">
-                    {portals.map((portal) => {
-                      const IconComp = portal.icon;
-                      const isActive = location.pathname === portal.path;
+                    <div className="p-2 space-y-1 max-h-[70vh] overflow-y-auto">
+                      {portals.map((portal) => {
+                        const IconComp = portal.icon;
+                        const isActive = location.pathname === portal.path;
 
-                      return (
-                        <button
-                          key={portal.id}
-                          onClick={() => handlePortalSelect(portal)}
-                          className={`w-full flex items-start space-x-3 p-3 rounded-2xl text-left transition-all ${
-                            isActive ? 'bg-orange-100/80 border border-orange-300' : 'hover:bg-gray-50'
-                          }`}
-                        >
-                          <div className={`p-2 rounded-xl shrink-0 ${portal.bg}`}>
-                            <IconComp className={`w-5 h-5 ${portal.color}`} />
-                          </div>
-
-                          <div className="flex-1 min-w-0">
-                            <div className="flex items-center justify-between">
-                              <span className={`text-xs font-extrabold ${isActive ? 'text-orange-950 font-black' : 'text-gray-900'}`}>
-                                {t(portal.labelKey)}
-                              </span>
-                              {isActive && (
-                                <span className="text-[9px] font-black bg-orange-500 text-gray-950 px-2 py-0.5 rounded-full uppercase">
-                                  {t('activeBadge')}
-                                </span>
-                              )}
+                        return (
+                          <button
+                            key={portal.id}
+                            onClick={() => handlePortalSelect(portal)}
+                            className={`w-full flex items-start space-x-3 p-3 rounded-2xl text-left transition-all ${
+                              isActive ? 'bg-orange-100/80 border border-orange-300' : 'hover:bg-gray-50'
+                            }`}
+                          >
+                            <div className={`p-2 rounded-xl shrink-0 ${portal.bg}`}>
+                              <IconComp className={`w-5 h-5 ${portal.color}`} />
                             </div>
-                            <p className="text-[10px] text-gray-500 leading-tight mt-0.5 line-clamp-1">
-                              {t(portal.descKey)}
-                            </p>
-                          </div>
-                        </button>
-                      );
-                    })}
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between">
+                                <span className={`text-xs font-extrabold ${isActive ? 'text-orange-950 font-black' : 'text-gray-900'}`}>
+                                  {t(portal.labelKey)}
+                                </span>
+                                {isActive && (
+                                  <span className="text-[9px] font-black bg-orange-500 text-gray-950 px-2 py-0.5 rounded-full uppercase">
+                                    {t('activeBadge')}
+                                  </span>
+                                )}
+                              </div>
+                              <p className="text-[10px] text-gray-500 leading-tight mt-0.5 line-clamp-1">
+                                {t(portal.descKey)}
+                              </p>
+                            </div>
+                          </button>
+                        );
+                      })}
+                    </div>
                   </div>
-                </div>
-              )}
-            </div>
+                )}
+              </div>
+            )}
 
           </div>
 
@@ -366,6 +379,15 @@ const Navbar = () => {
           >
             <HomeIcon className="w-4 h-4 text-green-700" />
             <span>{t('home')}</span>
+          </Link>
+
+          <Link 
+            to="/impact" 
+            onClick={() => setMobileMenuOpen(false)}
+            className="flex items-center space-x-2 py-2 text-sm font-bold text-gray-800 hover:text-green-700 border-b border-gray-50"
+          >
+            <Heart className="w-4 h-4 text-red-500" />
+            <span>{t('ourImpact')}</span>
           </Link>
 
           {currentUser && (

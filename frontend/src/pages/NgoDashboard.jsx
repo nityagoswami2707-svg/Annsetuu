@@ -27,7 +27,22 @@ const NgoDashboard = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('requests');
-  const [rejectingDonationId, setRejectingDonationId] = useState(null);
+  const [findVolunteerDonation, setFindVolunteerDonation] = useState(null);
+  const [assignedDriverMsg, setAssignedDriverMsg] = useState('');
+
+  const sampleVolunteers = [
+    { name: "Ramesh Kumar", vehicle: "Car / EV", distance: "1.2 km", avail: "Available Now", score: 96, phone: "+91 91066 33221" },
+    { name: "Priya Patel", vehicle: "Two-Wheeler", distance: "2.8 km", avail: "Available in 10 mins", score: 85, phone: "+91 98251 44556" },
+    { name: "Sanjay Shah", vehicle: "Van / Cargo EV", distance: "3.5 km", avail: "Available Now", score: 79, phone: "+91 94260 11223" }
+  ];
+
+  const handleDispatchVolunteer = (vol) => {
+    setAssignedDriverMsg(`Assigned ${vol.name} (${vol.vehicle}) to donation ${findVolunteerDonation?.id}`);
+    setTimeout(() => {
+      setAssignedDriverMsg('');
+      setFindVolunteerDonation(null);
+    }, 2000);
+  };
   const [rejectReason, setRejectReason] = useState("Capacity unavailable");
   const [selectedDetailsDonation, setSelectedDetailsDonation] = useState(null);
 
@@ -354,7 +369,7 @@ const NgoDashboard = () => {
           <div className="space-y-3">
             <h3 className="text-base font-black font-outfit text-green-950">Active Accepted Pickups</h3>
             {acceptedDonations.map(item => (
-              <div key={item.id} className="bg-white/95 backdrop-blur-md text-gray-900 p-4 rounded-2xl border border-gray-200 shadow-md space-y-2 card-zoom-3d">
+              <div key={item.id} className="bg-white/95 backdrop-blur-md text-gray-900 p-5 rounded-2xl border border-gray-200 shadow-md space-y-3 card-zoom-3d">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-black text-emerald-900 font-mono">{item.id}</span>
                   <span className="text-[10px] font-bold bg-blue-100 text-blue-800 px-2.5 py-0.5 rounded-full">
@@ -362,9 +377,67 @@ const NgoDashboard = () => {
                   </span>
                 </div>
                 <h4 className="text-xs font-bold text-gray-900">{item.foodName} ({item.servingCapacity} Meals)</h4>
-                <p className="text-[11px] text-gray-500">Driver: <strong>{item.deliveryDriver.name}</strong></p>
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 pt-2 border-t border-gray-100 text-xs">
+                  <p className="text-[11px] text-gray-600">Assigned Volunteer: <strong className="text-emerald-950">{item.deliveryDriver.name}</strong></p>
+                  <button
+                    onClick={() => setFindVolunteerDonation(item)}
+                    className="px-3.5 py-1.5 rounded-xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-sm flex items-center space-x-1.5 btn-bounce-active cursor-pointer"
+                  >
+                    <span>🔍 FIND VOLUNTEER</span>
+                  </button>
+                </div>
               </div>
             ))}
+          </div>
+        )}
+
+        {/* FIND VOLUNTEER WEIGHTED MATCHING MODAL */}
+        {findVolunteerDonation && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs text-gray-900">
+            <div className="bg-white rounded-3xl p-6 max-w-lg w-full shadow-2xl space-y-4">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div>
+                  <span className="text-[10px] font-black uppercase text-orange-600 tracking-wider">AI Weighted Volunteer Ranking</span>
+                  <h3 className="text-lg font-black font-outfit text-green-950">Matching Volunteers for {findVolunteerDonation.id}</h3>
+                </div>
+                <button onClick={() => setFindVolunteerDonation(null)} className="p-1 rounded-xl bg-gray-100 text-gray-600 hover:text-gray-900">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              {assignedDriverMsg && (
+                <div className="p-3 bg-emerald-50 text-emerald-900 border border-emerald-300 rounded-xl text-xs font-black text-center">
+                  {assignedDriverMsg}
+                </div>
+              )}
+
+              <p className="text-xs text-gray-500 italic bg-amber-50 p-2.5 rounded-xl border border-amber-200">
+                “Matching is based on proximity, capacity, and schedule compatibility without encouraging unsafe transit speeds.”
+              </p>
+
+              <div className="space-y-3">
+                {sampleVolunteers.map((vol, idx) => (
+                  <div key={idx} className="p-3.5 bg-gray-50 rounded-2xl border border-gray-200 flex items-center justify-between gap-3 text-xs">
+                    <div className="space-y-0.5">
+                      <div className="flex items-center space-x-2">
+                        <span className="font-extrabold text-gray-900">{vol.name}</span>
+                        <span className="text-[10px] font-black bg-emerald-100 text-emerald-800 px-2 py-0.5 rounded-full">
+                          Match Score: {vol.score}%
+                        </span>
+                      </div>
+                      <p className="text-gray-600 text-[11px]">{vol.vehicle} • {vol.distance} away • {vol.avail}</p>
+                    </div>
+
+                    <button
+                      onClick={() => handleDispatchVolunteer(vol)}
+                      className="px-3.5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md btn-bounce-active shrink-0 cursor-pointer"
+                    >
+                      DISPATCH VOLUNTEER
+                    </button>
+                  </div>
+                ))}
+              </div>
+            </div>
           </div>
         )}
 

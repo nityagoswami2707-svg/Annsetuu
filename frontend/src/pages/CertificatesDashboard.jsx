@@ -61,6 +61,7 @@ const CertificatesDashboard = () => {
   const navigate = useNavigate();
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [downloadSuccess, setDownloadSuccess] = useState(false);
   const printRef = useRef(null);
 
   const userRole = (currentUser?.role || 'donor').toLowerCase();
@@ -272,9 +273,13 @@ const CertificatesDashboard = () => {
       doc.text(`annsetu.org/verify/${selectedCertificate.id}`, 245, 184, { align: 'center' });
 
       doc.save(`AnnSetu_${config.roleTitle.replace(/\s+/g, '_')}_${selectedCertificate.id}.pdf`);
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 5000);
     } catch (err) {
       console.error(err);
       window.print();
+      setDownloadSuccess(true);
+      setTimeout(() => setDownloadSuccess(false), 5000);
     }
   };
 
@@ -569,24 +574,53 @@ const CertificatesDashboard = () => {
 
             </div>
 
-            {/* Action Controls */}
-            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
-              <button
-                onClick={handleDownloadPDF}
-                className="px-6 py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active"
-              >
-                <Download className="w-4 h-4 text-orange-400" />
-                <span>Download Certificate (PDF)</span>
-              </button>
+            {/* Action Controls & Navigation Buttons */}
+            <div className="space-y-4 pt-2">
+              {downloadSuccess && (
+                <div className="p-3 bg-emerald-50 text-emerald-900 border border-emerald-300 text-xs font-black rounded-2xl flex items-center justify-center space-x-2 animate-in fade-in">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                  <span>✓ Certificate downloaded successfully</span>
+                </div>
+              )}
 
-              <Link
-                to={`/certificate/verify/${selectedCertificate.id}`}
-                target="_blank"
-                className="px-6 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active"
-              >
-                <ShieldCheck className="w-4 h-4" />
-                <span>Verify Certificate</span>
-              </Link>
+              <div className="flex flex-wrap items-center justify-center gap-3">
+                <button
+                  onClick={handleDownloadPDF}
+                  className="px-5 py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active cursor-pointer"
+                >
+                  <Download className="w-4 h-4 text-orange-400" />
+                  <span>Download Certificate (PDF)</span>
+                </button>
+
+                <Link
+                  to={`/certificate/verify/${selectedCertificate.id}`}
+                  target="_blank"
+                  className="px-5 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active cursor-pointer"
+                >
+                  <ShieldCheck className="w-4 h-4" />
+                  <span>Verify Certificate</span>
+                </Link>
+
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="px-5 py-3 rounded-2xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-black text-xs shadow-md border border-gray-300 flex items-center space-x-1.5 btn-bounce-active cursor-pointer"
+                >
+                  <ArrowLeft className="w-4 h-4 text-gray-600" />
+                  <span>← Back to Certificates</span>
+                </button>
+
+                <button
+                  onClick={() => {
+                    setShowModal(false);
+                    const role = currentUser?.role;
+                    const dest = role === 'admin' ? '/admin' : role === 'ngo' ? '/ngo' : role === 'volunteer' ? '/delivery' : '/donor';
+                    navigate(dest);
+                  }}
+                  className="px-5 py-3 rounded-2xl bg-emerald-950 hover:bg-black text-white font-black text-xs shadow-md flex items-center space-x-1.5 btn-bounce-active cursor-pointer"
+                >
+                  <span>Back to Dashboard</span>
+                </button>
+              </div>
             </div>
 
           </div>

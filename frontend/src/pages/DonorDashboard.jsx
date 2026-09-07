@@ -41,6 +41,35 @@ const DonorDashboard = () => {
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptSort, setReceiptSort] = useState('newest');
 
+  const [moneyData, setMoneyData] = useState({
+    amount: "500",
+    customAmount: "",
+    purpose: "Child Malnutrition Support",
+    donorName: "Green Leaf Restaurant",
+    email: "manager@greenleaf.com",
+    phone: "+91 94280 99887",
+    paymentMethod: "UPI / GPay"
+  });
+  const [financialReceipt, setFinancialReceipt] = useState(null);
+
+  const handleMoneySubmit = (e) => {
+    e.preventDefault();
+    const finalAmt = moneyData.amount === 'custom' ? moneyData.customAmount || '500' : moneyData.amount;
+    const txId = `TXN-ANN-${Date.now().toString().slice(-6)}`;
+    const rNum = `ANN-MON-2026-${Math.floor(100000 + Math.random() * 900000)}`;
+    const receiptObj = {
+      receiptNumber: rNum,
+      transactionId: txId,
+      donorName: moneyData.donorName,
+      amount: `₹${finalAmt}`,
+      purpose: moneyData.purpose,
+      paymentMethod: moneyData.paymentMethod,
+      paymentStatus: "Successful ✓",
+      date: new Date().toLocaleString()
+    };
+    setFinancialReceipt(receiptObj);
+  };
+
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
@@ -155,6 +184,16 @@ const DonorDashboard = () => {
             >
               <Utensils className="w-4 h-4 text-orange-500" />
               <span>Donate Food</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentTab('money')}
+              className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer ${
+                currentTab === 'money' ? 'bg-emerald-900 text-white border border-emerald-700' : 'bg-white/95 text-emerald-950 hover:bg-emerald-100 border border-gray-200'
+              }`}
+            >
+              <Heart className="w-4 h-4 text-red-500 fill-red-500/20" />
+              <span>💰 Donate Money</span>
             </button>
 
             <button
@@ -522,6 +561,128 @@ const DonorDashboard = () => {
               </div>
             </div>
           </>
+        )}
+
+        {/* DONATE MONEY TAB CONTENT */}
+        {currentTab === 'money' && (
+          <div className="space-y-6 animate-in fade-in">
+            {/* Header Banner */}
+            <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-amber-700 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-emerald-800 space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 bg-black/30 px-3 py-1 rounded-full border border-amber-400/30">
+                FINANCIAL DONATION & INFRASTRUCTURE SUPPORT
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-black font-outfit text-white">💰 Financial Food Support</h1>
+              <p className="text-xs sm:text-sm text-emerald-100 font-medium">
+                Fuel cold-chain logistics, EV transport, and emergency shelter meal kits across AnnSetu network.
+              </p>
+            </div>
+
+            {financialReceipt ? (
+              <div className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl border-2 border-emerald-600 space-y-5 text-center">
+                <div className="w-16 h-16 mx-auto rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center">
+                  <CheckCircle2 className="w-8 h-8 text-emerald-600 animate-bounce" />
+                </div>
+                <h2 className="text-2xl font-black font-outfit text-green-950">Payment Successful! Thank You ❤️</h2>
+                <p className="text-xs font-mono font-bold text-gray-500">Transaction ID: <span className="text-emerald-900 font-extrabold">{financialReceipt.transactionId}</span></p>
+
+                <div className="bg-emerald-50/80 p-4 rounded-2xl border border-emerald-200 text-xs text-left space-y-1 max-w-md mx-auto font-medium">
+                  <p><strong>Receipt No:</strong> {financialReceipt.receiptNumber}</p>
+                  <p><strong>Donor Name:</strong> {financialReceipt.donorName}</p>
+                  <p><strong>Amount Contributed:</strong> <span className="font-extrabold text-emerald-950 text-sm">{financialReceipt.amount}</span></p>
+                  <p><strong>Purpose:</strong> {financialReceipt.purpose}</p>
+                  <p><strong>Payment Method:</strong> {financialReceipt.paymentMethod}</p>
+                  <p><strong>Status:</strong> <span className="text-emerald-700 font-bold">{financialReceipt.paymentStatus}</span></p>
+                </div>
+
+                <div className="flex justify-center space-x-3 pt-2">
+                  <button
+                    onClick={() => window.print()}
+                    className="px-5 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md btn-bounce-active cursor-pointer"
+                  >
+                    Download Financial Receipt (PDF)
+                  </button>
+                  <button
+                    onClick={() => setFinancialReceipt(null)}
+                    className="px-5 py-2.5 rounded-2xl bg-gray-100 text-gray-800 font-black text-xs btn-bounce-active cursor-pointer"
+                  >
+                    + Donate Again
+                  </button>
+                </div>
+              </div>
+            ) : (
+              <form onSubmit={handleMoneySubmit} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl p-6 sm:p-8 shadow-xl border border-gray-200/80 space-y-6">
+                
+                {/* Preset Amount Selector */}
+                <div className="space-y-2">
+                  <label className="block text-xs font-bold text-gray-700">Select Donation Amount (₹) *</label>
+                  <div className="grid grid-cols-4 gap-2">
+                    {['100', '500', '1000', 'custom'].map((amt) => (
+                      <button
+                        key={amt}
+                        type="button"
+                        onClick={() => setMoneyData(prev => ({ ...prev, amount: amt }))}
+                        className={`py-3 rounded-2xl font-black text-xs transition-all border ${
+                          moneyData.amount === amt
+                            ? 'bg-emerald-800 text-white border-emerald-900 shadow'
+                            : 'bg-gray-50 text-gray-800 border-gray-200 hover:bg-gray-100'
+                        }`}
+                      >
+                        {amt === 'custom' ? 'Custom' : `₹${amt}`}
+                      </button>
+                    ))}
+                  </div>
+
+                  {moneyData.amount === 'custom' && (
+                    <input
+                      type="number"
+                      placeholder="Enter custom amount in ₹"
+                      value={moneyData.customAmount}
+                      onChange={(e) => setMoneyData(prev => ({ ...prev, customAmount: e.target.value }))}
+                      className="w-full h-11 px-4 rounded-xl border border-gray-300 text-xs font-extrabold mt-2 focus:ring-2 focus:ring-emerald-600 focus:outline-none"
+                      required
+                    />
+                  )}
+                </div>
+
+                {/* Purpose Selection */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-gray-700">Donation Purpose / Cause *</label>
+                  <select
+                    value={moneyData.purpose}
+                    onChange={(e) => setMoneyData(prev => ({ ...prev, purpose: e.target.value }))}
+                    className="w-full h-11 px-4 rounded-xl border border-gray-300 text-xs font-extrabold focus:outline-none bg-gray-50"
+                  >
+                    <option value="Child Malnutrition Support">👶 Child Malnutrition Support</option>
+                    <option value="Emergency Surplus Redistribution">🚨 Emergency Surplus Redistribution</option>
+                    <option value="Cold Chain & Logistics Infrastructure">🚚 Cold Chain & Logistics Infrastructure</option>
+                    <option value="General Food Security">🌾 General Food Security</option>
+                  </select>
+                </div>
+
+                {/* Payment Method */}
+                <div className="space-y-1">
+                  <label className="block text-xs font-bold text-gray-700">Payment Method *</label>
+                  <select
+                    value={moneyData.paymentMethod}
+                    onChange={(e) => setMoneyData(prev => ({ ...prev, paymentMethod: e.target.value }))}
+                    className="w-full h-11 px-4 rounded-xl border border-gray-300 text-xs font-extrabold focus:outline-none bg-gray-50"
+                  >
+                    <option value="UPI / GPay">📱 UPI / GPay / PhonePe</option>
+                    <option value="Credit / Debit Card">💳 Credit / Debit Card</option>
+                    <option value="NetBanking">🏦 NetBanking</option>
+                  </select>
+                </div>
+
+                <button
+                  type="submit"
+                  className="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-800 to-green-700 hover:from-emerald-900 hover:to-green-800 text-white font-black text-sm shadow-xl flex items-center justify-center space-x-2 btn-bounce-active cursor-pointer"
+                >
+                  <Heart className="w-4 h-4 text-orange-400 fill-orange-400" />
+                  <span>Proceed to Secure Financial Donation</span>
+                </button>
+              </form>
+            )}
+          </div>
         )}
 
         {/* MY RECEIPTS TAB CONTENT */}

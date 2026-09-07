@@ -175,6 +175,42 @@ const ImpactPage = () => {
 
         </div>
 
+        {/* Why AnnSetu Matters: 3 Key Impact Pillars */}
+        <div className="space-y-8 text-gray-900">
+          <div className="text-center max-w-2xl mx-auto space-y-2">
+            <span className="text-xs font-bold uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full">
+              Why AnnSetu Matters
+            </span>
+            <h2 className="text-3xl font-black font-outfit text-emerald-950">Pillars of Sustainable Redistribution</h2>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200 shadow-md space-y-3 card-zoom-3d">
+              <div className="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-black">🌱</div>
+              <h3 className="text-lg font-black font-outfit text-emerald-950">Environmental Protection</h3>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">
+                Preventing food decomposition in landfills eliminates toxic methane emissions and saves water used in production.
+              </p>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200 shadow-md space-y-3 card-zoom-3d">
+              <div className="w-12 h-12 rounded-2xl bg-amber-100 text-amber-800 flex items-center justify-center font-black">🍱</div>
+              <h3 className="text-lg font-black font-outfit text-emerald-950">Zero Food Waste Mission</h3>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">
+                Connecting excess banquet and restaurant food directly to community kitchens before spoilage occurs.
+              </p>
+            </div>
+
+            <div className="bg-white/95 backdrop-blur-md p-6 rounded-3xl border border-gray-200 shadow-md space-y-3 card-zoom-3d">
+              <div className="w-12 h-12 rounded-2xl bg-teal-100 text-teal-800 flex items-center justify-center font-black">👥</div>
+              <h3 className="text-lg font-black font-outfit text-emerald-950">Community Health & Dignity</h3>
+              <p className="text-xs text-gray-600 leading-relaxed font-medium">
+                Nourishing vulnerable families, children, and daily workers with clean, high-nutrition hot meals.
+              </p>
+            </div>
+          </div>
+        </div>
+
         {/* Testimonials */}
         <div className="space-y-8">
           <div className="text-center">
@@ -202,6 +238,28 @@ const ImpactPage = () => {
                 </div>
               </div>
             ))}
+          </div>
+        </div>
+
+        {/* Call To Action Banner */}
+        <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-orange-600 text-white rounded-3xl p-8 sm:p-12 shadow-2xl text-center space-y-5 border border-emerald-800">
+          <h2 className="text-3xl sm:text-4xl font-black font-outfit">Ready to Join the Movement?</h2>
+          <p className="text-xs sm:text-sm text-emerald-100 max-w-xl mx-auto font-medium">
+            Whether you are a restaurant owner, NGO partner, or volunteer driver, your contribution creates smiles across communities.
+          </p>
+          <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <a
+              href="/auth/donor"
+              className="px-6 py-3.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-lg btn-bounce-active cursor-pointer"
+            >
+              Donate Food Surplus
+            </a>
+            <a
+              href="/auth/volunteer"
+              className="px-6 py-3.5 rounded-2xl bg-white text-emerald-950 font-black text-xs shadow-lg hover:bg-emerald-100 btn-bounce-active cursor-pointer"
+            >
+              Become a Volunteer Driver
+            </a>
           </div>
         </div>
 

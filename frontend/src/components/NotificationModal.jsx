@@ -3,7 +3,18 @@ import { useApp } from '../context/AppContext';
 import { Bell, X, CheckCircle, Info, AlertTriangle, Clock, Sparkles, CheckCheck } from 'lucide-react';
 
 const NotificationModal = ({ onClose }) => {
-  const { notifications, markNotificationsRead } = useApp();
+  const { notifications, markNotificationsRead, role } = useApp();
+  const [activeFilter, setActiveFilter] = useState(role || 'all');
+
+  // Filter notifications according to selected role tab or all
+  const filteredNotifs = notifications.filter(n => {
+    if (activeFilter === 'all') return true;
+    if (activeFilter === 'donor') return n.message.toLowerCase().includes('donor') || n.title.toLowerCase().includes('donor') || n.type === 'success';
+    if (activeFilter === 'ngo') return n.message.toLowerCase().includes('ngo') || n.title.toLowerCase().includes('ngo') || n.type === 'info';
+    if (activeFilter === 'volunteer') return n.message.toLowerCase().includes('driver') || n.message.toLowerCase().includes('assigned') || n.title.toLowerCase().includes('delivered');
+    if (activeFilter === 'admin') return n.message.toLowerCase().includes('admin') || n.type === 'warning';
+    return true;
+  });
 
   // Prevent background page scroll while notification side panel is open
   useEffect(() => {
@@ -51,24 +62,42 @@ const NotificationModal = ({ onClose }) => {
           </button>
         </div>
 
-        {/* Action Bar */}
-        <div className="px-5 py-3.5 bg-emerald-900/10 border-b border-emerald-950/10 flex items-center justify-between shrink-0">
-          <span className="text-xs font-black text-emerald-950 flex items-center">
-            <Sparkles className="w-4 h-4 text-orange-500 mr-1.5" />
-            {notifications.length} Total Alerts
-          </span>
-          <button
-            onClick={markNotificationsRead}
-            className="text-xs font-black text-emerald-800 hover:text-emerald-950 flex items-center space-x-1 underline btn-bounce-active"
-          >
-            <CheckCheck className="w-4 h-4" />
-            <span>Mark all read</span>
-          </button>
+        {/* Action Bar & Role Filters */}
+        <div className="px-5 py-3 bg-emerald-900/10 border-b border-emerald-950/10 space-y-2 shrink-0">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black text-emerald-950 flex items-center">
+              <Sparkles className="w-4 h-4 text-orange-500 mr-1.5" />
+              {filteredNotifs.length} Active Alerts
+            </span>
+            <button
+              onClick={markNotificationsRead}
+              className="text-xs font-black text-emerald-800 hover:text-emerald-950 flex items-center space-x-1 underline btn-bounce-active cursor-pointer"
+            >
+              <CheckCheck className="w-4 h-4" />
+              <span>Mark all read</span>
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 overflow-x-auto pb-1 text-[10px] font-black">
+            {['all', 'donor', 'ngo', 'volunteer', 'admin'].map((f) => (
+              <button
+                key={f}
+                onClick={() => setActiveFilter(f)}
+                className={`px-2.5 py-1 rounded-lg uppercase tracking-wider transition-all cursor-pointer shrink-0 ${
+                  activeFilter === f
+                    ? 'bg-emerald-800 text-white shadow-sm'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {f}
+              </button>
+            ))}
+          </div>
         </div>
 
         {/* Vertical Stacked Notifications List with overscroll-contain & fixed scroll area */}
         <div className="flex-1 overflow-y-auto p-4 sm:p-5 space-y-4 overscroll-contain">
-          {notifications.length === 0 ? (
+          {filteredNotifs.length === 0 ? (
             <div className="text-center py-24 text-gray-500 space-y-3">
               <Bell className="w-14 h-14 mx-auto text-gray-300" />
               <p className="text-base font-bold text-gray-700">No active notifications</p>
