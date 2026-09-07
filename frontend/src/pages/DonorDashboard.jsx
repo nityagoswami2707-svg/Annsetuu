@@ -26,9 +26,11 @@ import {
   FileText,
   Search,
   Download,
-  X
+  X,
+  UserCheck
 } from 'lucide-react';
 import ImpactReceipt from '../components/ImpactReceipt';
+import UserProfileBox from '../components/UserProfileBox';
 
 const DonorDashboard = () => {
   const { t, ngos, registerDonation, donations, logoutUser, currentUser, ngoRequests = [], fulfillNgoRequirement, calculatePriorityScore } = useApp();
@@ -38,6 +40,7 @@ const DonorDashboard = () => {
   const [createdId, setCreatedId] = useState(null);
   const [selectedDonationForReceipt, setSelectedDonationForReceipt] = useState(null);
   const [currentTab, setCurrentTab] = useState('donate'); // 'donate' | 'ngo-requirements' | 'receipts'
+  const [showProfileBoxModal, setShowProfileBoxModal] = useState(false);
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptSort, setReceiptSort] = useState('newest');
 
@@ -218,6 +221,15 @@ const DonorDashboard = () => {
             >
               <Award className="w-4 h-4" />
               <span>{t('myCertificates')}</span>
+            </button>
+
+            <button
+              onClick={() => setShowProfileBoxModal(true)}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer border border-emerald-700"
+              title="Click to view & edit Profile / Account Settings"
+            >
+              <UserCheck className="w-4 h-4 text-orange-400" />
+              <span>{currentUser?.name || "AnnSetu Verified Donor"}</span>
             </button>
 
             <button
@@ -1223,6 +1235,11 @@ const DonorDashboard = () => {
           donation={selectedDonationForReceipt} 
           onClose={() => setSelectedDonationForReceipt(null)} 
         />
+      )}
+
+      {/* USER PROFILE SIDE PANEL MODAL */}
+      {showProfileBoxModal && (
+        <UserProfileBox onClose={() => setShowProfileBoxModal(false)} />
       )}
 
     </div>
