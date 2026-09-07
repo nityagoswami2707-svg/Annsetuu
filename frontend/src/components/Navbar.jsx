@@ -93,29 +93,27 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/80 backdrop-blur-md py-3.5 border-b-2 border-orange-500/20 shadow-md transition-none">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md py-2.5 sm:py-3.5 border-b-2 border-orange-500/20 shadow-md transition-none">
+      <div className="max-w-7xl mx-auto px-2 xs:px-3 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between gap-1 sm:gap-4">
           
           {/* Prominent Large Logo & Brand Badge - Always navigates to Homepage */}
-          <Link to="/" className="flex items-center space-x-3 group">
-            <div className="relative bg-white rounded-2xl p-1.5 shadow-md border-2 border-green-600/30 group-hover:scale-105 transition-transform">
+          <Link to="/" className="flex items-center space-x-2 sm:space-x-3 group shrink-0 min-w-fit">
+            <div className="relative bg-white rounded-xl sm:rounded-2xl p-1 sm:p-1.5 shadow-md border-2 border-green-600/30 shrink-0">
               <img 
                 src="/annsetu_logo.png" 
                 alt="ANNSETU Logo" 
-                className="h-14 sm:h-16 w-auto object-contain rounded-xl"
+                className="h-8 xs:h-10 sm:h-14 md:h-16 w-auto object-contain rounded-lg shrink-0"
               />
             </div>
 
-            <div className="hidden sm:block">
-              <div className="flex items-center space-x-2">
-                <span className="text-2xl sm:text-3xl font-black tracking-tight text-green-800 font-outfit">
-                  Ann<span className="text-orange-600">setu</span>
-                </span>
-                <span className="bg-orange-100 text-orange-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-orange-300">
-                  {t('officialBadge')}
-                </span>
-              </div>
+            <div className="flex items-center space-x-1.5 shrink-0">
+              <span className="text-base xs:text-xl sm:text-2xl md:text-3xl font-black tracking-tight text-green-800 font-outfit shrink-0">
+                Ann<span className="text-orange-600">setu</span>
+              </span>
+              <span className="hidden sm:inline-block bg-orange-100 text-orange-800 text-[10px] font-bold px-2.5 py-0.5 rounded-full uppercase tracking-widest border border-orange-300">
+                {t('officialBadge')}
+              </span>
             </div>
           </Link>
 
@@ -219,15 +217,15 @@ const Navbar = () => {
           </div>
 
           {/* Right Tools (Language Selector, Bell, Profile/Login) */}
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center space-x-1 xs:space-x-2 sm:space-x-3 shrink-0">
             <LanguageSelector />
 
             <button 
               onClick={() => setShowNotifModal(!showNotifModal)}
-              className="relative p-2.5 text-gray-700 hover:text-green-800 bg-gray-100 hover:bg-green-50 rounded-full transition-all border border-gray-200 tab-animated"
+              className="relative p-2 xs:p-2.5 text-gray-700 hover:text-green-800 bg-gray-100 hover:bg-green-50 rounded-full transition-all border border-gray-200 tab-animated shrink-0"
               title="Notifications"
             >
-              <Bell className="w-4 h-4 text-green-800" />
+              <Bell className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-green-800" />
               {unreadCount > 0 && (
                 <span className="absolute -top-1 -right-1 w-4 h-4 bg-orange-600 text-white text-[10px] font-black rounded-full flex items-center justify-center animate-bounce">
                   {unreadCount}
@@ -243,30 +241,32 @@ const Navbar = () => {
                     e.stopPropagation();
                     setShowProfileDropdown(prev => !prev);
                   }}
-                  className="flex items-center space-x-2 px-3.5 py-1.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white border-2 border-orange-400/40 shadow-md transition-all btn-bounce-active cursor-pointer active:scale-95"
+                  className="flex items-center space-x-1 xs:space-x-1.5 px-2 xs:px-3 sm:px-3.5 py-1.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white border-2 border-orange-400/40 shadow-md transition-all btn-bounce-active cursor-pointer active:scale-95 shrink-0"
                   title="Click to manage profile and account"
                 >
-                  <UserCheck className="w-4 h-4 text-orange-400 shrink-0" />
-                  <span className="text-xs font-black max-w-[120px] sm:max-w-[160px] truncate">{currentUser.name}</span>
-                  <ChevronDown className={`w-3.5 h-3.5 text-orange-300 shrink-0 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
+                  <UserCheck className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-orange-400 shrink-0" />
+                  <span className="text-[11px] xs:text-xs font-black max-w-[82px] xs:max-w-[110px] sm:max-w-[170px] truncate">
+                    {currentUser.role === 'donor' ? (window.innerWidth < 640 ? 'Verified Donor' : currentUser.name) : currentUser.name}
+                  </span>
+                  <ChevronDown className={`w-3 h-3 xs:w-3.5 xs:h-3.5 text-orange-300 shrink-0 transition-transform duration-200 ${showProfileDropdown ? 'rotate-180' : ''}`} />
                 </button>
 
                 {showProfileDropdown && (
-                  <div className="absolute right-0 mt-2 w-72 bg-white rounded-3xl shadow-2xl border-2 border-orange-500/40 py-3 z-[9999] animate-in fade-in text-gray-900">
+                  <div className="fixed sm:absolute left-3 right-3 sm:left-auto sm:right-0 top-16 sm:top-auto sm:mt-2 w-auto sm:w-72 bg-white rounded-3xl shadow-2xl border-2 border-orange-500/40 py-3 z-[99999] animate-in fade-in text-gray-900 max-w-[94vw] sm:max-w-none mx-auto sm:mx-0">
                     
                     {/* Header showing full name and uppercase role */}
                     <div className="px-4 py-2.5 border-b border-gray-100 bg-orange-50/50 rounded-t-3xl space-y-1">
                       <div className="flex items-center space-x-2">
                         <User className="w-4 h-4 text-emerald-800 shrink-0" />
-                        <p className="text-xs font-black text-emerald-950 truncate max-w-[200px]" title={currentUser.name}>
+                        <p className="text-xs font-black text-emerald-950 truncate max-w-[220px]" title={currentUser.name}>
                           {currentUser.name}
                         </p>
                       </div>
                       <div className="flex items-center justify-between">
-                        <span className="text-[10px] font-black bg-orange-600 text-white px-2 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
-                          {currentUser.role}
+                        <span className="text-[10px] font-black bg-orange-600 text-white px-2.5 py-0.5 rounded-full uppercase tracking-wider shadow-xs">
+                          {currentUser.role} Account
                         </span>
-                        <span className="text-[9px] font-bold text-gray-500 truncate max-w-[130px]">
+                        <span className="text-[9px] font-bold text-gray-500 truncate max-w-[140px]">
                           {currentUser.email}
                         </span>
                       </div>
@@ -282,7 +282,7 @@ const Navbar = () => {
                           setShowProfileDropdown(false);
                           setShowProfileBox(true);
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-emerald-950 text-left transition-colors cursor-pointer"
+                        className="w-full flex items-center space-x-2.5 p-3 rounded-xl hover:bg-orange-100 text-emerald-950 text-left transition-colors cursor-pointer min-h-[44px]"
                       >
                         <User className="w-4 h-4 text-emerald-700 shrink-0" />
                         <span>👤 {t('myProfile')} & Account Settings</span>
@@ -297,7 +297,7 @@ const Navbar = () => {
                           const dest = currentUser.role === 'admin' ? '/admin' : `/${currentUser.role === 'volunteer' ? 'delivery' : currentUser.role}`;
                           navigate(dest);
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
+                        className="w-full flex items-center space-x-2.5 p-3 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer min-h-[44px]"
                       >
                         <HomeIcon className="w-4 h-4 text-orange-600 shrink-0" />
                         <span>🏠 {t('myDashboard')}</span>
@@ -311,7 +311,7 @@ const Navbar = () => {
                           setShowProfileDropdown(false);
                           navigate('/certificates');
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
+                        className="w-full flex items-center space-x-2.5 p-3 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer min-h-[44px]"
                       >
                         <Award className="w-4 h-4 text-amber-500 shrink-0" />
                         <span>🏆 {t('myCertificates')}</span>
@@ -326,7 +326,7 @@ const Navbar = () => {
                             setShowProfileDropdown(false);
                             navigate('/donor');
                           }}
-                          className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer"
+                          className="w-full flex items-center space-x-2.5 p-3 rounded-xl hover:bg-orange-100 text-gray-900 text-left transition-colors cursor-pointer min-h-[44px]"
                         >
                           <FileText className="w-4 h-4 text-orange-600 shrink-0" />
                           <span>🧾 My Receipts</span>
@@ -341,7 +341,7 @@ const Navbar = () => {
                           setShowProfileDropdown(false);
                           handleLogout();
                         }}
-                        className="w-full flex items-center space-x-2.5 p-2.5 rounded-xl hover:bg-red-100 text-red-700 text-left border-t border-gray-100 mt-1 transition-colors cursor-pointer font-black"
+                        className="w-full flex items-center space-x-2.5 p-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 text-left border border-red-200 mt-1 transition-colors cursor-pointer font-black min-h-[48px]"
                       >
                         <LogOut className="w-4 h-4 text-red-600 shrink-0" />
                         <span>🚪 {t('logoutBtn')}</span>
@@ -354,9 +354,9 @@ const Navbar = () => {
             ) : (
               <Link
                 to="/auth/donor"
-                className="min-h-[40px] px-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-1.5 btn-bounce-active"
+                className="min-h-[36px] xs:min-h-[40px] px-2.5 xs:px-4 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-1.5 btn-bounce-active shrink-0"
               >
-                <User className="w-4 h-4 text-orange-400" />
+                <User className="w-3.5 h-3.5 xs:w-4 xs:h-4 text-orange-400" />
                 <span>{t('login')}</span>
               </Link>
             )}
@@ -364,9 +364,9 @@ const Navbar = () => {
             {/* Mobile Menu Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className="lg:hidden p-2 text-gray-700 hover:text-green-800 focus:outline-none"
+              className="lg:hidden p-2 text-gray-700 hover:text-green-800 focus:outline-none shrink-0"
             >
-              {mobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+              {mobileMenuOpen ? <X className="w-5 h-5 xs:w-6 xs:h-6" /> : <Menu className="w-5 h-5 xs:w-6 xs:h-6" />}
             </button>
           </div>
 
