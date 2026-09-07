@@ -411,22 +411,32 @@ const NgoDashboard = () => {
                 </div>
                 <button 
                   onClick={() => setSelectedDetailsDonation(null)}
-                  className="p-1 rounded-xl bg-gray-100 text-gray-600 hover:text-gray-900"
+                  className="px-3 py-1.5 rounded-xl bg-red-100 hover:bg-red-200 text-red-700 font-black text-xs flex items-center space-x-1 transition-colors cursor-pointer"
+                  title="Close Modal"
                 >
-                  <X className="w-5 h-5" />
+                  <X className="w-4 h-4" />
+                  <span>✕ Close</span>
                 </button>
               </div>
 
-              <div className="w-full h-44 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm">
+              <div className="relative w-full h-48 rounded-2xl overflow-hidden bg-gray-100 border border-gray-200 shadow-sm group">
                 <img src={selectedDetailsDonation.imageUrl} alt="Food Photograph" className="w-full h-full object-cover" />
+                <div className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center">
+                  <span className="px-3 py-1.5 rounded-xl bg-white text-gray-900 font-black text-xs shadow flex items-center space-x-1">
+                    <Eye className="w-4 h-4 text-orange-600" />
+                    <span>View Food Image</span>
+                  </span>
+                </div>
               </div>
 
-              <div className="space-y-2 text-xs text-gray-700 bg-emerald-50/70 p-4 rounded-2xl">
-                <p><strong>Food Description:</strong> {selectedDetailsDonation.foodName}</p>
-                <p><strong>Quantity:</strong> {selectedDetailsDonation.quantity}</p>
-                <p><strong>Serving Capacity:</strong> <span className="font-extrabold text-green-900">{selectedDetailsDonation.servingCapacity} People</span></p>
-                <p><strong>Preparation Date & Time:</strong> {selectedDetailsDonation.prepTime} ({selectedDetailsDonation.prepDate})</p>
-                <p><strong>Quality / Condition:</strong> {selectedDetailsDonation.foodQuality}</p>
+              <div className="space-y-2 text-xs text-gray-700 bg-emerald-50/70 p-4 rounded-2xl border border-emerald-200">
+                <p><strong>Food Item Name:</strong> <span className="font-extrabold text-green-950">{selectedDetailsDonation.foodName}</span></p>
+                <p><strong>Food Category:</strong> {selectedDetailsDonation.foodCategory}</p>
+                <p><strong>Total Quantity:</strong> {selectedDetailsDonation.quantity}</p>
+                <p><strong>Serving Capacity:</strong> <span className="font-extrabold text-emerald-900">{selectedDetailsDonation.servingCapacity} People</span></p>
+                <p><strong>Food Timing Slot:</strong> <span className="font-black text-orange-700">{selectedDetailsDonation.foodTimingText || '🌅 Morning / 🌆 Evening Slot'}</span></p>
+                <p><strong>Prep Date & Time:</strong> {selectedDetailsDonation.prepTime || '12:30'} ({selectedDetailsDonation.prepDate || '2026-09-07'})</p>
+                <p><strong>Pickup Date & Time:</strong> {selectedDetailsDonation.pickupTime || '14:00'} ({selectedDetailsDonation.pickupDate || '2026-09-07'})</p>
                 <p><strong>Donor Location:</strong> {selectedDetailsDonation.donorName}, {selectedDetailsDonation.pickupAddress}, {selectedDetailsDonation.city}</p>
                 <p><strong>Contact Phone:</strong> {selectedDetailsDonation.phone}</p>
               </div>
@@ -439,7 +449,7 @@ const NgoDashboard = () => {
               <div className="grid grid-cols-2 gap-3 pt-2">
                 <button
                   onClick={() => handleAccept(selectedDetailsDonation.id)}
-                  className="py-3 rounded-2xl bg-emerald-800 text-white font-black text-xs shadow-md btn-bounce-active"
+                  className="py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md btn-bounce-active cursor-pointer"
                 >
                   Accept Donation
                 </button>
@@ -448,7 +458,7 @@ const NgoDashboard = () => {
                   onClick={() => {
                     setRejectingDonationId(selectedDetailsDonation.id);
                   }}
-                  className="py-3 rounded-2xl bg-red-100 text-red-800 font-black text-xs btn-bounce-active"
+                  className="py-3 rounded-2xl bg-red-100 hover:bg-red-200 text-red-800 font-black text-xs btn-bounce-active cursor-pointer"
                 >
                   Reject Donation
                 </button>

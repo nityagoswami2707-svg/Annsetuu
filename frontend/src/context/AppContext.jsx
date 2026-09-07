@@ -977,12 +977,17 @@ export const AppProvider = ({ children }) => {
       donorName: formData.donorName || currentUser?.name || "Community Partner",
       donorType: formData.donorType || "Restaurant",
       foodName: formData.foodName,
-      foodCategory: formData.foodCategory || "Prepared Meal",
+      foodCategory: formData.foodCategory || "Prepared Cooked Food",
       quantity: formData.quantity || "10",
       servingCapacity: parseInt(formData.servingCapacity) || 20,
       prepDate: formData.prepDate || new Date().toISOString().split('T')[0],
-      prepTime: formData.prepTime || "20:00",
-      foodCondition: formData.foodCondition || "Safe surplus meal",
+      prepTime: formData.prepTime || "18:30",
+      foodTiming: formData.foodTiming || "evening",
+      pickupDate: formData.pickupDate || formData.prepDate || new Date().toISOString().split('T')[0],
+      pickupTime: formData.pickupTime || "19:15",
+      foodPreference: formData.foodPreference || "Veg",
+      storageInfo: formData.storageInfo || "Insulated Thermal Containers",
+      foodCondition: formData.foodCondition || "Freshly prepared surplus, kept under insulation",
       foodQuality: formData.foodQuality || "Fresh",
       pickupAddress: formData.pickupAddress,
       city: formData.city || "Vadodara",
@@ -1068,7 +1073,7 @@ export const AppProvider = ({ children }) => {
     }
   };
 
-  const updateDeliveryStatus = (donationId, newStatus) => {
+  const updateDeliveryStatus = (donationId, newStatus, proofData = null) => {
     const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
 
     setDonations(prev => prev.map(item => {
@@ -1091,7 +1096,8 @@ export const AppProvider = ({ children }) => {
           ...item,
           status: newStatus,
           deliveryDriver: updatedDriver,
-          timeline: updatedTimeline
+          timeline: updatedTimeline,
+          deliveryProof: proofData || item.deliveryProof || null
         };
       }
       return item;
