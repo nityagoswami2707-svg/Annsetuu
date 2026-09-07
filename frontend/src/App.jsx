@@ -221,6 +221,7 @@ function AppContent() {
 
           {/* Public Impact Page & Verification */}
           <Route path="/impact" element={<ImpactPage />} />
+          <Route path="/my-impact" element={<Navigate to="/impact" replace />} />
           <Route 
             path="/track" 
             element={

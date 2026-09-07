@@ -73,14 +73,11 @@ const Navbar = () => {
     { id: 'ngo', path: '/ngo', labelKey: 'ngos', descKey: 'ngoDesc', roleName: 'ngo', icon: Building2, color: 'text-green-700', bg: 'bg-green-50' },
     { id: 'track', path: '/track', labelKey: 'trackDonation', descKey: 'trackingDesc', roleName: role, icon: MapPin, color: 'text-amber-600', bg: 'bg-amber-50' },
     { id: 'delivery', path: '/delivery', labelKey: 'deliveryDashboard', descKey: 'deliveryDesc', roleName: 'volunteer', icon: Truck, color: 'text-blue-600', bg: 'bg-blue-50' },
-    { id: 'admin', path: '/admin', labelKey: 'adminPortal', descKey: 'adminDesc', roleName: 'admin', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' },
-    { id: 'impact', path: '/impact', labelKey: 'ourImpact', descKey: 'impactSubtext', roleName: role, icon: Heart, color: 'text-red-500', bg: 'bg-red-50' }
+    { id: 'admin', path: '/admin', labelKey: 'adminPortal', descKey: 'adminDesc', roleName: 'admin', icon: ShieldCheck, color: 'text-purple-600', bg: 'bg-purple-50' }
   ];
 
   const handlePortalSelect = (portal) => {
-    if (portal.id === 'impact') {
-      navigate(portal.path);
-    } else if (!currentUser) {
+    if (!currentUser) {
       navigate(`/auth/${portal.roleName || 'donor'}`);
     } else {
       navigate(portal.path);
@@ -298,19 +295,7 @@ const Navbar = () => {
                         <span>🏠 {t('myDashboard')}</span>
                       </button>
 
-                      {/* 3. My Impact */}
-                      <button
-                        onClick={() => {
-                          setShowProfileDropdown(false);
-                          navigate('/impact');
-                        }}
-                        className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
-                      >
-                        <BarChart2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                        <span>📊 {t('myImpact')}</span>
-                      </button>
-
-                      {/* 4. My Certificates */}
+                      {/* 3. My Certificates */}
                       <button
                         onClick={() => {
                           setShowProfileDropdown(false);
@@ -321,6 +306,20 @@ const Navbar = () => {
                         <Award className="w-4 h-4 text-amber-500 shrink-0" />
                         <span>🏆 {t('myCertificates')}</span>
                       </button>
+
+                      {/* 4. My Receipts (Donor Only) */}
+                      {currentUser.role === 'donor' && (
+                        <button
+                          onClick={() => {
+                            setShowProfileDropdown(false);
+                            navigate('/donor');
+                          }}
+                          className="w-full flex items-center space-x-2.5 p-2 rounded-xl hover:bg-orange-50 text-left transition-colors"
+                        >
+                          <FileText className="w-4 h-4 text-orange-600 shrink-0" />
+                          <span>🧾 My Receipts</span>
+                        </button>
+                      )}
 
                       {/* 5. Account Settings */}
                       <button
