@@ -27,6 +27,7 @@ const NgoDashboard = () => {
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('requests');
+  const [rejectingDonationId, setRejectingDonationId] = useState(null);
   const [findVolunteerDonation, setFindVolunteerDonation] = useState(null);
   const [assignedDriverMsg, setAssignedDriverMsg] = useState('');
 
@@ -58,7 +59,7 @@ const NgoDashboard = () => {
     availableCapacity: "300"
   });
 
-  const activeNgo = ngos[0];
+  const activeNgo = ngos?.[0] || { name: 'Hope Foundation India', status: 'Verified' };
 
   const pendingRequests = donations.filter(d => d.status === 'Pending' || d.status === 'NGO Request Sent');
   const acceptedDonations = donations.filter(d => d.status === 'Accepted' || d.status === 'In Transit' || d.status === 'Picked Up');
