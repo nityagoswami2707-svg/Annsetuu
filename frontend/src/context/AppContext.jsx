@@ -18,7 +18,7 @@ const INITIAL_USERS = [
   },
   {
     id: "USR-DONOR-01",
-    name: "Green Leaf Fine Dining",
+    name: "AnnSetu Verified Donor",
     email: "donor@annsetu.demo",
     phone: "9428099887",
     password: "Donor@2026Demo",
@@ -288,7 +288,7 @@ const INITIAL_NGO_REQUESTS = [
 const INITIAL_DONATIONS = [
   {
     id: "ANS-2026-000123",
-    donorName: "Green Leaf Fine Dining",
+    donorName: "AnnSetu Verified Donor",
     donorType: "Restaurant",
     foodName: "Paneer Butter Masala & Steamed Basmati Rice",
     foodCategory: "Prepared Cooked Food",
@@ -318,7 +318,7 @@ const INITIAL_DONATIONS = [
     createdAt: "2026-08-06 21:15",
     is_test_record: false,
     timeline: [
-      { status: "Donation Registered", timestamp: "2026-08-06 21:15", detail: "Registered by Green Leaf Fine Dining", completed: true },
+      { status: "Donation Registered", timestamp: "2026-08-06 21:15", detail: "Registered by AnnSetu Verified Donor", completed: true },
       { status: "NGO Request Sent", timestamp: "2026-08-06 21:16", detail: "Dispatched to Hope Foundation India", completed: true },
       { status: "NGO Accepted", timestamp: "2026-08-06 21:25", detail: "Accepted by Hope Foundation (Dr. Rajesh)", completed: true },
       { status: "Pickup Assigned", timestamp: "2026-08-06 21:30", detail: "Assigned to Ramesh Kumar (EV Van)", completed: true },
@@ -418,7 +418,7 @@ const INITIAL_CERTIFICATES = [
   {
     id: "ANN-DON-2026-000123",
     userId: "USR-DONOR-01",
-    userName: "Green Leaf Fine Dining",
+    userName: "AnnSetu Verified Donor",
     role: "donor",
     level: "Bronze",
     verifiedServices: 12,
@@ -449,7 +449,7 @@ const INITIAL_NOTIFICATIONS = [
   {
     id: 3,
     title: "New Surplus Food Registered 🍱",
-    message: "Green Leaf Fine Dining registered 50 meals (ANS-2026-000123). Driver Ramesh assigned.",
+    message: "AnnSetu Verified Donor registered 50 meals (ANS-2026-000123). Driver Ramesh assigned.",
     time: "2 hours ago",
     type: "warning",
     read: true

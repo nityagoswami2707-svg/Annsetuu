@@ -14,7 +14,7 @@ const MapView = ({ donation }) => {
   const markerRef = useRef(null);
   const pathPolylineRef = useRef(null);
 
-  const donorName = donation?.donorName || "Green Leaf Fine Dining";
+  const donorName = donation?.donorName || "AnnSetu Verified Donor";
   const ngoName = donation?.ngoName || "Hope Foundation India";
   const driverName = donation?.deliveryDriver?.name || "Ramesh Kumar";
   const driverVehicle = donation?.deliveryDriver?.vehicleNo || "GJ-06-EV-4412";

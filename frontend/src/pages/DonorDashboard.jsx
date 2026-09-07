@@ -74,9 +74,9 @@ const DonorDashboard = () => {
   });
 
   const [formData, setFormData] = useState({
-    donorName: currentUser?.name || "Green Leaf Restaurant",
+    donorName: currentUser?.name || "AnnSetu Verified Donor",
     donorType: "Restaurant",
-    email: currentUser?.email || "manager@greenleaf.com",
+    email: currentUser?.email || "donor@annsetu.demo",
     phone: currentUser?.phone || "+91 94280 99887",
     pickupAddress: currentUser?.address || "1st Floor, Crystal Plaza, Jetaipur Main Rd",
     city: currentUser?.city || "Vadodara",

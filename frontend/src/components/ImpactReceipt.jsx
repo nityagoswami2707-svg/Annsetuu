@@ -1,10 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import { jsPDF } from 'jspdf';
-import { X, Download, Printer, Heart, Leaf, Utensils, Users, User, Mail, Globe, MapPin } from 'lucide-react';
+import { X, Download, Printer, Heart, Leaf, Utensils, Users, User, Mail, Globe, MapPin, Home } from 'lucide-react';
 import { useApp } from '../context/AppContext';
 
 const ImpactReceipt = ({ donation, onClose }) => {
   const { currentUser } = useApp();
+  const navigate = useNavigate();
 
   if (!donation) return null;
 
@@ -392,8 +394,21 @@ const ImpactReceipt = ({ donation, onClose }) => {
         {/* ACTION CONTROLS */}
         <div className="bg-gray-100 p-4 border-t border-gray-200 flex flex-wrap items-center justify-center gap-3">
           <button
+            onClick={() => {
+              if (onClose) onClose();
+              const role = currentUser?.role || 'donor';
+              const dest = role === 'admin' ? '/admin' : `/${role === 'volunteer' ? 'delivery' : role}`;
+              navigate(dest);
+            }}
+            className="px-6 py-2.5 rounded-2xl bg-emerald-950 hover:bg-black text-white font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active cursor-pointer"
+          >
+            <Home className="w-4 h-4 text-orange-400" />
+            <span>🏠 Go to Dashboard</span>
+          </button>
+
+          <button
             onClick={handleDownloadPDF}
-            className="px-6 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+            className="px-6 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active cursor-pointer"
           >
             <Download className="w-4 h-4 text-orange-400" />
             <span>Download Receipt (PDF)</span>
@@ -401,7 +416,7 @@ const ImpactReceipt = ({ donation, onClose }) => {
 
           <button
             onClick={() => window.print()}
-            className="px-6 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+            className="px-6 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active cursor-pointer"
           >
             <Printer className="w-4 h-4" />
             <span>Print Receipt</span>
