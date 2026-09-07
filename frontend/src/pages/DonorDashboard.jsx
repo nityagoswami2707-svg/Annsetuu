@@ -23,8 +23,10 @@ import {
   Flame,
   AlertCircle,
   Award,
-  LogOut
+  LogOut,
+  FileText
 } from 'lucide-react';
+import ImpactReceipt from '../components/ImpactReceipt';
 
 const DonorDashboard = () => {
   const { t, ngos, registerDonation, donations, logoutUser } = useApp();
@@ -32,6 +34,7 @@ const DonorDashboard = () => {
 
   const [step, setStep] = useState('form');
   const [createdId, setCreatedId] = useState(null);
+  const [selectedDonationForReceipt, setSelectedDonationForReceipt] = useState(null);
   const fileInputRef = useRef(null);
   const cameraInputRef = useRef(null);
 
@@ -501,6 +504,27 @@ const DonorDashboard = () => {
               </div>
               <h2 className="text-2xl font-black font-outfit text-green-950">Donation Registered Successfully! ❤️</h2>
               <p className="text-xs font-semibold text-gray-600">Generated Reference ID: <strong className="text-green-900 font-mono text-sm">{createdId}</strong></p>
+
+              <div className="pt-1">
+                <button
+                  onClick={() => {
+                    const current = donations.find(d => d.id === createdId) || {
+                      id: createdId,
+                      foodName: formData.foodName,
+                      quantity: formData.quantity,
+                      servingCapacity: formData.servingCapacity,
+                      foodCategory: formData.foodCategory,
+                      donorName: formData.donorName,
+                      createdAt: new Date().toISOString().split('T')[0]
+                    };
+                    setSelectedDonationForReceipt(current);
+                  }}
+                  className="inline-flex items-center space-x-2 px-5 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md transition-all btn-bounce-active"
+                >
+                  <FileText className="w-4 h-4 text-orange-400" />
+                  <span>View & Download Receipt</span>
+                </button>
+              </div>
             </div>
 
             <div className="border-t border-gray-100 pt-6 space-y-4">
@@ -585,18 +609,37 @@ const DonorDashboard = () => {
                   <p className="text-[11px] text-gray-500">Target NGO: {item.ngoName} — {item.servingCapacity} Meals</p>
                 </div>
 
-                <button
-                  onClick={() => navigate('/track')}
-                  className="text-xs text-green-800 font-black underline hover:text-green-950 btn-bounce-active"
-                >
-                  Track Live →
-                </button>
+                <div className="flex items-center space-x-3">
+                  <button
+                    onClick={() => setSelectedDonationForReceipt(item)}
+                    className="inline-flex items-center space-x-1 px-3 py-1.5 rounded-xl bg-emerald-100 hover:bg-emerald-200 text-emerald-900 font-extrabold text-xs shadow-sm transition-all btn-bounce-active"
+                  >
+                    <FileText className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>View Receipt</span>
+                  </button>
+
+                  <button
+                    onClick={() => navigate('/track')}
+                    className="text-xs text-green-800 font-black underline hover:text-green-950 btn-bounce-active"
+                  >
+                    Track Live →
+                  </button>
+                </div>
               </div>
             ))}
           </div>
         </div>
 
       </div>
+
+      {/* DONATION RECEIPT MODAL */}
+      {selectedDonationForReceipt && (
+        <ImpactReceipt 
+          donation={selectedDonationForReceipt} 
+          onClose={() => setSelectedDonationForReceipt(null)} 
+        />
+      )}
+
     </div>
   );
 };

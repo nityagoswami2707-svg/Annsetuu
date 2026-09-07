@@ -1,9 +1,19 @@
 import React from 'react';
 import { jsPDF } from 'jspdf';
-import { X, Download, ShieldCheck, Heart, Award, Sparkles, Share2, Utensils, HeartHandshake, Users } from 'lucide-react';
+import { X, Download, Printer, Heart, Leaf, Utensils, Users, User, Mail, Globe, MapPin } from 'lucide-react';
+import { useApp } from '../context/AppContext';
 
 const ImpactReceipt = ({ donation, onClose }) => {
+  const { currentUser } = useApp();
+
   if (!donation) return null;
+
+  // Donor Details (use currentUser if available or donation fields)
+  const donorName = currentUser?.name || donation.donorName || "Hiral Panchal";
+  const donorEmail = currentUser?.email || donation.email || "hiral@example.com";
+  const donorPhone = currentUser?.phone || donation.phone || "+91 98765 43210";
+  const receiptNo = donation.id || "AS-2025-0048";
+  const donationDate = donation.createdAt ? donation.createdAt.split(' ')[0] : "04 Sep 2025";
 
   const handleDownloadPDF = () => {
     try {
@@ -13,263 +23,387 @@ const ImpactReceipt = ({ donation, onClose }) => {
         format: 'a4'
       });
 
-      // Background
-      doc.setFillColor(250, 248, 245);
+      // Background: #FAF9F5
+      doc.setFillColor(250, 249, 245);
       doc.rect(0, 0, 210, 297, 'F');
 
-      // Top Header Header Banner
-      doc.setFillColor(6, 78, 59);
-      doc.rect(0, 0, 210, 50, 'F');
-
-      // Left Brand Column
-      doc.setTextColor(255, 255, 255);
+      // Top Header Left (Logo + Brand + Tagline)
+      doc.setTextColor(15, 56, 44);
       doc.setFontSize(22);
-      doc.setFont('helvetica', 'bold');
-      doc.text('ANNSETU', 15, 20);
+      doc.setFont('times', 'bold');
+      doc.text('Annsetu', 20, 25);
 
-      doc.setTextColor(245, 158, 11);
+      doc.setTextColor(229, 91, 19);
       doc.setFontSize(9);
-      doc.text('Bridging Surplus to Smiles', 15, 26);
+      doc.setFont('helvetica', 'italic');
+      doc.text('— Bridging Surplus to Smiles —', 20, 31);
 
-      doc.setTextColor(200, 230, 200);
+      doc.setTextColor(15, 56, 44);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'bold');
-      doc.text('DONATE | SHARE | FEED', 15, 34);
+      doc.text('DONATE   |   SHARE   |   FEED', 20, 39);
 
-      // Right Heading Column
-      doc.setTextColor(255, 255, 255);
+      // Vertical Line Divider
+      doc.setDrawColor(200, 210, 200);
+      doc.setLineWidth(0.5);
+      doc.line(105, 18, 105, 42);
+
+      // Top Header Right
+      doc.setTextColor(15, 56, 44);
       doc.setFontSize(11);
-      doc.setFont('helvetica', 'bold');
-      doc.text('Together We Reduce Food Waste', 110, 20);
-      doc.text('and Fight Hunger', 110, 26);
+      doc.setFont('times', 'bold');
+      doc.text('Together We Reduce Food Waste', 112, 24);
+      doc.text('and Fight Hunger', 112, 29);
 
-      doc.setTextColor(200, 230, 200);
+      doc.setTextColor(80, 80, 80);
       doc.setFontSize(8);
       doc.setFont('helvetica', 'normal');
-      doc.text('Annsetu connects generous donors with those', 110, 33);
-      doc.text('in need to bridge surplus food to smiles.', 110, 38);
+      doc.text('Annsetu connects generous donors with those', 112, 35);
+      doc.text('in need, turning surplus food into smiles.', 112, 39);
 
-      // Card Container
-      doc.setFillColor(255, 255, 255);
-      doc.roundedRect(15, 60, 180, 215, 6, 6, 'F');
-      doc.setDrawColor(220, 220, 220);
-      doc.roundedRect(15, 60, 180, 215, 6, 6, 'S');
-
-      // Receipt Title
-      doc.setTextColor(6, 44, 33);
+      // Title Banner
+      doc.setFillColor(231, 240, 230);
+      doc.roundedRect(15, 48, 180, 14, 3, 3, 'F');
+      doc.setTextColor(15, 56, 44);
       doc.setFontSize(16);
-      doc.setFont('helvetica', 'bold');
-      doc.text(`OFFICIAL IMPACT RECEIPT`, 25, 78);
+      doc.setFont('times', 'bold');
+      doc.text('Donation Receipt', 105, 57, { align: 'center' });
 
+      // Thank You Subtitle Line
+      doc.setDrawColor(200, 210, 200);
+      doc.line(15, 68, 195, 68);
+      doc.setFillColor(250, 249, 245);
+      doc.rect(70, 65, 70, 6, 'F');
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text('THANK YOU FOR YOUR KINDNESS', 105, 69, { align: 'center' });
+
+      // Top Metadata Row
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      doc.text('Receipt No.', 20, 78);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text(receiptNo, 20, 84);
+
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      doc.text('Date of Donation', 90, 78);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text(donationDate, 90, 84);
+
+      doc.setFont('times', 'italic');
+      doc.setTextColor(6, 78, 59);
+      doc.text('A small act makes a big difference!', 150, 82);
+
+      // Donor Details Card
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(15, 92, 180, 42, 3, 3, 'F');
+      doc.setDrawColor(220, 220, 220);
+      doc.roundedRect(15, 92, 180, 42, 3, 3, 'S');
+
+      doc.setFillColor(231, 240, 230);
+      doc.roundedRect(15, 92, 180, 10, 3, 3, 'F');
       doc.setFontSize(10);
-      doc.setFont('helvetica', 'bold');
-      doc.setTextColor(217, 119, 6);
-      doc.text(`ID: #${donation.id}`, 145, 78);
+      doc.setFont('times', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text('Donor Details', 22, 98.5);
 
-      doc.setDrawColor(16, 185, 129);
-      doc.setLineWidth(0.8);
-      doc.line(25, 84, 185, 84);
-
-      // Details Table Rows
-      const details = [
-        { label: 'Donation Date & Time:', value: donation.createdAt || new Date().toISOString().split('T')[0] },
-        { label: 'Donor Name:', value: donation.donorName },
-        { label: 'Donor Category:', value: donation.donorType || 'Restaurant / Catering' },
-        { label: 'Food Item Donated:', value: donation.foodName },
-        { label: 'Food Category:', value: donation.foodCategory || 'Prepared Cooked Meals' },
-        { label: 'Quantity Provided:', value: `${donation.quantity || '15'} Containers / Packets` },
-        { label: 'Total Meals Served:', value: `${donation.servingCapacity} Meals` },
-        { label: 'Beneficiary / Partner NGO:', value: donation.ngoName || 'Community Shelter' },
-        { label: 'Delivery Status:', value: 'Delivered ✓', isSuccess: true }
-      ];
-
-      let startY = 96;
-      details.forEach((item) => {
-        doc.setFontSize(9);
-        doc.setFont('helvetica', 'normal');
-        doc.setTextColor(100, 100, 100);
-        doc.text(item.label, 25, startY);
-
-        doc.setFont('helvetica', 'bold');
-        if (item.isSuccess) {
-          doc.setTextColor(5, 150, 105);
-        } else {
-          doc.setTextColor(6, 44, 33);
-        }
-        doc.text(String(item.value), 90, startY);
-
-        doc.setDrawColor(240, 240, 240);
-        doc.setLineWidth(0.2);
-        doc.line(25, startY + 3, 185, startY + 3);
-
-        startY += 12;
-      });
-
-      // Emotional Callout
-      doc.setFillColor(240, 253, 244);
-      doc.roundedRect(25, startY + 5, 160, 24, 4, 4, 'F');
-      doc.setTextColor(4, 120, 87);
-      doc.setFontSize(12);
-      doc.setFont('helvetica', 'bold');
-      doc.text('"Your surplus became someone\'s meal."', 105, startY + 19, { align: 'center' });
-
-      // Verification Badge Footer
-      doc.setFillColor(6, 78, 59);
-      doc.roundedRect(25, startY + 38, 160, 14, 3, 3, 'F');
-      doc.setTextColor(255, 255, 255);
       doc.setFontSize(9);
       doc.setFont('helvetica', 'bold');
-      doc.text('DIGITALLY VERIFIED ANNSETU SOCIAL IMPACT RECEIPT', 105, startY + 47, { align: 'center' });
+      doc.setTextColor(100, 100, 100);
+      doc.text('Name', 22, 109);
+      doc.text('Email', 22, 117);
+      doc.text('Phone', 22, 125);
 
-      doc.save(`Annsetu_Impact_Receipt_${donation.id}.pdf`);
+      doc.setTextColor(15, 56, 44);
+      doc.text(`:  ${donorName}`, 55, 109);
+      doc.text(`:  ${donorEmail}`, 55, 117);
+      doc.text(`:  ${donorPhone}`, 55, 125);
+
+      // Donation Details Card
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(15, 140, 180, 42, 3, 3, 'F');
+      doc.setDrawColor(220, 220, 220);
+      doc.roundedRect(15, 140, 180, 42, 3, 3, 'S');
+
+      doc.setFillColor(231, 240, 230);
+      doc.roundedRect(15, 140, 180, 10, 3, 3, 'F');
+      doc.setFontSize(10);
+      doc.setFont('times', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text('Donation Details', 22, 146.5);
+
+      doc.setFillColor(236, 243, 235);
+      doc.roundedRect(20, 153, 170, 8, 2, 2, 'F');
+      doc.setFontSize(8.5);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text('Item Name', 30, 158.5);
+      doc.text('Quantity', 105, 158.5, { align: 'center' });
+      doc.text('Category', 170, 158.5, { align: 'right' });
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(40, 40, 40);
+      doc.text(donation.foodName || 'Cooked Food', 30, 172);
+      doc.text(donation.quantity || `${donation.servingCapacity || 10} Meal Boxes`, 105, 172, { align: 'center' });
+      doc.text(donation.foodCategory || 'Meals', 170, 172, { align: 'right' });
+
+      // Thank You & Message
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(60, 60, 60);
+      const msg = 'Your generous contribution helps us provide nutritious meals to those in need. Together, we are building a kinder, healthier and stronger community.';
+      doc.text(doc.splitTextToSize(msg, 180), 15, 194);
+
+      doc.setFontSize(18);
+      doc.setFont('times', 'italic');
+      doc.setTextColor(15, 56, 44);
+      doc.text('Thank You ♡', 15, 212);
+
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(80, 80, 80);
+      doc.text('With Gratitude,', 15, 220);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(15, 56, 44);
+      doc.text('Team Annsetu', 15, 225);
+      doc.setFont('helvetica', 'italic');
+      doc.setTextColor(100, 100, 100);
+      doc.text('Bridging Surplus to Smiles', 15, 230);
+
+      // Contact Footer
+      doc.setDrawColor(200, 200, 200);
+      doc.line(15, 275, 195, 275);
+
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'normal');
+      doc.setTextColor(100, 100, 100);
+      doc.text('contact@ansetu.org   |   www.annsetu.org   |   India', 105, 282, { align: 'center' });
+
+      doc.save(`Annsetu_Donation_Receipt_${receiptNo}.pdf`);
     } catch (err) {
       console.error(err);
-      alert("Downloading Digital Impact Receipt...");
-    }
-  };
-
-  const handleShareImpact = async () => {
-    const shareData = {
-      title: 'Annsetu Impact Receipt',
-      text: `I just donated ${donation.servingCapacity} meals through Annsetu! "Your surplus became someone's meal."`,
-      url: window.location.href,
-    };
-    if (navigator.share) {
-      try {
-        await navigator.share(shareData);
-      } catch (err) {
-        console.log('Share canceled:', err);
-      }
-    } else {
-      navigator.clipboard.writeText(shareData.text);
-      alert('Impact message copied to clipboard! Share it with friends and family.');
+      window.print();
     }
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6 bg-black/75 backdrop-blur-md animate-in fade-in overflow-y-auto">
-      <div className="w-full max-w-2xl bg-white rounded-3xl shadow-2xl overflow-hidden border-2 border-emerald-800/30 relative text-gray-900">
+      <div className="w-full max-w-2xl bg-[#FAF9F5] rounded-3xl shadow-2xl overflow-hidden border border-gray-200 relative text-[#0F382C] my-6">
         
         {/* Close Button */}
         <button
           onClick={onClose}
-          className="absolute top-3 right-3 p-2 rounded-full bg-black/20 hover:bg-black/40 text-white transition-colors z-20"
+          className="absolute top-4 right-4 p-2 rounded-full bg-gray-200/80 hover:bg-gray-300 text-[#0F382C] transition-colors z-20 shadow-md"
         >
           <X className="w-5 h-5" />
         </button>
 
-        {/* Top Header Layout: 2 Columns Matching Reference */}
-        <div className="bg-gradient-to-r from-emerald-950 via-emerald-900 to-amber-700 p-6 sm:p-8 text-white relative overflow-hidden">
+        {/* PRINTABLE RECEIPT TEMPLATE (EXACT REFERENCE MATCH) */}
+        <div className="p-6 sm:p-10 space-y-6 relative">
           
+          {/* TOP HEADER */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
             
-            {/* Left Column: Brand, Tagline, 3 Icon Labels */}
+            {/* LEFT: LOGO + TAGLINE + 3 CIRCULAR ICONS */}
             <div className="space-y-3">
               <div className="flex items-center space-x-3">
-                <img src="/annsetu_logo.png" alt="Annsetu" className="h-10 w-auto bg-white p-1 rounded-xl shadow-md" />
+                <img src="/annsetu_logo.png" alt="Annsetu Logo" className="h-12 w-auto object-contain" />
                 <div>
-                  <h2 className="text-2xl font-black font-outfit tracking-wide leading-none">ANNSETU</h2>
-                  <p className="text-[11px] text-amber-300 font-bold italic">“Bridging Surplus to Smiles”</p>
+                  <span className="text-2xl sm:text-3xl font-black font-serif text-[#0F382C] tracking-tight block">
+                    Ann<span className="text-[#E55B13]">setu</span>
+                  </span>
+                  <span className="text-[10px] font-bold text-[#E55B13] italic block -mt-1">
+                    — Bridging Surplus to Smiles —
+                  </span>
                 </div>
               </div>
 
-              {/* 3 Icon Labels: DONATE | SHARE | FEED */}
-              <div className="flex items-center space-x-2 text-[10px] font-black tracking-widest text-emerald-200 bg-black/25 px-3 py-1.5 rounded-full inline-flex border border-white/10">
-                <span className="flex items-center space-x-1"><HeartHandshake className="w-3 h-3 text-orange-400" /> <span>DONATE</span></span>
+              {/* 3 CIRCULAR ICONS: DONATE | SHARE | FEED */}
+              <div className="flex items-center space-x-2 text-[10px] font-bold text-[#0F382C]">
+                <div className="flex items-center space-x-1">
+                  <div className="w-5 h-5 rounded-full border border-[#0F382C] flex items-center justify-center">
+                    <Utensils className="w-3 h-3 text-[#0F382C]" />
+                  </div>
+                  <span className="tracking-wider">DONATE</span>
+                </div>
                 <span>|</span>
-                <span className="flex items-center space-x-1"><Share2 className="w-3 h-3 text-amber-300" /> <span>SHARE</span></span>
+                <div className="flex items-center space-x-1">
+                  <div className="w-5 h-5 rounded-full border border-[#E55B13] flex items-center justify-center">
+                    <Heart className="w-3 h-3 text-[#E55B13] fill-[#E55B13]" />
+                  </div>
+                  <span className="tracking-wider text-[#E55B13]">SHARE</span>
+                </div>
                 <span>|</span>
-                <span className="flex items-center space-x-1"><Utensils className="w-3 h-3 text-emerald-300" /> <span>FEED</span></span>
+                <div className="flex items-center space-x-1">
+                  <div className="w-5 h-5 rounded-full border border-[#0F382C] flex items-center justify-center">
+                    <Users className="w-3 h-3 text-[#0F382C]" />
+                  </div>
+                  <span className="tracking-wider">FEED</span>
+                </div>
               </div>
             </div>
 
-            {/* Right Column: Heading & Concept Description */}
-            <div className="space-y-1.5 md:border-l md:border-white/20 md:pl-6 text-left">
-              <h3 className="text-lg sm:text-xl font-black font-outfit text-amber-300 leading-tight">
+            {/* RIGHT: HEADING + SUBTITLE + LEAF FLOURISH */}
+            <div className="border-l-0 md:border-l-2 border-[#0F382C]/30 md:pl-6 space-y-1.5">
+              <h3 className="text-base sm:text-lg font-bold font-serif text-[#0F382C] leading-snug">
                 Together We Reduce Food Waste and Fight Hunger
               </h3>
-              <p className="text-xs text-emerald-100 font-medium leading-relaxed">
-                Annsetu connects generous donors with those in need to bridge surplus food to smiles across communities.
+              <p className="text-[11px] text-gray-600 font-medium leading-relaxed">
+                Annsetu connects generous donors with those in need, turning surplus food into smiles.
               </p>
+
+              {/* Leaf flourish with heart */}
+              <div className="flex items-center justify-center space-x-2 pt-1 text-[#0F382C]">
+                <div className="h-px bg-[#0F382C]/20 w-8"></div>
+                <Leaf className="w-3.5 h-3.5 text-[#0F382C]" />
+                <Heart className="w-3 h-3 text-[#E55B13] fill-[#E55B13]" />
+                <Leaf className="w-3.5 h-3.5 text-[#0F382C] scale-x-[-1]" />
+                <div className="h-px bg-[#0F382C]/20 w-8"></div>
+              </div>
             </div>
 
+          </div>
+
+          {/* TITLE BANNER */}
+          <div className="bg-[#E7F0E6] rounded-2xl py-3 text-center border border-[#0F382C]/10 shadow-sm">
+            <h2 className="text-2xl sm:text-3xl font-bold font-serif text-[#0F382C] tracking-wide">
+              Donation Receipt
+            </h2>
+          </div>
+
+          {/* DIVIDER WITH SUBTITLE */}
+          <div className="relative text-center my-3">
+            <div className="absolute inset-0 flex items-center">
+              <div className="w-full border-t border-[#0F382C]/30"></div>
+            </div>
+            <span className="relative bg-[#FAF9F5] px-4 text-[10px] sm:text-[11px] font-black tracking-widest text-[#0F382C] uppercase">
+              THANK YOU FOR YOUR KINDNESS
+            </span>
+          </div>
+
+          {/* METADATA ROW */}
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center text-xs text-[#0F382C] border-b border-gray-200 pb-4">
+            <div>
+              <span className="font-bold text-gray-500 block text-[10px] uppercase">Receipt No.</span>
+              <span className="font-black text-sm text-[#0F382C]">{receiptNo}</span>
+            </div>
+            <div className="sm:border-l sm:border-r border-gray-200 sm:px-4">
+              <span className="font-bold text-gray-500 block text-[10px] uppercase">Date of Donation</span>
+              <span className="font-bold text-sm text-[#0F382C]">{donationDate}</span>
+            </div>
+            <div className="flex items-center space-x-2 text-emerald-800 italic font-serif">
+              <Leaf className="w-5 h-5 text-emerald-700 shrink-0" />
+              <span className="text-xs font-semibold">A small act makes a big difference!</span>
+            </div>
+          </div>
+
+          {/* DONOR DETAILS CARD */}
+          <div className="border border-gray-200/80 rounded-2xl overflow-hidden bg-white shadow-sm">
+            <div className="bg-[#E7F0E6] px-4 py-2.5 flex items-center space-x-2 border-b border-gray-200">
+              <User className="w-4 h-4 text-[#0F382C]" />
+              <h4 className="font-bold font-serif text-sm text-[#0F382C]">Donor Details</h4>
+            </div>
+            <div className="p-4 space-y-2 text-xs">
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-gray-500 font-bold">Name</span>
+                <span className="col-span-2 font-bold text-gray-900">:  {donorName}</span>
+              </div>
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-gray-500 font-bold">Email</span>
+                <span className="col-span-2 font-medium text-gray-800">:  {donorEmail}</span>
+              </div>
+              <div className="grid grid-cols-3 items-center">
+                <span className="text-gray-500 font-bold">Phone</span>
+                <span className="col-span-2 font-medium text-gray-800">:  {donorPhone}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* DONATION DETAILS CARD */}
+          <div className="border border-gray-200/80 rounded-2xl overflow-hidden bg-white shadow-sm">
+            <div className="bg-[#E7F0E6] px-4 py-2.5 flex items-center space-x-2 border-b border-gray-200">
+              <Utensils className="w-4 h-4 text-[#0F382C]" />
+              <h4 className="font-bold font-serif text-sm text-[#0F382C]">Donation Details</h4>
+            </div>
+            <div className="p-4 text-xs">
+              <div className="grid grid-cols-3 bg-[#E7F0E6]/70 p-2.5 rounded-xl font-bold text-[#0F382C] mb-2 text-center">
+                <div>Item Name</div>
+                <div>Quantity</div>
+                <div>Category</div>
+              </div>
+              <div className="grid grid-cols-3 p-2.5 font-medium text-gray-800 text-center items-center">
+                <div className="font-bold text-[#0F382C]">{donation.foodName || 'Cooked Food'}</div>
+                <div>{donation.quantity || `${donation.servingCapacity || 10} Meal Boxes`}</div>
+                <div>{donation.foodCategory || 'Meals'}</div>
+              </div>
+            </div>
+          </div>
+
+          {/* THANK YOU & SIGNATURE SECTION */}
+          <div className="space-y-3 pt-2">
+            <p className="text-xs text-gray-600 leading-relaxed font-medium">
+              Your generous contribution helps us provide nutritious meals to those in need. Together, we are building a kinder, healthier and stronger community.
+            </p>
+
+            <div className="space-y-1 pt-1">
+              <div className="text-2xl font-serif italic text-[#0F382C] font-bold">
+                Thank You ♡
+              </div>
+              <div className="text-xs text-gray-600 font-medium">
+                <p>With Gratitude,</p>
+                <p className="font-bold text-[#0F382C]">Team Annsetu</p>
+                <p className="italic text-gray-500">Bridging Surplus to Smiles</p>
+              </div>
+            </div>
+          </div>
+
+          {/* BOTTOM CONTACT BAR */}
+          <div className="border-t border-gray-300/80 pt-4 flex flex-wrap items-center justify-between text-[11px] text-gray-600 font-medium gap-2">
+            <div className="flex items-center space-x-1.5">
+              <Mail className="w-3.5 h-3.5 text-[#0F382C]" />
+              <span>contact@ansetu.org</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <Globe className="w-3.5 h-3.5 text-[#0F382C]" />
+              <span>www.annsetu.org</span>
+            </div>
+            <div className="flex items-center space-x-1.5">
+              <MapPin className="w-3.5 h-3.5 text-[#0F382C]" />
+              <span>India</span>
+            </div>
+          </div>
+
+          {/* BOTTOM DECORATIVE CORNER ACCENTS */}
+          <div className="absolute bottom-0 left-0 w-24 h-12 bg-orange-200/30 rounded-tr-full pointer-events-none"></div>
+          <div className="absolute bottom-2 right-2 pointer-events-none opacity-30">
+            <Leaf className="w-12 h-12 text-emerald-800" />
           </div>
 
         </div>
 
-        {/* Receipt Body Card */}
-        <div className="p-6 sm:p-8 space-y-6 bg-gradient-to-b from-white to-emerald-50/20">
-          
-          <div className="flex items-center justify-between border-b border-gray-200 pb-3">
-            <div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-                OFFICIAL IMPACT RECEIPT
-              </span>
-            </div>
-            <div className="text-right">
-              <span className="text-xs text-gray-500 font-bold block">DONATION ID</span>
-              <span className="font-mono font-black text-emerald-950 text-sm">{donation.id}</span>
-            </div>
-          </div>
+        {/* ACTION CONTROLS */}
+        <div className="bg-gray-100 p-4 border-t border-gray-200 flex flex-wrap items-center justify-center gap-3">
+          <button
+            onClick={handleDownloadPDF}
+            className="px-6 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+          >
+            <Download className="w-4 h-4 text-orange-400" />
+            <span>Download Receipt (PDF)</span>
+          </button>
 
-          {/* Details Table */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
-            <div className="bg-gray-50/80 p-3 rounded-2xl border border-gray-100 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase block">FOOD DONATED</span>
-              <span className="font-black text-emerald-950 text-sm block">{donation.foodName}</span>
-              <span className="text-gray-500 font-medium block">Category: {donation.foodCategory || 'Prepared Cooked Meals'}</span>
-            </div>
-
-            <div className="bg-emerald-50/80 p-3 rounded-2xl border border-emerald-100 space-y-1">
-              <span className="text-[10px] font-bold text-emerald-700 uppercase block">PEOPLE SERVED</span>
-              <span className="font-black text-emerald-900 text-lg block">{donation.servingCapacity} Meals</span>
-              <span className="text-emerald-700 font-bold text-[11px] block">Status: Delivered ✓</span>
-            </div>
-
-            <div className="bg-gray-50/80 p-3 rounded-2xl border border-gray-100 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase block">DONOR INFORMATION</span>
-              <span className="font-bold text-gray-900 block">{donation.donorName}</span>
-              <span className="text-gray-500 font-medium block">Type: {donation.donorType || 'Restaurant'}</span>
-            </div>
-
-            <div className="bg-gray-50/80 p-3 rounded-2xl border border-gray-100 space-y-1">
-              <span className="text-[10px] font-bold text-gray-400 uppercase block">RECEIVING NGO</span>
-              <span className="font-bold text-emerald-900 block">{donation.ngoName || 'Hope Foundation India'}</span>
-              <span className="text-gray-500 font-medium block">Verified Partner Shelter</span>
-            </div>
-          </div>
-
-          {/* Emotional Impact Callout Box */}
-          <div className="p-4 bg-emerald-950 text-amber-300 rounded-2xl text-center shadow-inner space-y-1 border border-emerald-800">
-            <Heart className="w-6 h-6 mx-auto text-red-500 fill-red-500 animate-bounce" />
-            <p className="text-base font-black font-outfit tracking-wide">“Your surplus became someone’s meal.”</p>
-          </div>
-
-          {/* Verification Badge */}
-          <div className="flex items-center justify-center space-x-2 bg-emerald-100 text-emerald-900 px-4 py-2 rounded-2xl border border-emerald-300 text-xs font-black">
-            <ShieldCheck className="w-4 h-4 text-emerald-700" />
-            <span>DIGITALLY VERIFIED ANNSETU SOCIAL IMPACT RECEIPT</span>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="grid grid-cols-2 gap-3 pt-2">
-            <button
-              onClick={handleDownloadPDF}
-              className="py-3 px-4 rounded-2xl bg-emerald-900 hover:bg-emerald-950 text-white font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
-            >
-              <Download className="w-4 h-4 text-amber-400" />
-              <span>Download Receipt (PDF)</span>
-            </button>
-
-            <button
-              onClick={handleShareImpact}
-              className="py-3 px-4 rounded-2xl bg-amber-500 hover:bg-amber-600 text-gray-950 font-black text-xs shadow-md flex items-center justify-center space-x-2 btn-bounce-active"
-            >
-              <Share2 className="w-4 h-4" />
-              <span>Share Impact</span>
-            </button>
-          </div>
-
+          <button
+            onClick={() => window.print()}
+            className="px-6 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+          >
+            <Printer className="w-4 h-4" />
+            <span>Print Receipt</span>
+          </button>
         </div>
 
       </div>
