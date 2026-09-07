@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import { useApp } from '../context/AppContext';
 import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
 import { 
@@ -12,19 +12,59 @@ import {
   ShieldCheck, 
   X, 
   Printer, 
-  Heart,
   Utensils,
   Building2,
+  Heart,
   Truck,
-  ArrowLeft
+  ArrowLeft,
+  Leaf,
+  Users
 } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
+import { jsPDF } from 'jspdf';
+
+const ROLE_CERT_CONFIGS = {
+  donor: {
+    roleTitle: 'Donor Appreciation Certificate',
+    badgeText: 'DONOR APPRECIATION CERTIFICATE',
+    badgeColor: 'bg-emerald-100 text-emerald-950 border-emerald-400',
+    appreciationMsg: 'In heartfelt appreciation of your generous contribution to AnnSetu. Your support helps reduce food waste and ensures surplus food reaches those in need.',
+    roleLabel: 'VERIFIED FOOD DONOR',
+    icon: Utensils,
+    themeBorder: 'border-emerald-800',
+    headerGradient: 'from-emerald-900 via-emerald-800 to-emerald-950'
+  },
+  ngo: {
+    roleTitle: 'NGO Appreciation Certificate',
+    badgeText: 'NGO APPRECIATION CERTIFICATE',
+    badgeColor: 'bg-teal-100 text-teal-950 border-teal-400',
+    appreciationMsg: 'In heartfelt appreciation of your valuable partnership and dedicated efforts in supporting AnnSetu\'s mission to redistribute surplus food and serve communities in need.',
+    roleLabel: 'PARTNER ORGANIZATION (NGO)',
+    icon: Building2,
+    themeBorder: 'border-teal-800',
+    headerGradient: 'from-teal-900 via-emerald-800 to-teal-950'
+  },
+  volunteer: {
+    roleTitle: 'Volunteer Appreciation Certificate',
+    badgeText: 'VOLUNTEER APPRECIATION CERTIFICATE',
+    badgeColor: 'bg-amber-100 text-amber-950 border-amber-400',
+    appreciationMsg: 'In heartfelt appreciation for your valuable time, dedication and selfless efforts in supporting the AnnSetu community. Your compassion and commitment help us build a kinder, stronger and more sustainable tomorrow.',
+    roleLabel: 'COMMUNITY VOLUNTEER',
+    icon: Heart,
+    themeBorder: 'border-amber-700',
+    headerGradient: 'from-amber-900 via-emerald-900 to-amber-950'
+  }
+};
 
 const CertificatesDashboard = () => {
   const { t, currentUser, certificates, generateCertificate, getServicesCountForUser } = useApp();
   const navigate = useNavigate();
   const [selectedCertificate, setSelectedCertificate] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const printRef = useRef(null);
+
+  const userRole = (currentUser?.role || 'donor').toLowerCase();
+  const currentRoleConfig = ROLE_CERT_CONFIGS[userRole] || ROLE_CERT_CONFIGS.donor;
 
   const verifiedServices = getServicesCountForUser(currentUser?.id);
   const impactPoints = verifiedServices * 10;
@@ -87,7 +127,161 @@ const CertificatesDashboard = () => {
     if (cert) {
       setSelectedCertificate(cert);
       setShowModal(true);
+    } else {
+      // If not yet saved in list, create/view on fly
+      const res = generateCertificate(tierId);
+      if (res.success) {
+        setSelectedCertificate(res.certificate);
+        setShowModal(true);
+      }
     }
+  };
+
+  const handleDownloadPDF = () => {
+    if (!selectedCertificate) return;
+
+    try {
+      const certRole = (selectedCertificate.role || userRole).toLowerCase();
+      const config = ROLE_CERT_CONFIGS[certRole] || ROLE_CERT_CONFIGS.donor;
+
+      const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a4'
+      });
+
+      // Background
+      doc.setFillColor(253, 251, 247);
+      doc.rect(0, 0, 297, 210, 'F');
+
+      // Decorative Frame Border
+      doc.setDrawColor(6, 78, 59);
+      doc.setLineWidth(1.5);
+      doc.roundedRect(8, 8, 281, 194, 6, 6, 'S');
+
+      doc.setDrawColor(245, 158, 11);
+      doc.setLineWidth(0.5);
+      doc.roundedRect(11, 11, 275, 188, 4, 4, 'S');
+
+      // Top Brand Header
+      doc.setFillColor(6, 78, 59);
+      doc.rect(15, 15, 267, 25, 'F');
+
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(20);
+      doc.setFont('helvetica', 'bold');
+      doc.text('ANNSETU', 25, 28);
+
+      doc.setTextColor(245, 158, 11);
+      doc.setFontSize(9);
+      doc.text('Bridging Surplus to Smiles', 25, 34);
+
+      // Top Right Role Badge
+      doc.setFillColor(255, 255, 255);
+      doc.roundedRect(180, 20, 95, 15, 3, 3, 'F');
+      doc.setTextColor(6, 78, 59);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text(config.badgeText, 227.5, 29.5, { align: 'center' });
+
+      // Title Section
+      doc.setTextColor(6, 78, 59);
+      doc.setFontSize(24);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Certificate of Appreciation', 148.5, 58, { align: 'center' });
+
+      doc.setTextColor(100, 100, 100);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      doc.text('This certificate is proudly presented to', 148.5, 68, { align: 'center' });
+
+      // Recipient Name
+      doc.setTextColor(6, 44, 33);
+      doc.setFontSize(22);
+      doc.setFont('helvetica', 'bold');
+      doc.text(selectedCertificate.userName, 148.5, 84, { align: 'center' });
+
+      // Clean underline
+      doc.setDrawColor(6, 78, 59);
+      doc.setLineWidth(0.8);
+      doc.line(74, 88, 223, 88);
+
+      // Message Body
+      doc.setTextColor(50, 50, 50);
+      doc.setFontSize(11);
+      doc.setFont('helvetica', 'normal');
+      const splitMsg = doc.splitTextToSize(config.appreciationMsg, 220);
+      doc.text(splitMsg, 148.5, 102, { align: 'center' });
+
+      // Cursive Flourish
+      doc.setTextColor(217, 119, 6);
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('"Together, we create a bigger impact!"', 148.5, 124, { align: 'center' });
+
+      // 3 Impact Pillars
+      doc.setFillColor(240, 253, 244);
+      doc.roundedRect(25, 134, 75, 20, 4, 4, 'F');
+      doc.setTextColor(6, 78, 59);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('Surplus Food Saved', 62.5, 142, { align: 'center' });
+      doc.setFontSize(10);
+      doc.text(`${selectedCertificate.verifiedServices * 10}+ Meals`, 62.5, 148, { align: 'center' });
+
+      doc.setFillColor(254, 243, 199);
+      doc.roundedRect(111, 134, 75, 20, 4, 4, 'F');
+      doc.setTextColor(146, 64, 14);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('People Nourished', 148.5, 142, { align: 'center' });
+      doc.setFontSize(10);
+      doc.text(`${selectedCertificate.verifiedServices * 8}+ Lives Touched`, 148.5, 148, { align: 'center' });
+
+      doc.setFillColor(236, 253, 245);
+      doc.roundedRect(197, 134, 75, 20, 4, 4, 'F');
+      doc.setTextColor(4, 120, 87);
+      doc.setFontSize(9);
+      doc.setFont('helvetica', 'bold');
+      doc.text('CO2 Waste Prevented', 234.5, 142, { align: 'center' });
+      doc.setFontSize(10);
+      doc.text(`${selectedCertificate.verifiedServices * 4} kg CO2 Reduced`, 234.5, 148, { align: 'center' });
+
+      // Footer
+      doc.setDrawColor(200, 200, 200);
+      doc.setLineWidth(0.4);
+      doc.line(20, 168, 277, 168);
+
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.setTextColor(100, 100, 100);
+      doc.text(`CERTIFICATE ID: ${selectedCertificate.id}`, 25, 178);
+      doc.text(`ISSUED ON: ${selectedCertificate.issuedAt}`, 25, 184);
+
+      doc.setFillColor(6, 78, 59);
+      doc.roundedRect(115, 172, 67, 14, 3, 3, 'F');
+      doc.setTextColor(255, 255, 255);
+      doc.setFontSize(8);
+      doc.setFont('helvetica', 'bold');
+      doc.text('DIGITALLY VERIFIED BY ANNSETU', 148.5, 180, { align: 'center' });
+
+      doc.setTextColor(6, 78, 59);
+      doc.setFontSize(8);
+      doc.text('Scan / Visit to Verify:', 245, 178, { align: 'center' });
+      doc.setFont('helvetica', 'normal');
+      doc.text(`annsetu.org/verify/${selectedCertificate.id}`, 245, 184, { align: 'center' });
+
+      doc.save(`AnnSetu_${config.roleTitle.replace(/\s+/g, '_')}_${selectedCertificate.id}.pdf`);
+    } catch (err) {
+      console.error(err);
+      window.print();
+    }
+  };
+
+  const getRoleConfig = (cert) => {
+    if (!cert) return currentRoleConfig;
+    const roleKey = (cert.role || userRole).toLowerCase();
+    return ROLE_CERT_CONFIGS[roleKey] || currentRoleConfig;
   };
 
   return (
@@ -117,15 +311,15 @@ const CertificatesDashboard = () => {
             {t('certificatesAndAchievements')}
           </span>
           <h1 className="text-3xl sm:text-5xl font-black font-outfit text-emerald-950">
-            {t('myCertificates')}
+            {currentRoleConfig.roleTitle}
           </h1>
           <p className="text-sm font-medium text-gray-600">
-            Official verified social impact certificates issued on the AnnSetu blockchain registry.
+            Official verified digital appreciation certificates issued on the AnnSetu blockchain registry.
           </p>
         </div>
 
         {/* Top Progress Dashboard Card */}
-        <div className="bg-gradient-to-r from-emerald-900 via-emerald-800 to-amber-700 text-white rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6">
+        <div className={`bg-gradient-to-r ${currentRoleConfig.headerGradient} text-white rounded-3xl p-6 sm:p-10 shadow-2xl space-y-6 border border-emerald-700/40`}>
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-white/20 pb-6">
             <div>
               <span className="text-xs font-bold uppercase tracking-widest text-amber-300">
@@ -135,7 +329,7 @@ const CertificatesDashboard = () => {
                 {currentUser?.name || "Community Partner"}
               </h2>
               <span className="text-xs font-bold uppercase tracking-wide bg-white/20 px-3 py-1 rounded-full inline-block mt-2">
-                Role: {currentUser?.role?.toUpperCase()}
+                ROLE: {userRole.toUpperCase()}
               </span>
             </div>
 
@@ -243,77 +437,129 @@ const CertificatesDashboard = () => {
 
       </div>
 
-      {/* Official Certificate Modal */}
+      {/* Official Role-Based Certificate Modal */}
       {showModal && selectedCertificate && (
-        <div className="fixed inset-0 z-50 bg-black/70 backdrop-blur-md flex items-center justify-center p-4 overflow-y-auto animate-in fade-in">
-          <div className="bg-white rounded-3xl max-w-2xl w-full p-6 sm:p-10 shadow-2xl border-4 border-orange-400 relative text-gray-900 space-y-6">
+        <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-md flex items-center justify-center p-3 sm:p-6 overflow-y-auto animate-in fade-in">
+          <div className="bg-white rounded-3xl max-w-4xl w-full p-4 sm:p-8 shadow-2xl border-4 border-orange-400 relative text-gray-900 space-y-6">
             
             <button
               onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 p-2 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all"
+              className="absolute top-4 right-4 p-2.5 rounded-full bg-gray-100 hover:bg-gray-200 text-gray-700 transition-all z-20 shadow-md"
             >
               <X className="w-5 h-5" />
             </button>
 
-            {/* Certificate Print Wrapper */}
-            <div className="p-6 sm:p-8 rounded-2xl border-2 border-emerald-800 bg-[#faf8f5] space-y-6 text-center relative overflow-hidden shadow-inner">
+            {/* Certificate Print Wrapper (Exact Reference Artwork Match) */}
+            <div 
+              ref={printRef}
+              className="p-6 sm:p-10 rounded-3xl border-4 border-emerald-800/40 bg-[#fdfbf7] space-y-6 relative overflow-hidden shadow-2xl text-center"
+            >
               
-              {/* Top Watermark Logo */}
-              <div className="flex items-center justify-between border-b-2 border-emerald-800/30 pb-4">
-                <div className="flex items-center space-x-2">
-                  <img src="/annsetu_logo.png" alt="AnnSetu" className="h-10 w-auto" />
-                  <span className="text-xl font-black text-emerald-950 font-outfit">Ann<span className="text-orange-600">setu</span></span>
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest text-emerald-800 bg-emerald-100 px-3 py-1 rounded-full border border-emerald-300">
-                  VERIFIED IMPACT REGISTRY
-                </span>
+              {/* Subtle Background Leaf Accent Watermark */}
+              <div className="absolute inset-0 pointer-events-none opacity-[0.03] flex items-center justify-center">
+                <Leaf className="w-96 h-96 text-emerald-900" />
               </div>
 
-              <div className="space-y-2 pt-2">
-                <p className="text-xs font-black uppercase tracking-widest text-orange-600">
-                  {t('certificateOfImpact')}
+              {/* Top Header: Logo + Brand + Role Badge */}
+              <div className="flex flex-col sm:flex-row items-center justify-between border-b-2 border-emerald-800/20 pb-5 gap-4 relative z-10">
+                <div className="flex items-center space-x-3">
+                  <img src="/annsetu_logo.png" alt="AnnSetu Logo" className="h-12 w-auto object-contain" />
+                  <div className="text-left">
+                    <span className="text-2xl font-black text-emerald-950 font-outfit tracking-tight block">
+                      Ann<span className="text-orange-600">setu</span>
+                    </span>
+                    <span className="text-[10px] font-bold text-gray-500 italic block -mt-1">
+                      “Bridging Surplus to Smiles”
+                    </span>
+                  </div>
+                </div>
+
+                <div className={`px-4 py-2 rounded-2xl border-2 font-black text-xs sm:text-sm tracking-wider shadow-sm uppercase ${getRoleConfig(selectedCertificate).badgeColor}`}>
+                  {getRoleConfig(selectedCertificate).badgeText}
+                </div>
+              </div>
+
+              {/* Center Certificate Heading */}
+              <div className="space-y-3 pt-3 relative z-10">
+                <div className="flex items-center justify-center space-x-2 text-emerald-700">
+                  <Leaf className="w-5 h-5 text-emerald-600" />
+                  <span className="text-xs font-black uppercase tracking-widest text-emerald-800">
+                    ANNSETU OFFICIAL RECOGNITION
+                  </span>
+                  <Leaf className="w-5 h-5 text-emerald-600 scale-x-[-1]" />
+                </div>
+
+                <h1 className="text-3xl sm:text-5xl font-black font-outfit text-emerald-950 tracking-tight">
+                  Certificate of Appreciation
+                </h1>
+
+                <p className="text-xs sm:text-sm font-semibold text-gray-500 italic">
+                  This certificate is proudly presented to
                 </p>
-                <p className="text-xs font-medium text-gray-600 italic">
-                  {t('presentedTo')}
+
+                {/* Recipient Name with Clean Horizontal Line (NO Heart Icons) */}
+                <div className="py-2 max-w-lg mx-auto">
+                  <h2 className="text-2xl sm:text-4xl font-black font-outfit text-emerald-950 tracking-tight">
+                    {selectedCertificate.userName}
+                  </h2>
+                  <div className="h-0.5 w-full bg-gradient-to-r from-emerald-800 via-amber-500 to-emerald-800 mt-2.5 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Role-Based Appreciation Message */}
+              <div className="max-w-2xl mx-auto space-y-4 relative z-10">
+                <p className="text-xs sm:text-sm text-gray-700 font-medium leading-relaxed px-2">
+                  {getRoleConfig(selectedCertificate).appreciationMsg}
                 </p>
-                <h2 className="text-2xl sm:text-4xl font-black font-outfit text-emerald-950 underline decoration-amber-400 decoration-4">
-                  {selectedCertificate.userName}
-                </h2>
+
+                <p className="text-sm font-black italic text-orange-600 flex items-center justify-center space-x-1.5">
+                  <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                  <span>“Together, we create a bigger impact!”</span>
+                  <Sparkles className="w-4 h-4 text-amber-500 animate-pulse" />
+                </p>
               </div>
 
-              <p className="text-xs text-gray-700 font-medium max-w-lg mx-auto leading-relaxed">
-                For outstanding contribution to AnnSetu's social food redistribution mission, reducing edible food waste and ensuring nutritious meals reach community shelters.
-              </p>
+              {/* 3 Impact Pillars Badges */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2 relative z-10 max-w-2xl mx-auto">
+                <div className="bg-emerald-50/90 border border-emerald-200 rounded-2xl p-3 text-center shadow-sm">
+                  <span className="text-[10px] font-black uppercase text-emerald-800 tracking-wider block">🍲 Surplus Food Saved</span>
+                  <span className="text-sm font-black text-emerald-950">{selectedCertificate.verifiedServices * 10}+ Meals</span>
+                </div>
 
-              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-white p-3 rounded-2xl border border-gray-200 text-center">
-                <div>
-                  <span className="text-[9px] font-bold uppercase text-gray-400 block">ROLE</span>
-                  <span className="text-xs font-black text-emerald-950 uppercase">{selectedCertificate.role}</span>
+                <div className="bg-amber-50/90 border border-amber-200 rounded-2xl p-3 text-center shadow-sm">
+                  <span className="text-[10px] font-black uppercase text-amber-900 tracking-wider block">👥 People Nourished</span>
+                  <span className="text-sm font-black text-amber-950">{selectedCertificate.verifiedServices * 8}+ Lives Touched</span>
                 </div>
-                <div>
-                  <span className="text-[9px] font-bold uppercase text-gray-400 block">TIER</span>
-                  <span className="text-xs font-black text-amber-600 uppercase">{selectedCertificate.level}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] font-bold uppercase text-gray-400 block">SERVICES</span>
-                  <span className="text-xs font-black text-emerald-950">{selectedCertificate.verifiedServices}</span>
-                </div>
-                <div>
-                  <span className="text-[9px] font-bold uppercase text-gray-400 block">POINTS</span>
-                  <span className="text-xs font-black text-amber-600">{selectedCertificate.impactPoints}</span>
+
+                <div className="bg-teal-50/90 border border-teal-200 rounded-2xl p-3 text-center shadow-sm">
+                  <span className="text-[10px] font-black uppercase text-teal-800 tracking-wider block">🌱 CO₂ Waste Prevented</span>
+                  <span className="text-sm font-black text-teal-950">{selectedCertificate.verifiedServices * 4} kg CO₂</span>
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row items-center justify-between border-t-2 border-emerald-800/30 pt-4 text-left gap-4">
-                <div>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase">{t('certificateId')}: <span className="font-mono font-black text-gray-900">{selectedCertificate.id}</span></p>
-                  <p className="text-[10px] font-bold text-gray-500 uppercase">{t('issuedOn')}: <span className="text-gray-900">{selectedCertificate.issuedAt}</span></p>
+              {/* Verification Footer */}
+              <div className="flex flex-col sm:flex-row items-center justify-between border-t-2 border-emerald-800/20 pt-5 text-left gap-4 relative z-10">
+                <div className="space-y-1">
+                  <p className="text-[11px] font-bold text-gray-500 uppercase">
+                    CERTIFICATE ID: <span className="font-mono font-black text-emerald-950">{selectedCertificate.id}</span>
+                  </p>
+                  <p className="text-[11px] font-bold text-gray-500 uppercase">
+                    ISSUED ON: <span className="text-gray-900 font-bold">{selectedCertificate.issuedAt}</span>
+                  </p>
+                  <p className="text-[10px] font-bold text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-md inline-block border border-emerald-300">
+                    LEVEL: {selectedCertificate.level} TIER
+                  </p>
                 </div>
 
-                <div className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-gray-300 shrink-0">
+                <div className="flex items-center space-x-2 bg-emerald-900 text-white px-4 py-2 rounded-2xl shadow-md">
+                  <ShieldCheck className="w-5 h-5 text-amber-400" />
+                  <span className="text-[11px] font-black tracking-wide">DIGITALLY VERIFIED BY ANNSETU</span>
+                </div>
+
+                <div className="flex items-center space-x-2 bg-white p-2 rounded-xl border border-gray-300 shadow-sm shrink-0">
                   <QrCode className="w-8 h-8 text-emerald-900" />
-                  <div className="text-[9px] font-bold text-gray-600 max-w-[120px]">
-                    {t('verifyQrText')}
+                  <div className="text-[9px] font-bold text-gray-600 max-w-[110px] leading-tight">
+                    Scan or visit URL to verify authenticity
                   </div>
                 </div>
               </div>
@@ -321,22 +567,22 @@ const CertificatesDashboard = () => {
             </div>
 
             {/* Action Controls */}
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <button
-                onClick={() => window.print()}
-                className="px-5 py-2.5 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+                onClick={handleDownloadPDF}
+                className="px-6 py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active"
               >
-                <Printer className="w-4 h-4 text-orange-400" />
-                <span>{t('downloadPdfBtn')}</span>
+                <Download className="w-4 h-4 text-orange-400" />
+                <span>Download Certificate (PDF)</span>
               </button>
 
               <Link
                 to={`/certificate/verify/${selectedCertificate.id}`}
                 target="_blank"
-                className="px-5 py-2.5 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-md flex items-center space-x-2 btn-bounce-active"
+                className="px-6 py-3 rounded-2xl bg-orange-500 hover:bg-orange-600 text-gray-950 font-black text-xs shadow-lg flex items-center space-x-2 btn-bounce-active"
               >
                 <ShieldCheck className="w-4 h-4" />
-                <span>{t('verifyCertificateBtn')}</span>
+                <span>Verify Certificate</span>
               </Link>
             </div>
 
