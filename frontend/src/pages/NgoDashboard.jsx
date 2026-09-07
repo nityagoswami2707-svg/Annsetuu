@@ -23,13 +23,37 @@ import {
 } from 'lucide-react';
 
 const NgoDashboard = () => {
-  const { t, donations, ngos, evaluateDonation, registerNgo, logoutUser } = useApp();
+  const { t, donations, ngos, evaluateDonation, registerNgo, logoutUser, currentUser, ngoRequests = [], createNgoRequirement, cancelNgoRequirement, calculatePriorityScore } = useApp();
   const navigate = useNavigate();
 
   const [activeTab, setActiveTab] = useState('requests');
   const [rejectingDonationId, setRejectingDonationId] = useState(null);
   const [findVolunteerDonation, setFindVolunteerDonation] = useState(null);
   const [assignedDriverMsg, setAssignedDriverMsg] = useState('');
+
+  const [showCreateModal, setShowCreateModal] = useState(false);
+  const [reqFormData, setReqFormData] = useState({
+    foodCategory: "Prepared Cooked Food",
+    quantityRequired: "100",
+    urgencyLevel: "Urgent",
+    requiredByDate: new Date().toISOString().split('T')[0],
+    requiredByTime: "20:00",
+    peopleCount: "100",
+    city: currentUser?.city || "Vadodara",
+    address: currentUser?.address || "",
+    pincode: currentUser?.pincode || "390001",
+    notes: ""
+  });
+
+  const activeNgo = ngos?.find(n => n.email === currentUser?.email) || ngos?.[0] || { name: 'Hope Foundation India', status: 'Verified' };
+  const isGaushalaUser = currentUser?.organizationType === "Gaushala / Animal Feed Organization" || activeNgo?.organizationType === "Gaushala / Animal Feed Organization";
+
+  const handleCreateRequirement = (e) => {
+    e.preventDefault();
+    createNgoRequirement(reqFormData);
+    setShowCreateModal(false);
+    setActiveTab('my-requirements');
+  };
 
   const sampleVolunteers = [
     { name: "Ramesh Kumar", vehicle: "Car / EV", distance: "1.2 km", avail: "Available Now", score: 96, phone: "+91 91066 33221" },
@@ -58,8 +82,6 @@ const NgoDashboard = () => {
     pincode: "",
     availableCapacity: "300"
   });
-
-  const activeNgo = ngos?.[0] || { name: 'Hope Foundation India', status: 'Verified' };
 
   const pendingRequests = donations.filter(d => d.status === 'Pending' || d.status === 'NGO Request Sent');
   const acceptedDonations = donations.filter(d => d.status === 'Accepted' || d.status === 'In Transit' || d.status === 'Picked Up');
@@ -173,34 +195,143 @@ const NgoDashboard = () => {
         </div>
 
         {/* NGO Tabs Navigation */}
-        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-3">
-          <button
-            onClick={() => setActiveTab('requests')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'requests' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
-            }`}
-          >
-            Requests ({pendingRequests.length})
-          </button>
+        <div className="flex flex-wrap gap-2 border-b border-gray-200 pb-3 items-center justify-between">
+          <div className="flex flex-wrap gap-2">
+            <button
+              onClick={() => setActiveTab('requests')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
+                activeTab === 'requests' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
+              }`}
+            >
+              Requests ({pendingRequests.length})
+            </button>
+
+            <button
+              onClick={() => setActiveTab('accepted')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
+                activeTab === 'accepted' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
+              }`}
+            >
+              Active Pickups ({acceptedDonations.length})
+            </button>
+
+            <button
+              onClick={() => setActiveTab('my-requirements')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
+                activeTab === 'my-requirements' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
+              }`}
+            >
+              📋 Food Requirements ({ngoRequests.length})
+            </button>
+
+            <button
+              onClick={() => setActiveTab('register')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
+                activeTab === 'register' ? 'bg-orange-600 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
+              }`}
+            >
+              + Register NGO
+            </button>
+          </div>
 
           <button
-            onClick={() => setActiveTab('accepted')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'accepted' ? 'bg-emerald-800 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
-            }`}
+            onClick={() => setShowCreateModal(true)}
+            className="px-3.5 py-2 rounded-xl bg-orange-600 hover:bg-orange-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active flex items-center space-x-1"
           >
-            Active Pickups ({acceptedDonations.length})
-          </button>
-
-          <button
-            onClick={() => setActiveTab('register')}
-            className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all tab-animated ${
-              activeTab === 'register' ? 'bg-orange-600 text-white font-black shadow-md' : 'bg-white text-gray-700 border border-gray-200'
-            }`}
-          >
-            + Register NGO
+            <span>+ Post Requirement</span>
           </button>
         </div>
+
+        {/* TAB 0: NGO FOOD REQUIREMENTS */}
+        {activeTab === 'my-requirements' && (
+          <div className="space-y-4">
+            <div className="flex items-center justify-between flex-wrap gap-2">
+              <div>
+                <h3 className="text-base sm:text-lg font-black font-outfit text-green-950">NGO Food Requirements & Priority Tracker</h3>
+                <p className="text-xs text-gray-600">Post immediate food or organic waste needs to donors with auto-calculated P1-P4 priority levels.</p>
+              </div>
+
+              <button
+                onClick={() => setShowCreateModal(true)}
+                className="px-4 py-2.5 rounded-2xl bg-orange-600 hover:bg-orange-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active flex items-center space-x-1.5"
+              >
+                <span>+ Create Food Requirement</span>
+              </button>
+            </div>
+
+            {ngoRequests.length === 0 ? (
+              <div className="bg-white/95 backdrop-blur-md text-gray-900 p-8 rounded-3xl text-center border border-gray-200 shadow-sm">
+                <Utensils className="w-10 h-10 mx-auto text-emerald-600 mb-2" />
+                <p className="text-xs sm:text-sm font-bold">No active food requirements posted yet.</p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {ngoRequests.map(req => {
+                  const priority = calculatePriorityScore(req);
+                  const reqQty = parseInt(req.quantityRequired) || 1;
+                  const fulQty = parseInt(req.quantityFulfilled) || 0;
+                  const remQty = req.remainingQuantity !== undefined ? parseInt(req.remainingQuantity) : reqQty;
+                  const fulPct = Math.min(100, Math.round((fulQty / reqQty) * 100));
+
+                  return (
+                    <div key={req.id} className="bg-white/95 backdrop-blur-md text-gray-900 rounded-3xl border border-gray-200/80 shadow-md p-5 space-y-3.5 card-zoom-3d relative overflow-hidden">
+                      <div className="flex items-center justify-between border-b border-gray-100 pb-2">
+                        <span className="text-xs font-black font-mono text-emerald-900">
+                          Req ID: {req.id} ({req.ngoName})
+                        </span>
+                        <span className={`px-2.5 py-1 rounded-full text-[10px] font-black border ${priority.colorClass}`}>
+                          {priority.priorityBadge} ({priority.score} pts)
+                        </span>
+                      </div>
+
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <h4 className="text-base font-black font-outfit text-gray-900">{req.foodCategory}</h4>
+                          <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-md ${req.status === 'Fully Fulfilled' ? 'bg-green-100 text-green-800' : req.status === 'Cancelled' ? 'bg-red-100 text-red-800' : 'bg-blue-100 text-blue-800'}`}>
+                            {req.status}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-600">Urgency: <strong className="text-amber-700">{req.urgencyLevel}</strong> | Required By: <strong>{req.requiredByDate} at {req.requiredByTime}</strong></p>
+                        <p className="text-xs text-gray-600">Target Beneficiaries: <strong>{req.peopleCount} People</strong> | City: <strong>{req.city}</strong></p>
+                        {req.notes && <p className="text-xs italic text-gray-500 bg-gray-50 p-2 rounded-xl border border-gray-100">"{req.notes}"</p>}
+                      </div>
+
+                      {/* Progress Bar */}
+                      <div className="space-y-1 bg-emerald-50/60 p-3 rounded-2xl border border-emerald-100">
+                        <div className="flex items-center justify-between text-xs font-bold text-gray-700">
+                          <span>Progress ({fulPct}% Fulfilled)</span>
+                          <span className="font-mono text-emerald-900">{fulQty} / {reqQty} {req.unit || 'meals'}</span>
+                        </div>
+                        <div className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                          <div 
+                            className="bg-emerald-600 h-full rounded-full transition-all duration-500" 
+                            style={{ width: `${fulPct}%` }}
+                          />
+                        </div>
+                        <div className="flex items-center justify-between text-[11px] text-gray-500">
+                          <span>Fulfilled: {fulQty} {req.unit || 'meals'}</span>
+                          <span className="font-extrabold text-orange-600">Remaining: {remQty} {req.unit || 'meals'}</span>
+                        </div>
+                      </div>
+
+                      {req.status !== 'Cancelled' && req.status !== 'Fully Fulfilled' && (
+                        <div className="pt-1">
+                          <button
+                            onClick={() => cancelNgoRequirement(req.id)}
+                            className="w-full py-2 px-3 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs flex items-center justify-center space-x-1 border border-red-200 transition-all btn-bounce-active"
+                          >
+                            <XCircle className="w-3.5 h-3.5" />
+                            <span>Cancel Requirement</span>
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* TAB 1: REQUESTS */}
         {activeTab === 'requests' && (
@@ -500,6 +631,158 @@ const NgoDashboard = () => {
               Submit NGO for Admin Verification
             </button>
           </form>
+        )}
+
+        {/* CREATE FOOD REQUIREMENT MODAL */}
+        {showCreateModal && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in text-gray-900">
+            <div className="bg-white rounded-3xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto border-t-4 border-orange-500 shadow-2xl animate-in zoom-in-95">
+              <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                <div>
+                  <span className="text-[10px] font-black uppercase tracking-wider text-orange-600 block">Food Requirement Portal</span>
+                  <h3 className="text-lg font-black font-outfit text-green-950">Post NGO Food Requirement</h3>
+                </div>
+                <button onClick={() => setShowCreateModal(false)} className="p-1 rounded-xl bg-gray-100 text-gray-600 hover:text-gray-900">
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <form onSubmit={handleCreateRequirement} className="space-y-3 text-xs">
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Food Category / Need Type *</label>
+                  <select
+                    value={reqFormData.foodCategory}
+                    onChange={(e) => {
+                      const cat = e.target.value;
+                      setReqFormData(prev => ({
+                        ...prev,
+                        foodCategory: cat,
+                        quantityRequired: cat === 'Vegetable/Organic Waste' ? "200" : "100"
+                      }));
+                    }}
+                    className="w-full p-2.5 rounded-xl border border-gray-300 font-bold bg-white focus:ring-2 focus:ring-emerald-500"
+                  >
+                    <option value="Prepared Cooked Food">Prepared Cooked Food</option>
+                    <option value="Grocery / Raw Food">Grocery / Raw Food</option>
+                    <option value="Bakery / Packaged">Bakery / Packaged</option>
+                    {isGaushalaUser && (
+                      <option value="Vegetable/Organic Waste">Vegetable/Organic Waste (KG for Animals/Gaushala)</option>
+                    )}
+                  </select>
+                  {!isGaushalaUser && (
+                    <p className="text-[10px] text-gray-400 mt-0.5">Note: Organic/Vegetable Waste is restricted exclusively to registered Gaushalas & Animal Feed shelters.</p>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">
+                      {reqFormData.foodCategory === 'Vegetable/Organic Waste' ? 'Quantity Needed (KG) *' : 'Quantity Needed (Meals) *'}
+                    </label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={reqFormData.quantityRequired}
+                      onChange={(e) => setReqFormData({ ...reqFormData, quantityRequired: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold"
+                      placeholder="e.g. 100"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Urgency Level *</label>
+                    <select
+                      value={reqFormData.urgencyLevel}
+                      onChange={(e) => setReqFormData({ ...reqFormData, urgencyLevel: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold bg-white"
+                    >
+                      <option value="Emergency">🚨 Emergency (Immediate)</option>
+                      <option value="Urgent">⚡ Urgent (Today)</option>
+                      <option value="Normal">🟢 Normal (1-2 Days)</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Required By Date *</label>
+                    <input
+                      type="date"
+                      required
+                      value={reqFormData.requiredByDate}
+                      onChange={(e) => setReqFormData({ ...reqFormData, requiredByDate: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Required By Time *</label>
+                    <input
+                      type="time"
+                      required
+                      value={reqFormData.requiredByTime}
+                      onChange={(e) => setReqFormData({ ...reqFormData, requiredByTime: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">Target Beneficiaries Count *</label>
+                    <input
+                      type="number"
+                      min="1"
+                      required
+                      value={reqFormData.peopleCount}
+                      onChange={(e) => setReqFormData({ ...reqFormData, peopleCount: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold"
+                      placeholder="e.g. 150"
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block font-bold text-gray-700 mb-1">City *</label>
+                    <input
+                      type="text"
+                      required
+                      value={reqFormData.city}
+                      onChange={(e) => setReqFormData({ ...reqFormData, city: e.target.value })}
+                      className="w-full p-2.5 rounded-xl border border-gray-300 font-bold"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block font-bold text-gray-700 mb-1">Notes / Instructions</label>
+                  <textarea
+                    rows="2"
+                    value={reqFormData.notes}
+                    onChange={(e) => setReqFormData({ ...reqFormData, notes: e.target.value })}
+                    className="w-full p-2.5 rounded-xl border border-gray-300 font-medium"
+                    placeholder="Specify dietary details, packaging requirements or loading instructions..."
+                  />
+                </div>
+
+                <div className="pt-2 flex justify-end space-x-2">
+                  <button
+                    type="button"
+                    onClick={() => setShowCreateModal(false)}
+                    className="px-4 py-2 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="px-5 py-2 rounded-xl bg-emerald-800 hover:bg-emerald-900 text-white font-bold text-xs shadow-md"
+                  >
+                    Publish Requirement
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
         )}
 
       </div>

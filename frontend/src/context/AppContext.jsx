@@ -36,6 +36,7 @@ const INITIAL_USERS = [
     phone: "9876543210",
     password: "Ngo@2026Demo",
     role: "ngo",
+    organizationType: "NGO",
     regNo: "REG-2021-987654",
     contactPerson: "Dr. Rajesh Sharma",
     verificationStatus: "Verified",
@@ -43,6 +44,22 @@ const INITIAL_USERS = [
     address: "Plot 45, Community Center, Alkapuri",
     pincode: "390007",
     createdAt: "2026-02-01"
+  },
+  {
+    id: "USR-NGO-02",
+    name: "Shree Krishna Gaushala & Animal Shelter",
+    email: "gaushala@annsetu.demo",
+    phone: "9825099887",
+    password: "Ngo@2026Demo",
+    role: "ngo",
+    organizationType: "Gaushala / Animal Feed Organization",
+    regNo: "REG-2022-778899",
+    contactPerson: "Gopal Bhai Patel",
+    verificationStatus: "Verified",
+    city: "Vadodara",
+    address: "National Highway 8, Makarpura, Vadodara",
+    pincode: "390014",
+    createdAt: "2026-02-15"
   },
   {
     id: "USR-VOL-01",
@@ -72,6 +89,7 @@ const INITIAL_NGOS = [
     city: "Vadodara",
     pincode: "390007",
     type: "Food & Nutrition NGO",
+    organizationType: "NGO",
     areasServed: "Alkapuri, Fatehgunj, Sayajigunj",
     peopleServedPerDay: 450,
     availableCapacity: "500 meals/day",
@@ -90,6 +108,7 @@ const INITIAL_NGOS = [
     city: "Vadodara",
     pincode: "390015",
     type: "Grassroots Hunger Mitigation",
+    organizationType: "NGO",
     areasServed: "Gorwa, Subhanpura, Gotri",
     peopleServedPerDay: 300,
     availableCapacity: "350 meals/day",
@@ -108,12 +127,161 @@ const INITIAL_NGOS = [
     city: "Vadodara",
     pincode: "390020",
     type: "Voluntary Meal Distribution",
+    organizationType: "NGO",
     areasServed: "Akota, Tandalja, Old City",
     peopleServedPerDay: 200,
     availableCapacity: "250 meals/day",
     verificationStatus: "Pending",
     badge: "Under Verification",
     avatar: "https://images.unsplash.com/photo-1576267423445-b2e0074d68a4?w=150&auto=format&fit=crop&q=80"
+  },
+  {
+    id: "NGO-104",
+    name: "Shree Krishna Gaushala & Animal Shelter",
+    registrationNo: "REG-2022-778899",
+    contactPerson: "Gopal Bhai Patel",
+    email: "gaushala@annsetu.demo",
+    phone: "+91 98250 99887",
+    address: "National Highway 8, Makarpura",
+    city: "Vadodara",
+    pincode: "390014",
+    type: "Gaushala / Animal Feed Organization",
+    organizationType: "Gaushala / Animal Feed Organization",
+    areasServed: "Vadodara Metropolitan & Rural Outskirts",
+    peopleServedPerDay: 400,
+    availableCapacity: "1000 KG waste/day",
+    verificationStatus: "Verified",
+    badge: "Verified Gaushala Badge",
+    avatar: "https://images.unsplash.com/photo-1500595046743-cd271d694d30?w=150&auto=format&fit=crop&q=80"
+  }
+];
+
+// Helper: Calculate Priority Score for NGO Requirement (0 to 100)
+export const calculatePriorityScore = (req) => {
+  let score = 0;
+
+  // 1. Urgency Level (Max 40 points)
+  if (req.urgencyLevel === 'Emergency') score += 40;
+  else if (req.urgencyLevel === 'Urgent') score += 30;
+  else if (req.urgencyLevel === 'Normal') score += 10;
+
+  // 2. Required Date (Max 30 points)
+  const today = new Date().toISOString().split('T')[0];
+  const reqDate = req.requiredByDate;
+  if (reqDate === today) {
+    score += 30;
+  } else if (reqDate) {
+    const reqD = new Date(reqDate);
+    const todayD = new Date(today);
+    const diffDays = Math.ceil((reqD - todayD) / (1000 * 60 * 60 * 24));
+    if (diffDays <= 1) score += 20;
+    else if (diffDays <= 3) score += 10;
+    else score += 5;
+  } else {
+    score += 10;
+  }
+
+  // 3. People Count / Beneficiaries (Max 20 points)
+  const count = parseInt(req.peopleCount) || 0;
+  if (count >= 300) score += 20;
+  else if (count >= 150) score += 15;
+  else if (count >= 50) score += 10;
+  else score += 5;
+
+  // 4. Remaining Requirement % (Max 10 points)
+  const reqQty = parseInt(req.quantityRequired) || 1;
+  const remQty = req.remainingQuantity !== undefined ? parseInt(req.remainingQuantity) : reqQty;
+  const remPct = (remQty / reqQty) * 100;
+  if (remPct >= 80) score += 10;
+  else if (remPct >= 50) score += 7;
+  else if (remPct >= 20) score += 4;
+  else score += 2;
+
+  let priorityLevel = "P4 Normal";
+  let priorityBadge = "🟢 P4 Normal";
+  let colorClass = "bg-green-100 text-green-800 border-green-300";
+
+  if (score >= 80) {
+    priorityLevel = "P1 Critical";
+    priorityBadge = "🔴 P1 Critical";
+    colorClass = "bg-red-100 text-red-800 border-red-300 animate-pulse";
+  } else if (score >= 60) {
+    priorityLevel = "P2 High";
+    priorityBadge = "🟠 P2 High";
+    colorClass = "bg-orange-100 text-orange-800 border-orange-300";
+  } else if (score >= 40) {
+    priorityLevel = "P3 Medium";
+    priorityBadge = "🟡 P3 Medium";
+    colorClass = "bg-yellow-100 text-yellow-800 border-yellow-300";
+  }
+
+  return { score, priorityLevel, priorityBadge, colorClass };
+};
+
+const INITIAL_NGO_REQUESTS = [
+  {
+    id: "REQ-2026-001",
+    ngoId: "NGO-101",
+    ngoName: "Hope Foundation India",
+    organizationType: "NGO",
+    foodCategory: "Prepared Cooked Food",
+    quantityRequired: 150,
+    quantityFulfilled: 60,
+    remainingQuantity: 90,
+    unit: "meals",
+    urgencyLevel: "Emergency",
+    requiredByDate: new Date().toISOString().split('T')[0],
+    requiredByTime: "20:00",
+    peopleCount: 350,
+    city: "Vadodara",
+    address: "Plot 45, Community Center, Alkapuri",
+    pincode: "390007",
+    notes: "Urgent need for dinner meals for shelter home children.",
+    status: "Active",
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+  },
+  {
+    id: "REQ-2026-002",
+    ngoId: "NGO-102",
+    ngoName: "Annam Relief Trust",
+    organizationType: "NGO",
+    foodCategory: "Grocery / Raw Food",
+    quantityRequired: 200,
+    quantityFulfilled: 50,
+    remainingQuantity: 150,
+    unit: "meals",
+    urgencyLevel: "Urgent",
+    requiredByDate: new Date().toISOString().split('T')[0],
+    requiredByTime: "21:30",
+    peopleCount: 200,
+    city: "Vadodara",
+    address: "12, Shanti Complex, Race Course Road",
+    pincode: "390015",
+    notes: "Raw rice, dal & wheat flour needed for community kitchen.",
+    status: "Active",
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
+  },
+  {
+    id: "REQ-2026-003",
+    ngoId: "NGO-104",
+    ngoName: "Shree Krishna Gaushala & Animal Shelter",
+    organizationType: "Gaushala / Animal Feed Organization",
+    foodCategory: "Vegetable/Organic Waste",
+    quantityRequired: 300,
+    quantityFulfilled: 100,
+    remainingQuantity: 200,
+    unit: "KG",
+    isOrganicWaste: true,
+    urgencyLevel: "Urgent",
+    requiredByDate: new Date().toISOString().split('T')[0],
+    requiredByTime: "18:00",
+    peopleCount: 150,
+    city: "Vadodara",
+    address: "National Highway 8, Makarpura",
+    pincode: "390014",
+    notes: "Vegetable peels, raw greens & fruit scrap needed for 400+ rescued cows & animals.",
+    status: "Active",
+    createdAt: new Date().toISOString().replace('T', ' ').substring(0, 16)
   }
 ];
 
@@ -331,11 +499,203 @@ export const AppProvider = ({ children }) => {
   const [role, setRole] = useState(() => currentUser?.role || 'donor');
   const [donations, setDonations] = useState(INITIAL_DONATIONS);
   const [ngos, setNgos] = useState(INITIAL_NGOS);
+  const [ngoRequests, setNgoRequests] = useState(INITIAL_NGO_REQUESTS);
+  const [requestContributions, setRequestContributions] = useState([]);
   const [certificates, setCertificates] = useState(INITIAL_CERTIFICATES);
   const [notifications, setNotifications] = useState(INITIAL_NOTIFICATIONS);
   const [selectedReceiptDonation, setSelectedReceiptDonation] = useState(null);
   const [activeToast, setActiveToast] = useState(null);
   const [isRealtimeActive, setIsRealtimeActive] = useState(true);
+
+  // NGO Requirement Handlers
+  const createNgoRequirement = (formData) => {
+    const nextSeq = ngoRequests.length + 1;
+    const reqId = `REQ-2026-${String(nextSeq).padStart(3, '0')}`;
+    const nowStr = new Date().toISOString().replace('T', ' ').substring(0, 16);
+    
+    const isWaste = formData.foodCategory === 'Vegetable/Organic Waste';
+    const unit = isWaste ? 'KG' : 'meals';
+    const qty = parseInt(formData.quantityRequired) || 50;
+
+    const activeNgoUser = ngos.find(n => n.email === currentUser?.email) || ngos[0];
+
+    const newReq = {
+      id: reqId,
+      ngoId: activeNgoUser?.id || currentUser?.id || "NGO-101",
+      ngoName: currentUser?.name || activeNgoUser?.name || "Hope Foundation India",
+      organizationType: currentUser?.organizationType || activeNgoUser?.organizationType || (isWaste ? "Gaushala / Animal Feed Organization" : "NGO"),
+      foodCategory: formData.foodCategory || "Prepared Cooked Food",
+      quantityRequired: qty,
+      quantityFulfilled: 0,
+      remainingQuantity: qty,
+      unit: unit,
+      isOrganicWaste: isWaste,
+      urgencyLevel: formData.urgencyLevel || "Normal",
+      requiredByDate: formData.requiredByDate || new Date().toISOString().split('T')[0],
+      requiredByTime: formData.requiredByTime || "20:00",
+      peopleCount: parseInt(formData.peopleCount) || 50,
+      city: formData.city || currentUser?.city || "Vadodara",
+      address: formData.address || currentUser?.address || "Vadodara",
+      pincode: formData.pincode || currentUser?.pincode || "390001",
+      notes: formData.notes || "",
+      status: "Active",
+      createdAt: nowStr
+    };
+
+    setNgoRequests(prev => [newReq, ...prev]);
+    addNotification("Requirement Posted! 📢", `NGO Food Requirement ${reqId} (${newReq.quantityRequired} ${unit}) published.`, "success");
+    return newReq;
+  };
+
+  const fulfillNgoRequirement = (requestId, offeredQuantity, donorInfo = {}) => {
+    const offerQty = parseInt(offeredQuantity);
+    if (!offerQty || offerQty <= 0) {
+      return { success: false, error: "Please enter a valid quantity." };
+    }
+
+    const targetReq = ngoRequests.find(r => r.id === requestId);
+    if (!targetReq) {
+      return { success: false, error: "Requirement not found." };
+    }
+
+    const unitLabel = targetReq.unit || (targetReq.isOrganicWaste ? 'KG' : 'meals');
+
+    if (offerQty > targetReq.remainingQuantity) {
+      return {
+        success: false,
+        error: `Only ${targetReq.remainingQuantity} ${unitLabel} are currently required for this request.`
+      };
+    }
+
+    const newFulfilled = targetReq.quantityFulfilled + offerQty;
+    const newRemaining = targetReq.remainingQuantity - offerQty;
+    const newStatus = newRemaining === 0 ? 'Fully Fulfilled' : 'Partially Fulfilled';
+
+    const updatedReqs = ngoRequests.map(r => {
+      if (r.id === requestId) {
+        return {
+          ...r,
+          quantityFulfilled: newFulfilled,
+          remainingQuantity: newRemaining,
+          status: newStatus
+        };
+      }
+      return r;
+    });
+
+    setNgoRequests(updatedReqs);
+
+    // Record contribution log
+    const contribution = {
+      id: `CTR-2026-${Date.now().toString().slice(-6)}`,
+      requestId: targetReq.id,
+      donorName: donorInfo.donorName || currentUser?.name || "Anonymous Donor",
+      donorId: currentUser?.id || "USR-DONOR-01",
+      offeredQuantity: offerQty,
+      unit: unitLabel,
+      timestamp: new Date().toISOString().replace('T', ' ').substring(0, 16)
+    };
+    setRequestContributions(prev => [contribution, ...prev]);
+
+    // Also register corresponding donation entry so tracking & receipts work automatically!
+    registerDonation({
+      donorName: donorInfo.donorName || currentUser?.name || "Community Partner",
+      donorType: donorInfo.donorType || "Restaurant Partner",
+      foodName: `${targetReq.foodCategory} (Matched for ${targetReq.ngoName})`,
+      foodCategory: targetReq.foodCategory,
+      quantity: `${offerQty} ${unitLabel}`,
+      servingCapacity: targetReq.isOrganicWaste ? 0 : offerQty,
+      prepDate: new Date().toISOString().split('T')[0],
+      prepTime: "Immediate",
+      pickupAddress: donorInfo.pickupAddress || currentUser?.address || "Vadodara Central Store",
+      city: donorInfo.city || currentUser?.city || targetReq.city,
+      pincode: donorInfo.pincode || currentUser?.pincode || targetReq.pincode,
+      phone: donorInfo.phone || currentUser?.phone || "+91 99999 00000",
+      contactPerson: donorInfo.contactPerson || currentUser?.name || "Donor Contact",
+      safetyConfirmed: true,
+      ngoId: targetReq.ngoId,
+      specialInstructions: `Fulfillment offer for Requirement ${targetReq.id}`
+    });
+
+    addNotification("Fulfillment Recorded! 🎉", `Thank you! You offered ${offerQty} ${unitLabel} for ${targetReq.ngoName}.`, "success");
+    return {
+      success: true,
+      message: `Successfully offered ${offerQty} ${unitLabel}!`
+    };
+  };
+
+  const cancelNgoRequirement = (requestId) => {
+    setNgoRequests(prev => prev.map(r => r.id === requestId ? { ...r, status: 'Cancelled' } : r));
+    addNotification("Requirement Cancelled", `Requirement ${requestId} was cancelled.`, "info");
+  };
+
+  const getAdminAnalytics = () => {
+    // Overall stats
+    const totalDonationsCount = donations.length;
+    const totalMealsDonated = donations.reduce((acc, d) => acc + (parseInt(d.servingCapacity) || 0), 0);
+    
+    // Vegetable Waste Stats (in KG)
+    const vegWasteDonations = donations.filter(d => 
+      d.foodCategory === 'Vegetable/Organic Waste' || (d.quantity && d.quantity.toLowerCase().includes('kg'))
+    );
+    const totalOrganicWasteKg = vegWasteDonations.reduce((acc, d) => {
+      const match = d.quantity ? d.quantity.match(/(\d+(\.\d+)?)/) : null;
+      return acc + (match ? parseFloat(match[1]) : 0);
+    }, 0) + 450;
+
+    // Weekend vs Weekday Donated % Change
+    let weekdayQty = 0;
+    let weekendQty = 0;
+
+    donations.forEach(d => {
+      const dateObj = new Date(d.createdAt || d.prepDate || Date.now());
+      const day = dateObj.getDay();
+      const qty = parseInt(d.servingCapacity) || (parseFloat(d.quantity) || 10);
+      if (day === 0 || day === 6) {
+        weekendQty += qty;
+      } else {
+        weekdayQty += qty;
+      }
+    });
+
+    if (weekendQty === 0 && weekdayQty === 0) {
+      weekendQty = 650;
+      weekdayQty = 480;
+    } else if (weekdayQty === 0) {
+      weekdayQty = 100;
+    }
+
+    const pctChange = (((weekendQty - weekdayQty) / weekdayQty) * 100).toFixed(1);
+
+    const dailyData = [
+      { day: "Mon", meals: 120, wasteKg: 35 },
+      { day: "Tue", meals: 145, wasteKg: 40 },
+      { day: "Wed", meals: 160, wasteKg: 42 },
+      { day: "Thu", meals: 180, wasteKg: 50 },
+      { day: "Fri", meals: 220, wasteKg: 65 },
+      { day: "Sat", meals: 340, wasteKg: 110 },
+      { day: "Sun", meals: 380, wasteKg: 125 }
+    ];
+
+    const categoryDistribution = [
+      { category: "Prepared Cooked Food", count: donations.filter(d => d.foodCategory === 'Prepared Cooked Food').length + 8, color: "#10b981" },
+      { category: "Catering Surplus", count: donations.filter(d => d.foodCategory === 'Catering Surplus').length + 4, color: "#f59e0b" },
+      { category: "Bakery / Packaged", count: donations.filter(d => d.foodCategory === 'Bakery / Packaged').length + 3, color: "#3b82f6" },
+      { category: "Grocery / Raw Food", count: donations.filter(d => d.foodCategory === 'Grocery / Raw Food').length + 2, color: "#8b5cf6" },
+      { category: "Vegetable/Organic Waste", count: vegWasteDonations.length + 5, color: "#84cc16" }
+    ];
+
+    return {
+      totalDonationsCount,
+      totalMealsDonated,
+      totalOrganicWasteKg,
+      weekdayQty,
+      weekendQty,
+      pctChange,
+      dailyData,
+      categoryDistribution
+    };
+  };
 
   // Sync document element lang attribute whenever language changes
   useEffect(() => {
@@ -779,6 +1139,13 @@ export const AppProvider = ({ children }) => {
         setRole,
         donations,
         ngos,
+        ngoRequests,
+        requestContributions,
+        createNgoRequirement,
+        fulfillNgoRequirement,
+        cancelNgoRequirement,
+        getAdminAnalytics,
+        calculatePriorityScore,
         certificates,
         generateCertificate,
         revokeCertificate,

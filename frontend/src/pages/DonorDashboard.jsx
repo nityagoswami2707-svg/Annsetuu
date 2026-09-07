@@ -31,7 +31,7 @@ import {
 import ImpactReceipt from '../components/ImpactReceipt';
 
 const DonorDashboard = () => {
-  const { t, ngos, registerDonation, donations, logoutUser } = useApp();
+  const { t, ngos, registerDonation, donations, logoutUser, currentUser, ngoRequests = [], fulfillNgoRequirement, calculatePriorityScore } = useApp();
   const navigate = useNavigate();
 
   const [step, setStep] = useState('form');
@@ -40,6 +40,13 @@ const DonorDashboard = () => {
   const [currentTab, setCurrentTab] = useState('donate');
   const [receiptSearch, setReceiptSearch] = useState('');
   const [receiptSort, setReceiptSort] = useState('newest');
+
+  const [offeringReq, setOfferingReq] = useState(null);
+  const [offerQuantity, setOfferQuantity] = useState('');
+  const [offerError, setOfferError] = useState('');
+  const [reqUrgencyFilter, setReqUrgencyFilter] = useState('All');
+  const [reqCategoryFilter, setReqCategoryFilter] = useState('All');
+  const [reqSearchQuery, setReqSearchQuery] = useState('');
 
   const [moneyData, setMoneyData] = useState({
     amount: "500",
@@ -194,6 +201,16 @@ const DonorDashboard = () => {
             >
               <Heart className="w-4 h-4 text-red-500 fill-red-500/20" />
               <span>💰 Donate Money</span>
+            </button>
+
+            <button
+              onClick={() => setCurrentTab('ngo-requirements')}
+              className={`inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer ${
+                currentTab === 'ngo-requirements' ? 'bg-emerald-900 text-white border border-emerald-700' : 'bg-white/95 text-emerald-950 hover:bg-emerald-100 border border-gray-200'
+              }`}
+            >
+              <Building2 className="w-4 h-4 text-emerald-600" />
+              <span>📋 NGO Requirements</span>
             </button>
 
             <button
@@ -354,11 +371,16 @@ const DonorDashboard = () => {
                         className="w-full h-12 px-4 rounded-2xl border-2 border-gray-200 text-xs font-extrabold focus:border-green-600 focus:outline-none bg-gray-50/50"
                       >
                         <option value="Prepared Cooked Food">🍲 Prepared Cooked Food</option>
-                        <option value="Packaged / Shelf Stable">📦 Packaged / Shelf Stable</option>
-                        <option value="Bakery / Breads">🍞 Bakery & Breads</option>
+                        <option value="Grocery / Raw Food">🌾 Grocery / Raw Food</option>
+                        <option value="Bakery / Packaged">🍞 Bakery & Packaged</option>
                         <option value="Fresh Produce / Fruits">🍎 Fresh Produce & Fruits</option>
-                        <option value="Beverages / Milk">🥛 Beverages & Dairy</option>
+                        <option value="Vegetable/Organic Waste">🥬 Vegetable/Organic Waste (KG for Animals/Gaushalas)</option>
                       </select>
+                      {formData.foodCategory === 'Vegetable/Organic Waste' && (
+                        <p className="text-[11px] font-extrabold text-green-800 bg-green-100 p-2 rounded-xl mt-1.5 border border-green-300">
+                          🌱 Vegetable & Organic waste (in KG) is matched strictly to registered Gaushalas & Animal Feed Organizations.
+                        </p>
+                      )}
                     </div>
 
                     <div>
@@ -808,11 +830,257 @@ const DonorDashboard = () => {
                 </p>
               </div>
             )}
+          </div>
+        )}
 
+        {/* NGO REQUIREMENTS TAB CONTENT */}
+        {currentTab === 'ngo-requirements' && (
+          <div className="space-y-6 animate-in fade-in">
+            {/* Header Banner */}
+            <div className="bg-gradient-to-r from-emerald-950 via-green-900 to-amber-700 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-emerald-800 space-y-2">
+              <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 bg-black/30 px-3 py-1 rounded-full border border-amber-400/30">
+                LIVE DEMAND MATCHING & DIRECT FULFILLMENT
+              </span>
+              <h1 className="text-2xl sm:text-4xl font-black font-outfit text-white">📋 NGO Food Requirements</h1>
+              <p className="text-xs sm:text-sm text-emerald-100 font-medium">
+                Directly fulfill real-time meal & vegetable waste needs requested by verified NGOs & Gaushalas.
+              </p>
+            </div>
+
+            {/* Filter & Search Bar */}
+            <div className="bg-white/95 backdrop-blur-md rounded-2xl p-4 border border-gray-200 shadow-sm flex flex-col md:flex-row items-center justify-between gap-3 text-xs">
+              <div className="relative w-full md:w-72">
+                <Search className="w-4 h-4 absolute left-3 top-3 text-gray-400" />
+                <input
+                  type="text"
+                  placeholder="Search by NGO, food item or city..."
+                  value={reqSearchQuery}
+                  onChange={(e) => setReqSearchQuery(e.target.value)}
+                  className="w-full pl-9 pr-3 py-2 rounded-xl border border-gray-200 bg-gray-50 focus:outline-none font-bold text-gray-900"
+                />
+              </div>
+
+              <div className="flex flex-wrap items-center gap-2 w-full md:w-auto">
+                <select
+                  value={reqUrgencyFilter}
+                  onChange={(e) => setReqUrgencyFilter(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 font-bold text-gray-800 cursor-pointer"
+                >
+                  <option value="All">All Urgency Levels</option>
+                  <option value="Emergency">🚨 Emergency Only</option>
+                  <option value="Urgent">⚡ Urgent Only</option>
+                  <option value="Normal">🟢 Normal Only</option>
+                </select>
+
+                <select
+                  value={reqCategoryFilter}
+                  onChange={(e) => setReqCategoryFilter(e.target.value)}
+                  className="px-3 py-2 rounded-xl border border-gray-200 bg-gray-50 font-bold text-gray-800 cursor-pointer"
+                >
+                  <option value="All">All Categories</option>
+                  <option value="Prepared Cooked Food">Prepared Cooked Food</option>
+                  <option value="Grocery / Raw Food">Grocery / Raw Food</option>
+                  <option value="Bakery / Packaged">Bakery / Packaged</option>
+                  <option value="Vegetable/Organic Waste">Vegetable/Organic Waste (Gaushalas)</option>
+                </select>
+              </div>
+            </div>
+
+            {/* NGO Requirements Grid (Sorted by Priority P1 to P4) */}
+            {(() => {
+              const donorCity = (formData.city || currentUser?.city || 'Vadodara').toLowerCase();
+
+              const activeReqs = ngoRequests
+                .filter(req => {
+                  const rem = req.remainingQuantity !== undefined ? parseInt(req.remainingQuantity) : parseInt(req.quantityRequired);
+                  if (rem <= 0 || req.status === 'Cancelled' || req.status === 'Fully Fulfilled') return false;
+                  
+                  const q = reqSearchQuery.toLowerCase().trim();
+                  const matchesSearch = !q || req.foodCategory.toLowerCase().includes(q) || req.ngoName.toLowerCase().includes(q) || (req.city && req.city.toLowerCase().includes(q));
+                  const matchesUrgency = reqUrgencyFilter === 'All' || req.urgencyLevel === reqUrgencyFilter;
+                  const matchesCat = reqCategoryFilter === 'All' || req.foodCategory === reqCategoryFilter;
+                  
+                  return matchesSearch && matchesUrgency && matchesCat;
+                })
+                .map(req => {
+                  const priority = calculatePriorityScore(req);
+                  const isMatch = req.city && req.city.toLowerCase() === donorCity;
+                  return { ...req, priority, isMatch };
+                })
+                .sort((a, b) => b.priority.score - a.priority.score);
+
+              if (activeReqs.length === 0) {
+                return (
+                  <div className="text-center p-10 bg-white/95 rounded-3xl border border-gray-200 space-y-3 shadow-md">
+                    <Building2 className="w-12 h-12 text-gray-300 mx-auto" />
+                    <h3 className="text-base font-black text-emerald-950 font-outfit">
+                      No active NGO food requirements found.
+                    </h3>
+                    <p className="text-xs text-gray-500 font-medium max-w-md mx-auto leading-relaxed">
+                      All posted requirements are currently fulfilled or fit alternate criteria.
+                    </p>
+                  </div>
+                );
+              }
+
+              return (
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  {activeReqs.map((req) => {
+                    const reqQty = parseInt(req.quantityRequired) || 1;
+                    const fulQty = parseInt(req.quantityFulfilled) || 0;
+                    const remQty = req.remainingQuantity !== undefined ? parseInt(req.remainingQuantity) : reqQty;
+                    const fulPct = Math.min(100, Math.round((fulQty / reqQty) * 100));
+
+                    return (
+                      <div key={req.id} className="bg-white/95 backdrop-blur-md rounded-3xl p-5 shadow-lg border border-gray-200/90 space-y-4 hover:shadow-xl transition-all card-zoom-3d relative overflow-hidden">
+                        <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+                          <div>
+                            <span className="text-[10px] font-black uppercase text-emerald-800 font-mono">
+                              Req ID: {req.id}
+                            </span>
+                            <h4 className="text-base font-black font-outfit text-gray-900">{req.ngoName}</h4>
+                          </div>
+
+                          <div className="flex flex-col items-end space-y-1">
+                            <span className={`px-2.5 py-1 rounded-full text-[10px] font-black border ${req.priority.colorClass}`}>
+                              {req.priority.priorityBadge} ({req.priority.score} pts)
+                            </span>
+                            {req.isMatch && (
+                              <span className="text-[10px] font-black text-amber-900 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">
+                                ✨ Relevant Match
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <div className="space-y-1 text-xs">
+                          <p className="font-extrabold text-green-950 text-sm">{req.foodCategory}</p>
+                          <p className="text-gray-600">Urgency: <strong className="text-amber-700">{req.urgencyLevel}</strong> | Needed By: <strong>{req.requiredByDate} at {req.requiredByTime}</strong></p>
+                          <p className="text-gray-600">Location: <strong>{req.address}, {req.city} ({req.pincode})</strong></p>
+                          {req.notes && <p className="text-gray-500 italic bg-gray-50 p-2 rounded-xl border border-gray-100">"{req.notes}"</p>}
+                        </div>
+
+                        {/* Progress Bar & Remaining Quantity */}
+                        <div className="space-y-1 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-100">
+                          <div className="flex items-center justify-between text-xs font-bold text-gray-700">
+                            <span>Fulfillment Progress</span>
+                            <span className="font-mono text-emerald-900">{fulQty} / {reqQty} {req.unit || 'meals'}</span>
+                          </div>
+                          <div className="w-full bg-gray-200 h-2.5 rounded-full overflow-hidden">
+                            <div 
+                              className="bg-emerald-600 h-full rounded-full transition-all duration-500" 
+                              style={{ width: `${fulPct}%` }}
+                            />
+                          </div>
+                          <div className="flex items-center justify-between text-[11px]">
+                            <span className="text-gray-500">Fulfilled: {fulQty} {req.unit || 'meals'}</span>
+                            <span className="font-black text-orange-600 text-xs">Remaining Needed: {remQty} {req.unit || 'meals'}</span>
+                          </div>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setOfferingReq(req);
+                            setOfferQuantity(String(remQty));
+                            setOfferError('');
+                          }}
+                          className="w-full py-3 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md flex items-center justify-center space-x-1.5 btn-bounce-active cursor-pointer"
+                        >
+                          <Utensils className="w-4 h-4 text-orange-400" />
+                          <span>Offer Food / Fulfill Request</span>
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              );
+            })()}
           </div>
         )}
 
       </div>
+
+      {/* OFFER FOOD MODAL */}
+      {offeringReq && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-xs p-4 animate-in fade-in text-gray-900">
+          <div className="bg-white rounded-3xl w-full max-w-md p-6 space-y-4 border-t-4 border-emerald-700 shadow-2xl animate-in zoom-in-95">
+            <div className="flex items-center justify-between border-b border-gray-100 pb-3">
+              <div>
+                <span className="text-[10px] font-black uppercase tracking-wider text-emerald-800 block">Offer Food Contribution</span>
+                <h3 className="text-lg font-black font-outfit text-green-950">Fulfill {offeringReq.id}</h3>
+              </div>
+              <button onClick={() => setOfferingReq(null)} className="p-1 rounded-xl bg-gray-100 text-gray-600 hover:text-gray-900">
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            <div className="space-y-2 text-xs text-gray-700 bg-emerald-50/70 p-3.5 rounded-2xl border border-emerald-200">
+              <p><strong>Target NGO:</strong> {offeringReq.ngoName}</p>
+              <p><strong>Required Category:</strong> {offeringReq.foodCategory}</p>
+              <p><strong>Max Remaining Needed:</strong> <span className="font-extrabold text-orange-600 text-sm">{offeringReq.remainingQuantity} {offeringReq.unit || 'meals'}</span></p>
+            </div>
+
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-gray-800">Your Offer Quantity ({offeringReq.unit || 'meals'}) *</label>
+              <input
+                type="number"
+                min="1"
+                max={offeringReq.remainingQuantity}
+                value={offerQuantity}
+                onChange={(e) => {
+                  const val = parseInt(e.target.value) || 0;
+                  setOfferQuantity(e.target.value);
+                  if (val > offeringReq.remainingQuantity) {
+                    setOfferError(`Only ${offeringReq.remainingQuantity} ${offeringReq.unit || 'meals'} are currently required for this request.`);
+                  } else {
+                    setOfferError('');
+                  }
+                }}
+                className="w-full h-12 px-4 rounded-2xl border-2 border-gray-200 text-sm font-extrabold focus:border-green-600 focus:outline-none"
+                placeholder={`Enter quantity up to ${offeringReq.remainingQuantity}`}
+              />
+
+              {offerError && (
+                <p className="text-xs font-extrabold text-red-600 bg-red-50 p-2.5 rounded-xl border border-red-200 flex items-center space-x-1">
+                  <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
+                  <span>{offerError}</span>
+                </p>
+              )}
+            </div>
+
+            <div className="pt-2 flex justify-end space-x-2">
+              <button
+                type="button"
+                onClick={() => setOfferingReq(null)}
+                className="px-4 py-2.5 rounded-xl bg-gray-100 hover:bg-gray-200 text-gray-800 font-bold text-xs"
+              >
+                Cancel
+              </button>
+              <button
+                type="button"
+                disabled={!!offerError || !offerQuantity || parseInt(offerQuantity) <= 0}
+                onClick={() => {
+                  const res = fulfillNgoRequirement(offeringReq.id, offerQuantity, {
+                    donorName: formData.donorName,
+                    donorType: formData.donorType,
+                    pickupAddress: formData.pickupAddress,
+                    city: formData.city,
+                    phone: formData.phone
+                  });
+                  if (res.success) {
+                    setOfferingReq(null);
+                  } else {
+                    setOfferError(res.error);
+                  }
+                }}
+                className="px-5 py-2.5 rounded-xl bg-emerald-800 hover:bg-emerald-900 disabled:opacity-50 text-white font-bold text-xs shadow-md cursor-pointer"
+              >
+                Confirm Food Offer
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* DONATION RECEIPT MODAL */}
       {selectedDonationForReceipt && (
