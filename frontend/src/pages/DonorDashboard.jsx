@@ -224,12 +224,14 @@ const DonorDashboard = () => {
             </button>
 
             <button
-              onClick={() => setShowProfileBoxModal(true)}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-emerald-800 hover:bg-emerald-900 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer border border-emerald-700"
-              title="Click to view & edit Profile / Account Settings"
+              onClick={() => {
+                navigate('/', { replace: true });
+                logoutUser(navigate);
+              }}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer"
             >
-              <UserCheck className="w-4 h-4 text-orange-400" />
-              <span>{currentUser?.name || "AnnSetu Verified Donor"}</span>
+              <LogOut className="w-4 h-4" />
+              <span>{t('logoutBtn')}</span>
             </button>
 
 

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useApp } from '../context/AppContext';
 import { Bell, X, CheckCircle, Info, AlertTriangle, Clock, Sparkles, CheckCheck } from 'lucide-react';
 
@@ -27,7 +27,7 @@ const NotificationModal = ({ onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 z-50 flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
+      className="fixed inset-0 z-[99999] flex justify-end bg-black/60 backdrop-blur-xs animate-in fade-in"
       onClick={onClose}
     >
       {/* 1/4TH SCREEN SIDE PANEL (Lengthy full-height drawer, mobile responsive) */}

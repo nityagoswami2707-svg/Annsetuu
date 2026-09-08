@@ -3,6 +3,7 @@ import { useApp } from '../context/AppContext';
 import MapView from '../components/MapView';
 import ImpactReceipt from '../components/ImpactReceipt';
 import AnnsetuMotionBackground from '../components/AnnsetuMotionBackground';
+import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   CheckCircle, 
@@ -13,11 +14,14 @@ import {
   Utensils, 
   ShieldCheck, 
   FileText,
-  ArrowRight
+  ArrowRight,
+  LogOut,
+  Home
 } from 'lucide-react';
 
 const TrackingDashboard = () => {
-  const { t, donations, setSelectedReceiptDonation, selectedReceiptDonation } = useApp();
+  const { t, donations, setSelectedReceiptDonation, selectedReceiptDonation, currentUser, logoutUser } = useApp();
+  const navigate = useNavigate();
   const [searchId, setSearchId] = useState('ANS-2026-000123');
   const [activeDonation, setActiveDonation] = useState(
     donations.find(d => d.id === 'ANS-2026-000123') || donations[0]
@@ -41,7 +45,29 @@ const TrackingDashboard = () => {
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6 relative z-10">
         
-        {/* Search Header Banner */}
+        {/* Top Action Bar */}
+        <div className="flex items-center justify-between gap-3">
+          <button
+            onClick={() => navigate('/')}
+            className="inline-flex items-center space-x-2 px-4 py-2 rounded-2xl bg-white/95 hover:bg-orange-100 text-emerald-950 font-black text-xs border border-gray-200 shadow-md transition-all btn-bounce-active cursor-pointer"
+          >
+            <Home className="w-4 h-4 text-orange-600" />
+            <span>← {t('home')}</span>
+          </button>
+
+          {currentUser && (
+            <button
+              onClick={() => {
+                navigate('/', { replace: true });
+                logoutUser(navigate);
+              }}
+              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active cursor-pointer"
+            >
+              <LogOut className="w-4 h-4" />
+              <span>{t('logoutBtn')}</span>
+            </button>
+          )}
+        </div>
         <div className="bg-gradient-to-r from-blue-900 via-emerald-950 to-orange-600 text-white rounded-3xl p-6 sm:p-10 shadow-xl border border-blue-800 text-center space-y-4">
           <div className="max-w-xl mx-auto space-y-1">
             <span className="text-[10px] font-black uppercase tracking-widest text-amber-300 bg-black/30 px-3 py-1 rounded-full border border-orange-300/40">
