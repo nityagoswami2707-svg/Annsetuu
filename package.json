@@ -5,5 +5,8 @@
   "scripts": {
     "build": "npm run build --prefix frontend",
     "dev": "npm run dev --prefix frontend"
+  },
+  "dependencies": {
+    "web-push": "^3.6.7"
   }
 }

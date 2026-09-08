@@ -58,5 +58,43 @@ def metrics():
         "f1_score": 0.85
     })
 
+from pywebpush import webpush, WebPushException
+import json
+
+VAPID_PRIVATE_KEY = 'V6xCIImkOZlvG8WAIT0g_aOgNEMaI8I-expLnNyJ7tE'
+VAPID_CLAIMS = {"sub": "mailto:admin@annsetu.com"}
+
+# In-memory store for subscriptions. In production, use a database.
+subscriptions = {}
+
+@app.route('/api/subscribe', methods=['POST'])
+def subscribe():
+    data = request.json
+    user_id = data.get('userId')
+    sub = data.get('subscription')
+    if user_id and sub:
+        subscriptions[user_id] = sub
+        return jsonify({"status": "success"})
+    return jsonify({"error": "Invalid data"}), 400
+
+@app.route('/api/notify', methods=['POST'])
+def notify():
+    data = request.json
+    user_id = data.get('userId')
+    payload = data.get('payload', {})
+    sub = subscriptions.get(user_id)
+    if sub:
+        try:
+            webpush(
+                subscription_info=sub,
+                data=json.dumps(payload),
+                vapid_private_key=VAPID_PRIVATE_KEY,
+                vapid_claims=VAPID_CLAIMS
+            )
+            return jsonify({"status": "sent"})
+        except WebPushException as e:
+            return jsonify({"error": repr(e)}), 500
+    return jsonify({"error": "User not subscribed"}), 404
+
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

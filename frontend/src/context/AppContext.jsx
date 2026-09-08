@@ -1,6 +1,7 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { translations } from './translations';
 import { supabase } from '../lib/supabase';
+import { subscribeToPushNotifications, sendPushNotification } from '../lib/pushNotifications';
 
 const AppContext = createContext();
 
@@ -810,6 +811,10 @@ export const AppProvider = ({ children }) => {
     };
 
     showToast(`Welcome ${found.name}`, welcomeMsgs[found.role] || welcomeMsgs.donor, "success");
+    
+    // Subscribe to Push Notifications
+    subscribeToPushNotifications(found.id);
+    
     return { success: true, user: found };
   };
 
@@ -1051,6 +1056,13 @@ export const AppProvider = ({ children }) => {
 
     setDonations([newDonation, ...donations]);
     addNotification("Donation Registered! ❤️", `Donation ${newId} (${formData.foodName}) registered successfully! Sent to ${targetNgo.name}.`, "success");
+    
+    // Trigger push notification for NGO
+    const targetUser = users.find(u => u.email === targetNgo.email) || users.find(u => u.name === targetNgo.name);
+    if (targetUser) {
+      sendPushNotification(targetUser.id, "New Donation Request", `Donation ${newId} (${formData.foodName}) sent to your NGO!`, "/ngo");
+    }
+    
     return newId;
   };
 
@@ -1091,6 +1103,20 @@ export const AppProvider = ({ children }) => {
     } else {
       addNotification("Donation Declined", `Donation ${donationId} was declined by NGO. Reason: ${reason}`, "warning");
     }
+    
+    // Trigger push notification to Donor
+    const donation = donations.find(d => d.id === donationId);
+    if (donation) {
+      const targetUser = users.find(u => u.name === donation.donorName);
+      if (targetUser) {
+        sendPushNotification(
+          targetUser.id, 
+          action === 'accept' ? "Donation Accepted 🤝" : "Donation Declined", 
+          `Your donation ${donationId} was ${action === 'accept' ? 'accepted' : 'declined'} by NGO.`, 
+          "/donor"
+        );
+      }
+    }
   };
 
   const updateDeliveryStatus = (donationId, newStatus, proofData = null) => {
@@ -1127,6 +1153,19 @@ export const AppProvider = ({ children }) => {
       addNotification("Food Delivered! ❤️", `Donation ${donationId} has safely reached its destination! Impact receipt generated.`, "success");
     } else {
       addNotification("Delivery Status Updated 🚚", `Donation ${donationId} status changed to ${newStatus}.`, "info");
+    }
+
+    // Trigger push notification to Donor and NGO
+    const donation = donations.find(d => d.id === donationId);
+    if (donation) {
+      const targetUser = users.find(u => u.name === donation.donorName);
+      const targetNgoUser = users.find(u => u.name === donation.ngoName);
+      if (targetUser) {
+        sendPushNotification(targetUser.id, newStatus === "Delivered" ? "Food Delivered! ❤️" : "Delivery Status Updated 🚚", `Your donation ${donationId} is now ${newStatus}.`, "/donor");
+      }
+      if (targetNgoUser) {
+        sendPushNotification(targetNgoUser.id, newStatus === "Delivered" ? "Food Delivered! ❤️" : "Delivery Status Updated 🚚", `Incoming donation ${donationId} is now ${newStatus}.`, "/ngo");
+      }
     }
   };
 

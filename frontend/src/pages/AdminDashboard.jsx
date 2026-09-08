@@ -190,16 +190,7 @@ const AdminDashboard = () => {
               <span>{t('myCertificates')}</span>
             </button>
 
-            <button
-              onClick={() => {
-                navigate('/', { replace: true });
-                logoutUser(navigate);
-              }}
-              className="inline-flex items-center space-x-1.5 px-4 py-2 rounded-2xl bg-red-600 hover:bg-red-700 text-white font-black text-xs shadow-md transition-all btn-bounce-active"
-            >
-              <LogOut className="w-4 h-4" />
-              <span>{t('logoutBtn')}</span>
-            </button>
+
           </div>
         </div>
 
